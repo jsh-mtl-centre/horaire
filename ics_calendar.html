@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calendrier Multi-ICS</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        .controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .btn {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn.reload {
+            background: linear-gradient(45deg, #28a745, #20c997);
+        }
+
+        .current-month {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #333;
+            margin: 0 20px;
+        }
+
+        .ics-manager {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+
+        .ics-manager h3 {
+            margin-bottom: 15px;
+            color: #333;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .ics-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .ics-item {
+            background: white;
+            border: 2px solid #eee;
+            border-radius: 8px;
+            padding: 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+
+        .ics-item.active {
+            border-color: var(--calendar-color);
+            background: rgba(var(--calendar-color-rgb), 0.1);
+        }
+
+        .ics-item.loading {
+            opacity: 0.6;
+        }
+
+        .ics-item.loading::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            right: 10px;
+            width: 16px;
+            height: 16px;
+            border: 2px solid #ccc;
+            border-top: 2px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .ics-checkbox {
+            margin: 0;
+            transform: scale(1.2);
+        }
+
+        .ics-name {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .ics-status {
+            font-size: 12px;
+            color: #666;
+            font-style: italic;
+        }
+
+        .calendar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 1px;
+            background: #ddd;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .day-header {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            padding: 15px 5px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .day-cell {
+            background: white;
+            min-height: 120px;
+            padding: 8px;
+            position: relative;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .day-cell:hover {
+            background: #f8f9ff;
+        }
+
+        .day-cell.other-month {
+            background: #f5f5f5;
+            color: #999;
+        }
+
+        .day-cell.today {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+        }
+
+        .day-number {
+            font-weight: bold;
+            margin-bottom: 5px;
+            font-size: 14px;
+        }
+
+        .event {
+            color: white;
+            padding: 2px 6px;
+            margin: 2px 0;
+            border-radius: 4px;
+            font-size: 11px;
+            line-height: 1.3;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border-left: 3px solid rgba(255,255,255,0.3);
+        }
+
+        .event:hover {
+            transform: scale(1.02);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .loading-message {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+            font-style: italic;
+        }
+
+        .error {
+            background: #ffe6e6;
+            color: #d63384;
+            padding: 10px;
+            border-radius: 8px;
+            margin: 10px 0;
+            border: 1px solid #f5c6cb;
+        }
+
+        .status-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-left: 10px;
+        }
+
+        .status-indicator.loaded {
+            background-color: #28a745;
+        }
+
+        .status-indicator.loading {
+            background-color: #ffc107;
+            animation: pulse 2s infinite;
+        }
+
+        .status-indicator.error {
+            background-color: #dc3545;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        @media (max-width: 768px) {
+            .controls {
+                justify-content: center;
+                text-align: center;
+            }
+            
+            .current-month {
+                margin: 10px 0;
+                order: -1;
+                width: 100%;
+            }
+            
+            .day-cell {
+                min-height: 80px;
+                padding: 4px;
+            }
+            
+            .ics-list {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📅 Calendrier Multi-ICS</h1>
+            
+            <div class="ics-manager">
+                <h3>
+                    Calendriers disponibles
+                    <button class="btn reload" onclick="reloadAllCalendars()" id="reloadBtn">
+                        🔄 Recharger
+                    </button>
+                </h3>
+                <div class="ics-list" id="icsList"></div>
+            </div>
+        </div>
+
+        <div class="calendar">
+            <div class="controls">
+                <div class="nav-buttons">
+                    <button class="btn" onclick="previousMonth()">‹ Précédent</button>
+                    <button class="btn" onclick="nextMonth()">Suivant ›</button>
+                    <button class="btn" onclick="goToToday()">Aujourd'hui</button>
+                </div>
+                <div class="current-month" id="currentMonth"></div>
+            </div>
+
+            <div class="calendar-grid" id="calendarGrid"></div>
+        </div>
+    </div>
+
+    <script>
+        class ICSCalendar {
+            constructor() {
+                this.currentDate = new Date();
+                this.events = [];
+                this.icsCalendars = [];
+                
+                // Configuration du répertoire GitHub
+                this.repoConfig = {
+                    owner: 'aprovencher27',
+                    repo: 'JSH_horaires',
+                    branch: 'main',
+                    path: '' // répertoire racine, changez si nécessaire (ex: 'calendriers/')
+                };
+                
+                // Palette de couleurs pour les calendriers
+                this.colorPalette = [
+                    '#667eea', '#e74c3c', '#2ecc71', '#f39c12', 
+                    '#9b59b6', '#1abc9c', '#e67e22', '#34495e',
+                    '#f1c40f', '#e91e63', '#00bcd4', '#ff5722',
+                    '#795548', '#607d8b', '#8bc34a', '#ffc107'
+                ];
+                
+                this.init();
+            }
+
+            async init() {
+                this.render();
+                this.renderIcsList();
+                await this.discoverIcsFiles();
+                await this.loadAllCalendars();
+            }
+
+            async discoverIcsFiles() {
+                const reloadBtn = document.getElementById('reloadBtn');
+                reloadBtn.disabled = true;
+                
+                try {
+                    console.log('Découverte des fichiers .ics dans le répertoire...');
+                    
+                    // URL de l'API GitHub pour lister les fichiers
+                    const apiUrl = `https://api.github.com/repos/${this.repoConfig.owner}/${this.repoConfig.repo}/contents/${this.repoConfig.path}?ref=${this.repoConfig.branch}`;
+                    
+                    const response = await fetch(apiUrl);
+                    if (!response.ok) {
+                        throw new Error(`Erreur API GitHub: ${response.status}`);
+                    }
+                    
+                    const files = await response.json();
+                    console.log(`${files.length} fichiers trouvés dans le répertoire`);
+                    
+                    // Filtrer les fichiers .ics
+                    const icsFiles = files.filter(file => 
+                        file.type === 'file' && 
+                        file.name.toLowerCase().endsWith('.ics')
+                    );
+                    
+                    console.log(`${icsFiles.length} fichiers .ics trouvés:`, icsFiles.map(f => f.name));
+                    
+                    // Créer la liste des calendriers
+                    this.icsCalendars = icsFiles.map((file, index) => ({
+                        url: file.download_url,
+                        name: this.formatCalendarName(file.name),
+                        fileName: file.name,
+                        active: true,
+                        color: this.colorPalette[index % this.colorPalette.length],
+                        events: [],
+                        status: 'loading'
+                    }));
+                    
+                    if (this.icsCalendars.length === 0) {
+                        this.showError('Aucun fichier .ics trouvé dans le répertoire');
+                    }
+                    
+                } catch (error) {
+                    console.error('Erreur lors de la découverte des fichiers:', error);
+                    this.showError(`Erreur lors de la découverte des fichiers: ${error.message}`);
+                    // Fallback vers les fichiers connus
+                    this.icsCalendars = [
+                        {
+                            url: 'https://raw.githubusercontent.com/aprovencher27/JSH_horaires/refs/heads/main/calendrier_non_affecte.ics',
+                            name: 'Calendrier Non Affecté',
+                            fileName: 'calendrier_non_affecte.ics',
+                            active: true,
+                            color: this.colorPalette[0],
+                            events: [],
+                            status: 'loading'
+                        },
+                        {
+                            url: 'https://raw.githubusercontent.com/aprovencher27/JSH_horaires/refs/heads/main/calendrier_MAHG_23.ics',
+                            name: 'Calendrier MAHG 23',
+                            fileName: 'calendrier_MAHG_23.ics',
+                            active: true,
+                            color: this.colorPalette[1],
+                            events: [],
+                            status: 'loading'
+                        }
+                    ];
+                }
+                
+                this.renderIcsList();
+                reloadBtn.disabled = false;
+            }
+
+            formatCalendarName(fileName) {
+                // Supprimer l'extension .ics
+                let name = fileName.replace(/\.ics$/i, '');
+                
+                // Remplacer les underscores par des espaces
+                name = name.replace(/_/g, ' ');
+                
+                // Capitaliser chaque mot
+                name = name.replace(/\b\w/g, l => l.toUpperCase());
+                
+                return name;
+            }
+
+            async loadAllCalendars() {
+                const reloadBtn = document.getElementById('reloadBtn');
+                reloadBtn.disabled = true;
+                
+                const promises = this.icsCalendars.map(calendar => this.loadIcsData(calendar));
+                await Promise.all(promises);
+                
+                reloadBtn.disabled = false;
+                this.updateEvents();
+                this.render();
+                this.renderIcsList();
+            }
+
+            async loadIcsData(calendar) {
+                calendar.status = 'loading';
+                this.renderIcsList();
+                
+                try {
+                    console.log(`Chargement du calendrier: ${calendar.name}`);
+                    console.log(`URL: ${calendar.url}`);
+                    
+                    // Essayer d'abord directement
+                    let response;
+                    try {
+                        response = await fetch(calendar.url);
+                        if (!response.ok) {
+                            throw new Error(`HTTP ${response.status}`);
+                        }
+                    } catch (error) {
+                        console.log('Échec de la requête directe, utilisation du proxy CORS...');
+                        // Utiliser un proxy CORS si la requête directe échoue
+                        response = await fetch(`https://api.allorigins.win/raw?url=${encodeURIComponent(calendar.url)}`);
+                        if (!response.ok) {
+                            throw new Error(`Proxy HTTP ${response.status}`);
+                        }
+                    }
+                    
+                    const icsText = await response.text();
+                    console.log(`Données ICS reçues pour ${calendar.name}:`, icsText.substring(0, 200) + '...');
+                    
+                    calendar.events = this.parseICS(icsText);
+                    calendar.status = 'loaded';
+                    
+                    console.log(`${calendar.events.length} événements trouvés pour ${calendar.name}`);
+                    
+                } catch (error) {
+                    console.error(`Erreur lors du chargement de ${calendar.name}:`, error);
+                    calendar.status = 'error';
+                    calendar.events = [];
+                    this.showError(`Erreur lors du chargement de ${calendar.name}: ${error.message}`);
+                }
+                
+                this.renderIcsList();
+            }
+
+            parseICS(icsText) {
+                const events = [];
+                const lines = icsText.split(/\r?\n/).map(line => line.trim());
+                let currentEvent = null;
+                let multiLineProperty = null;
+
+                console.log(`Début du parsing ICS, ${lines.length} lignes à traiter`);
+
+                for (let i = 0; i < lines.length; i++) {
+                    let line = lines[i];
+
+                    // Gestion des propriétés multi-lignes
+                    if (multiLineProperty && (line.startsWith(' ') || line.startsWith('\t'))) {
+                        multiLineProperty.value += line.substring(1);
+                        continue;
+                    } else if (multiLineProperty) {
+                        this.processProperty(currentEvent, multiLineProperty.key, multiLineProperty.value);
+                        multiLineProperty = null;
+                    }
+
+                    if (line === 'BEGIN:VEVENT') {
+                        currentEvent = {};
+                        console.log('Début d\'un nouvel événement');
+                    } else if (line === 'END:VEVENT' && currentEvent) {
+                        if (currentEvent.dtstart && currentEvent.summary) {
+                            events.push(currentEvent);
+                            console.log(`Événement ajouté: ${currentEvent.summary} le ${currentEvent.dtstart}`);
+                        }
+                        currentEvent = null;
+                    } else if (currentEvent && line.includes(':')) {
+                        const colonIndex = line.indexOf(':');
+                        const key = line.substring(0, colonIndex);
+                        const value = line.substring(colonIndex + 1);
+
+                        if (value.length === 0 || line.endsWith('\\')) {
+                            // Propriété multi-ligne
+                            multiLineProperty = { key, value };
+                        } else {
+                            this.processProperty(currentEvent, key, value);
+                        }
+                    }
+                }
+
+                console.log(`Parsing terminé, ${events.length} événements trouvés`);
+                return events;
+            }
+
+            processProperty(event, key, value) {
+                if (key === 'SUMMARY') {
+                    event.summary = value.replace(/\\,/g, ',').replace(/\\;/g, ';').replace(/\\n/g, '\n');
+                } else if (key.startsWith('DTSTART')) {
+                    event.dtstart = this.parseICSDate(value);
+                    event.allDay = !key.includes('TZID') && !value.includes('T');
+                } else if (key.startsWith('DTEND')) {
+                    event.dtend = this.parseICSDate(value);
+                } else if (key === 'DESCRIPTION') {
+                    event.description = value.replace(/\\,/g, ',').replace(/\\;/g, ';').replace(/\\n/g, '\n');
+                }
+            }
+
+            parseICSDate(dateStr) {
+                // Formats: YYYYMMDD, YYYYMMDDTHHMMSS, YYYYMMDDTHHMMSSZ
+                if (!dateStr || dateStr.length < 8) {
+                    return new Date();
+                }
+
+                const year = parseInt(dateStr.substr(0, 4));
+                const month = parseInt(dateStr.substr(4, 2)) - 1;
+                const day = parseInt(dateStr.substr(6, 2));
+
+                if (dateStr.length > 8 && dateStr.includes('T')) {
+                    const timeStr = dateStr.split('T')[1];
+                    const hour = parseInt(timeStr.substr(0, 2));
+                    const minute = parseInt(timeStr.substr(2, 2));
+                    const second = timeStr.length >= 6 ? parseInt(timeStr.substr(4, 2)) : 0;
+                    
+                    return new Date(year, month, day, hour, minute, second);
+                } else {
+                    return new Date(year, month, day);
+                }
+            }
+
+            updateEvents() {
+                this.events = [];
+                this.icsCalendars.forEach(calendar => {
+                    if (calendar.active && calendar.status === 'loaded') {
+                        calendar.events.forEach(event => {
+                            this.events.push({
+                                ...event,
+                                color: calendar.color,
+                                calendar: calendar.name
+                            });
+                        });
+                    }
+                });
+                console.log(`Total des événements actifs: ${this.events.length}`);
+            }
+
+            toggleCalendar(index) {
+                this.icsCalendars[index].active = !this.icsCalendars[index].active;
+                this.updateEvents();
+                this.render();
+                this.renderIcsList();
+            }
+
+            renderIcsList() {
+                const icsList = document.getElementById('icsList');
+                icsList.innerHTML = '';
+
+                this.icsCalendars.forEach((calendar, index) => {
+                    const item = document.createElement('div');
+                    item.className = `ics-item ${calendar.active ? 'active' : ''} ${calendar.status === 'loading' ? 'loading' : ''}`;
+                    item.style.setProperty('--calendar-color', calendar.color);
+                    item.style.setProperty('--calendar-color-rgb', this.hexToRgb(calendar.color));
+                    
+                    const statusIndicator = this.getStatusIndicator(calendar.status);
+                    const eventCount = calendar.events.length;
+                    const statusText = calendar.status === 'loaded' ? `(${eventCount} événements)` : 
+                                     calendar.status === 'loading' ? '(chargement...)' : 
+                                     '(erreur de chargement)';
+
+                    item.innerHTML = `
+                        <input type="checkbox" class="ics-checkbox" 
+                               ${calendar.active ? 'checked' : ''} 
+                               onchange="window.calendar.toggleCalendar(${index})">
+                        <div>
+                            <div class="ics-name" style="color: ${calendar.color}">
+                                ${calendar.name}
+                                ${statusIndicator}
+                            </div>
+                            <div class="ics-status">${statusText}</div>
+                        </div>
+                    `;
+                    icsList.appendChild(item);
+                });
+            }
+
+            getStatusIndicator(status) {
+                return `<span class="status-indicator ${status}"></span>`;
+            }
+
+            hexToRgb(hex) {
+                const r = parseInt(hex.slice(1, 3), 16);
+                const g = parseInt(hex.slice(3, 5), 16);
+                const b = parseInt(hex.slice(5, 7), 16);
+                return `${r}, ${g}, ${b}`;
+            }
+
+            previousMonth() {
+                this.currentDate.setMonth(this.currentDate.getMonth() - 1);
+                this.render();
+            }
+
+            nextMonth() {
+                this.currentDate.setMonth(this.currentDate.getMonth() + 1);
+                this.render();
+            }
+
+            goToToday() {
+                this.currentDate = new Date();
+                this.render();
+            }
+
+            render() {
+                this.renderMonthHeader();
+                this.renderCalendarGrid();
+            }
+
+            renderMonthHeader() {
+                const monthNames = [
+                    'Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin',
+                    'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'
+                ];
+                
+                const monthYear = `${monthNames[this.currentDate.getMonth()]} ${this.currentDate.getFullYear()}`;
+                document.getElementById('currentMonth').textContent = monthYear;
+            }
+
+            renderCalendarGrid() {
+                const grid = document.getElementById('calendarGrid');
+                grid.innerHTML = '';
+
+                // En-têtes des jours
+                const dayHeaders = ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam'];
+                dayHeaders.forEach(day => {
+                    const header = document.createElement('div');
+                    header.className = 'day-header';
+                    header.textContent = day;
+                    grid.appendChild(header);
+                });
+
+                // Calculer les jours du mois
+                const year = this.currentDate.getFullYear();
+                const month = this.currentDate.getMonth();
+                const firstDay = new Date(year, month, 1);
+                const lastDay = new Date(year, month + 1, 0);
+                const startDate = new Date(firstDay);
+                startDate.setDate(startDate.getDate() - firstDay.getDay());
+
+                // Générer 42 jours (6 semaines)
+                for (let i = 0; i < 42; i++) {
+                    const currentDate = new Date(startDate);
+                    currentDate.setDate(startDate.getDate() + i);
+                    
+                    const cell = this.createDayCell(currentDate, month);
+                    grid.appendChild(cell);
+                }
+            }
+
+            createDayCell(date, currentMonth) {
+                const cell = document.createElement('div');
+                cell.className = 'day-cell';
+                
+                if (date.getMonth() !== currentMonth) {
+                    cell.classList.add('other-month');
+                }
+
+                const today = new Date();
+                if (date.toDateString() === today.toDateString()) {
+                    cell.classList.add('today');
+                }
+
+                const dayNumber = document.createElement('div');
+                dayNumber.className = 'day-number';
+                dayNumber.textContent = date.getDate();
+                cell.appendChild(dayNumber);
+
+                // Ajouter les événements de ce jour
+                const dayEvents = this.getEventsForDate(date);
+                dayEvents.forEach(event => {
+                    const eventElement = document.createElement('div');
+                    eventElement.className = 'event';
+                    eventElement.style.backgroundColor = event.color;
+                    eventElement.textContent = event.summary;
+                    eventElement.title = `${event.summary}\nCalendrier: ${event.calendar}\nDate: ${event.dtstart.toLocaleDateString('fr-FR')}`;
+                    cell.appendChild(eventElement);
+                });
+
+                return cell;
+            }
+
+            getEventsForDate(date) {
+                return this.events.filter(event => {
+                    if (!event.dtstart) return false;
+                    const eventDate = new Date(event.dtstart);
+                    return eventDate.toDateString() === date.toDateString();
+                });
+            }
+
+            showError(message) {
+                console.error(message);
+                const errorDiv = document.createElement('div');
+                errorDiv.className = 'error';
+                errorDiv.textContent = message;
+                document.querySelector('.ics-manager').appendChild(errorDiv);
+                
+                setTimeout(() => {
+                    if (errorDiv.parentNode) {
+                        errorDiv.remove();
+                    }
+                }, 10000);
+            }
+        }
+
+        // Initialiser le calendrier
+        window.calendar = new ICSCalendar();
+
+        // Fonctions globales
+        function previousMonth() {
+            window.calendar.previousMonth();
+        }
+
+        function nextMonth() {
+            window.calendar.nextMonth();
+        }
+
+        function goToToday() {
+            window.calendar.goToToday();
+        }
+
+        async function reloadAllCalendars() {
+            await window.calendar.loadAllCalendars();
+        }
+    </script>
+</body>
+</html>
