@@ -457,9 +457,14 @@
             <div class="ics-manager">
                 <h3>
                     📅 Calendriers
-                    <button class="btn reload" onclick="reloadAllCalendars()" id="reloadBtn">
-                        🔄
-                    </button>
+                    <div style="display: flex; gap: 8px;">
+                        <button class="btn" onclick="toggleAllCalendars()" id="toggleAllBtn" style="padding: 8px 12px; font-size: 12px;">
+                            Tout cocher
+                        </button>
+                        <button class="btn reload" onclick="reloadAllCalendars()" id="reloadBtn" style="padding: 8px 12px;">
+                            🔄
+                        </button>
+                    </div>
                 </h3>
                 <div class="ics-list" id="icsList"></div>
             </div>
@@ -551,48 +556,34 @@
                     
                     console.log(`${icsFiles.length} fichiers .ics trouvés:`, icsFiles.map(f => f.name));
                     
-                    // Créer la liste des calendriers
-                    this.icsCalendars = icsFiles.map((file, index) => ({
-                        url: file.download_url,
-                        name: this.formatCalendarName(file.name),
-                        fileName: file.name,
-                        active: true,
-                        color: this.colorPalette[index % this.colorPalette.length],
-                        events: [],
-                        status: 'loading'
-                    }));
-                    
-                    if (this.icsCalendars.length === 0) {
-                        this.showError('Aucun fichier .ics trouvé dans le répertoire');
+                    if (icsFiles.length === 0) {
+                        throw new Error('Aucun fichier .ics trouvé dans le répertoire');
                     }
+                    
+                    // Créer la liste des calendriers avec leurs préférences sauvegardées
+                    this.icsCalendars = icsFiles.map((file, index) => {
+                        const calendarName = this.formatCalendarName(file.name);
+                        const savedState = this.loadCalendarPreferences();
+                        
+                        return {
+                            url: file.download_url,
+                            name: calendarName,
+                            fileName: file.name,
+                            active: savedState[calendarName] !== undefined ? savedState[calendarName] : true,
+                            color: this.colorPalette[index % this.colorPalette.length],
+                            events: [],
+                            status: 'loading'
+                        };
+                    });
                     
                 } catch (error) {
                     console.error('Erreur lors de la découverte des fichiers:', error);
                     this.showError(`Erreur lors de la découverte des fichiers: ${error.message}`);
-                    // Fallback vers les fichiers connus
-                    this.icsCalendars = [
-                        {
-                            url: 'https://raw.githubusercontent.com/aprovencher27/JSH_horaires/refs/heads/main/calendrier_non_affecte.ics',
-                            name: 'Calendrier Non Affecté',
-                            fileName: 'calendrier_non_affecte.ics',
-                            active: true,
-                            color: this.colorPalette[0],
-                            events: [],
-                            status: 'loading'
-                        },
-                        {
-                            url: 'https://raw.githubusercontent.com/aprovencher27/JSH_horaires/refs/heads/main/calendrier_MAHG_23.ics',
-                            name: 'Calendrier MAHG 23',
-                            fileName: 'calendrier_MAHG_23.ics',
-                            active: true,
-                            color: this.colorPalette[1],
-                            events: [],
-                            status: 'loading'
-                        }
-                    ];
+                    this.icsCalendars = []; // Pas de fallback
                 }
                 
                 this.renderIcsList();
+                this.updateToggleAllButton();
                 reloadBtn.disabled = false;
             }
 
@@ -823,9 +814,64 @@
 
             toggleCalendar(index) {
                 this.icsCalendars[index].active = !this.icsCalendars[index].active;
+                this.saveCalendarPreferences();
                 this.updateEvents();
                 this.render();
                 this.renderIcsList();
+                this.updateToggleAllButton();
+            }
+
+            toggleAllCalendars() {
+                const allChecked = this.icsCalendars.every(cal => cal.active);
+                
+                this.icsCalendars.forEach(calendar => {
+                    calendar.active = !allChecked;
+                });
+                
+                this.saveCalendarPreferences();
+                this.updateEvents();
+                this.render();
+                this.renderIcsList();
+                this.updateToggleAllButton();
+            }
+
+            updateToggleAllButton() {
+                const toggleBtn = document.getElementById('toggleAllBtn');
+                if (!toggleBtn) return;
+                
+                const allChecked = this.icsCalendars.every(cal => cal.active);
+                const allUnchecked = this.icsCalendars.every(cal => !cal.active);
+                
+                if (allChecked) {
+                    toggleBtn.textContent = 'Tout décocher';
+                } else if (allUnchecked) {
+                    toggleBtn.textContent = 'Tout cocher';
+                } else {
+                    toggleBtn.textContent = 'Tout décocher';
+                }
+            }
+
+            saveCalendarPreferences() {
+                const preferences = {};
+                this.icsCalendars.forEach(calendar => {
+                    preferences[calendar.name] = calendar.active;
+                });
+                localStorage.setItem('calendarPreferences', JSON.stringify(preferences));
+                console.log('Préférences sauvegardées:', preferences);
+            }
+
+            loadCalendarPreferences() {
+                try {
+                    const saved = localStorage.getItem('calendarPreferences');
+                    if (saved) {
+                        const preferences = JSON.parse(saved);
+                        console.log('Préférences chargées:', preferences);
+                        return preferences;
+                    }
+                } catch (error) {
+                    console.warn('Erreur lors du chargement des préférences:', error);
+                }
+                return {};
             }
 
             renderIcsList() {
@@ -1185,6 +1231,10 @@
 
         function goToToday() {
             window.calendar.goToToday();
+        }
+
+        function toggleAllCalendars() {
+            window.calendar.toggleAllCalendars();
         }
 
         async function reloadAllCalendars() {
