@@ -501,8 +501,9 @@
                 this.currentWeekStart = this.getWeekStart(new Date()); // Garder trace du début de semaine
                 this.events = [];
                 this.icsCalendars = [];
-                this.minHour = 17; // Heure min par défaut
-                this.maxHour = 23; // Heure max par défaut
+                // Plage horaire fixe de 7h à 23h
+                this.minHour = 7;
+                this.maxHour = 23;
                 
                 // Configuration du répertoire GitHub
                 this.repoConfig = {
@@ -757,59 +758,8 @@
                     }
                 });
                 
-                // Calculer les heures min/max basées sur les événements de la semaine actuelle
-                this.calculateTimeRange();
-                
                 console.log(`Total des événements actifs: ${this.events.length}`);
-                console.log(`Plage horaire: ${this.minHour}:00 - ${this.maxHour}:00`);
-            }
-
-            calculateTimeRange() {
-                // Récupérer tous les événements de la semaine actuelle
-                const weekEvents = [];
-                for (let i = 0; i < 7; i++) {
-                    const currentDate = new Date(this.currentWeekStart);
-                    currentDate.setDate(this.currentWeekStart.getDate() + i);
-                    weekEvents.push(...this.getEventsForDate(currentDate));
-                }
-
-                if (weekEvents.length === 0) {
-                    // Pas d'événements, utiliser les valeurs par défaut
-                    this.minHour = 17;
-                    this.maxHour = 23;
-                    return;
-                }
-
-                let minHour = 23;
-                let maxHour = 0;
-
-                weekEvents.forEach(event => {
-                    if (event.allDay) {
-                        // Événements toute la journée : étendre la plage si nécessaire
-                        minHour = Math.min(minHour, 8); // Commencer à 8h pour les événements journée
-                        maxHour = Math.max(maxHour, 22); // Finir à 22h
-                    } else {
-                        const startTime = new Date(event.dtstart);
-                        const endTime = event.dtend ? new Date(event.dtend) : 
-                                       new Date(startTime.getTime() + 60 * 60 * 1000);
-
-                        minHour = Math.min(minHour, startTime.getHours());
-                        maxHour = Math.max(maxHour, endTime.getHours());
-                        
-                        // Si l'événement se termine à X:00, ne pas inclure cette heure
-                        if (endTime.getMinutes() > 0) {
-                            maxHour = Math.max(maxHour, endTime.getHours());
-                        }
-                    }
-                });
-
-                // Ajouter une marge d'une heure avant/après
-                this.minHour = Math.max(0, Math.min(minHour - 1, 17)); // Ne pas dépasser 17h par défaut
-                this.maxHour = Math.min(23, Math.max(maxHour + 1, 23)); // Ne pas dépasser 23h par défaut
-
-                // Assurer au minimum la plage par défaut 17h-23h
-                if (this.minHour > 17) this.minHour = 17;
-                if (this.maxHour < 23) this.maxHour = 23;
+                console.log(`Plage horaire fixe: ${this.minHour}:00 - ${this.maxHour}:00`);
             }
 
             toggleCalendar(index) {
@@ -984,8 +934,8 @@
                 header.textContent = 'Heure';
                 timeColumn.appendChild(header);
 
-                // Créer les créneaux horaires selon la plage calculée
-                const totalHours = this.maxHour - this.minHour + 1;
+                // Créer les créneaux horaires de 7h à 23h (17 heures)
+                const totalHours = this.maxHour - this.minHour + 1; // 17 heures
                 for (let i = 0; i < totalHours; i++) {
                     const hour = this.minHour + i;
                     const timeSlot = document.createElement('div');
@@ -1039,11 +989,11 @@
                     const timeGrid = document.createElement('div');
                     timeGrid.className = 'time-grid';
                     
-                    // Définir la hauteur totale basée sur la plage horaire
+                    // Hauteur fixe basée sur la plage horaire 7h-23h (17 heures)
                     const totalHours = this.maxHour - this.minHour + 1;
                     timeGrid.style.height = `${totalHours * 60}px`;
 
-                    // Ajouter les lignes horaires selon la plage
+                    // Ajouter les lignes horaires de 7h à 23h
                     for (let i = 0; i < totalHours; i++) {
                         const hour = this.minHour + i;
                         const hourLine = document.createElement('div');
@@ -1092,7 +1042,7 @@
                 if (event.dtend) {
                     endTime = new Date(event.dtend);
                 } else if (event.allDay) {
-                    // Événement toute la journée
+                    // Événement toute la journée - s'étend sur toute la plage visible
                     endTime = new Date(startTime);
                     endTime.setHours(this.maxHour, 59, 59);
                     startTime.setHours(this.minHour, 0, 0);
@@ -1101,18 +1051,24 @@
                     endTime = new Date(startTime.getTime() + 60 * 60 * 1000);
                 }
 
-                // Calculer la position et la hauteur relative à la plage horaire
+                // Calculer la position et la hauteur relative à la plage horaire fixe (7h-23h)
                 const startMinutes = (startTime.getHours() - this.minHour) * 60 + startTime.getMinutes();
                 const endMinutes = (endTime.getHours() - this.minHour) * 60 + endTime.getMinutes();
                 const duration = Math.max(endMinutes - startMinutes, 15); // Minimum 15 minutes
 
-                // S'assurer que l'événement est dans la plage visible
-                if (startTime.getHours() < this.minHour || startTime.getHours() > this.maxHour) {
-                    return null; // Ne pas afficher l'événement s'il est hors plage
+                // Ne pas afficher les événements complètement en dehors de la plage 7h-23h
+                if (endTime.getHours() < this.minHour || startTime.getHours() > this.maxHour) {
+                    return null;
                 }
 
-                eventElement.style.top = `${Math.max(0, startMinutes)}px`;
-                eventElement.style.height = `${duration}px`;
+                // Ajuster les événements qui débordent de la plage
+                const adjustedStartMinutes = Math.max(0, startMinutes);
+                const maxMinutes = (this.maxHour - this.minHour + 1) * 60;
+                const adjustedEndMinutes = Math.min(maxMinutes, endMinutes);
+                const adjustedDuration = Math.max(adjustedEndMinutes - adjustedStartMinutes, 15);
+
+                eventElement.style.top = `${adjustedStartMinutes}px`;
+                eventElement.style.height = `${adjustedDuration}px`;
 
                 // Gestion des superpositions
                 const totalOverlaps = overlaps.length;
@@ -1148,7 +1104,7 @@
                 return eventElement;
             }
 
-            // Nouvelle fonction pour détecter les superpositions
+            // Fonction pour détecter les superpositions
             detectOverlaps(events) {
                 const overlappingGroups = [];
                 
