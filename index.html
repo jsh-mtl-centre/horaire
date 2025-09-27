@@ -483,7 +483,7 @@
         </div>
     </div>
 
-    <script>
+   <script>
         class ICSCalendar {
             constructor() {
                 this.currentDate = new Date();
@@ -494,12 +494,14 @@
                 this.minHour = 7;
                 this.maxHour = 23;
                 
+                // Mode arenas
+                this.isArenaMode = false;
+                
                 // Configuration du répertoire GitHub
                 this.repoConfig = {
                     owner: 'jsh-mtl-centre',
                     repo: 'horaire',
-                    branch: 'main',
-                    path: 'ics_groupes' // répertoire racine, changez si nécessaire (ex: 'calendriers/')
+                    branch: 'main'
                 };
                 
                 // Palette de couleurs pour les calendriers
@@ -521,19 +523,36 @@
             async init() {
                 this.render();
                 this.renderIcsList();
+                this.updateModeButton();
                 await this.discoverIcsFiles();
                 await this.loadAllCalendars();
             }
 
+            async toggleMode() {
+                this.isArenaMode = !this.isArenaMode;
+                this.updateModeButton();
+                // Redécouvrir les fichiers et recharger complètement
+                await this.discoverIcsFiles();
+                await this.loadAllCalendars();
+            }
+
+            updateModeButton() {
+                const modeBtn = document.getElementById('reloadBtn');
+                if (modeBtn) {
+                    modeBtn.textContent = this.isArenaMode ? 'Mode groupes' : 'Mode arenas';
+                }
+            }
+
             async discoverIcsFiles() {
-                const reloadBtn = document.getElementById('reloadBtn');
-                reloadBtn.disabled = true;
+                const modeBtn = document.getElementById('reloadBtn');
+                modeBtn.disabled = true;
                 
                 try {
-                    console.log('Découverte des fichiers .ics dans le répertoire...');
+                    const currentPath = this.isArenaMode ? 'ics_arenas' : 'ics_groupes';
+                    console.log(`Découverte des fichiers .ics dans le répertoire ${currentPath}...`);
                     
                     // URL de l'API GitHub pour lister les fichiers
-                    const apiUrl = `https://api.github.com/repos/${this.repoConfig.owner}/${this.repoConfig.repo}/contents/${this.repoConfig.path}?ref=${this.repoConfig.branch}`;
+                    const apiUrl = `https://api.github.com/repos/${this.repoConfig.owner}/${this.repoConfig.repo}/contents/${currentPath}?ref=${this.repoConfig.branch}`;
                     
                     const response = await fetch(apiUrl);
                     if (!response.ok) {
@@ -552,7 +571,8 @@
                     console.log(`${icsFiles.length} fichiers .ics trouvés:`, icsFiles.map(f => f.name));
                     
                     if (icsFiles.length === 0) {
-                        throw new Error('Aucun fichier .ics trouvé dans le répertoire');
+                        const modeText = this.isArenaMode ? 'arenas' : 'groupes';
+                        throw new Error(`Aucun fichier .ics trouvé dans le répertoire ${currentPath} (mode ${modeText})`);
                     }
                     
                     // Créer la liste des calendriers avec leurs préférences sauvegardées
@@ -579,7 +599,7 @@
                 
                 this.renderIcsList();
                 this.updateToggleAllButton();
-                reloadBtn.disabled = false;
+                modeBtn.disabled = false;
             }
 
             formatCalendarName(fileName) {
@@ -596,19 +616,19 @@
             }
 
             async loadAllCalendars() {
-                const reloadBtn = document.getElementById('reloadBtn');
-                reloadBtn.disabled = true;
+                const modeBtn = document.getElementById('reloadBtn');
+                modeBtn.disabled = true;
                 
                 if (this.icsCalendars.length === 0) {
                     console.log('Aucun calendrier à charger');
-                    reloadBtn.disabled = false;
+                    modeBtn.disabled = false;
                     return;
                 }
                 
                 const promises = this.icsCalendars.map(calendar => this.loadIcsData(calendar));
                 await Promise.all(promises);
                 
-                reloadBtn.disabled = false;
+                modeBtn.disabled = false;
                 this.updateEvents();
                 this.render();
                 this.renderIcsList();
@@ -1225,9 +1245,8 @@
         }
 
         async function reloadAllCalendars() {
-            // Redécouvrir les fichiers et recharger
-            await window.calendar.discoverIcsFiles();
-            await window.calendar.loadAllCalendars();
+            // Changer de mode (arenas/groupes)
+            await window.calendar.toggleMode();
         }
     </script>
 </body>
