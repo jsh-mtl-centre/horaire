@@ -446,7 +446,6 @@
         <div class="sidebar">
             <div class="ics-manager">
                 <h3>
-                    📅 Calendriers
                     <div style="display: flex; gap: 8px;">
                         <button class="btn" onclick="toggleAllCalendars()" id="toggleAllBtn" style="padding: 8px 12px; font-size: 12px;">
                             Tout cocher
@@ -933,27 +932,6 @@
                 document.getElementById('currentMonth').textContent = weekText;
                 document.getElementById('weekInfo').textContent = '';
             }
-
-            /*renderTimeColumn() {
-                const timeColumn = document.getElementById('timeColumn');
-                timeColumn.innerHTML = '';
-
-                // En-tête vide pour aligner avec les jours
-                const header = document.createElement('div');
-                header.className = 'time-slot';
-                header.textContent = 'Heure';
-                timeColumn.appendChild(header);
-
-                // Créer les créneaux horaires de 7h à 23h (17 heures)
-                const totalHours = this.maxHour - this.minHour + 1; // 17 heures
-                for (let i = 0; i < totalHours; i++) {
-                    const hour = this.minHour + i;
-                    const timeSlot = document.createElement('div');
-                    timeSlot.className = 'time-slot';
-                    timeSlot.textContent = `${hour.toString().padStart(2, '0')}:00`;
-                    timeColumn.appendChild(timeSlot);
-                }
-            }*/
 
             renderWeekGrid() {
                 const grid = document.getElementById('calendarGrid');
