@@ -199,12 +199,6 @@
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
 
-        .time-column {
-            width: 80px;
-            background: #f8f9fa;
-            border-right: 2px solid #dee2e6;
-        }
-
         .time-slot {
             height: 60px;
             border-bottom: 1px solid #e9ecef;
@@ -416,10 +410,6 @@
         }
 
         @media (max-width: 768px) {
-            .time-column {
-                width: 60px;
-            }
-
             .time-slot {
                 font-size: 10px;
                 height: 40px;
@@ -487,7 +477,6 @@
 
             <div class="calendar">
                 <div class="calendar-container">
-                    <div class="time-column" id="timeColumn"></div>
                     <div class="calendar-grid" id="calendarGrid"></div>
                 </div>
             </div>
@@ -507,8 +496,8 @@
                 
                 // Configuration du répertoire GitHub
                 this.repoConfig = {
-                    owner: 'aprovencher27',
-                    repo: 'JSH_horaires',
+                    owner: 'jsh-mtl-centre',
+                    repo: 'horaire',
                     branch: 'main',
                     path: '' // répertoire racine, changez si nécessaire (ex: 'calendriers/')
                 };
@@ -518,7 +507,12 @@
                     '#667eea', '#e74c3c', '#2ecc71', '#f39c12', 
                     '#9b59b6', '#1abc9c', '#e67e22', '#34495e',
                     '#f1c40f', '#e91e63', '#00bcd4', '#ff5722',
-                    '#795548', '#607d8b', '#8bc34a', '#ffc107'
+                    '#795548', '#607d8b', '#8bc34a', '#ffc107',
+                    // Nouvelles couleurs ajoutées
+                    '#3f51b5', '#ff9800', '#4caf50', '#ffeb3b',
+                    '#9c27b0', '#00acc1', '#ff7043', '#546e7a',
+                    '#cddc39', '#ec407a', '#26c6da', '#ff6f00',
+                    '#8d6e63', '#78909c', '#689f38', '#ffb300'
                 ];
                 
                 this.init();
@@ -895,7 +889,7 @@
 
             render() {
                 this.renderWeekHeader();
-                this.renderTimeColumn();
+                //this.renderTimeColumn();
                 this.renderWeekGrid();
             }
 
@@ -920,7 +914,7 @@
                 document.getElementById('weekInfo').textContent = '';
             }
 
-            renderTimeColumn() {
+            /*renderTimeColumn() {
                 const timeColumn = document.getElementById('timeColumn');
                 timeColumn.innerHTML = '';
 
@@ -939,73 +933,114 @@
                     timeSlot.textContent = `${hour.toString().padStart(2, '0')}:00`;
                     timeColumn.appendChild(timeSlot);
                 }
-            }
+            }*/
 
             renderWeekGrid() {
                 const grid = document.getElementById('calendarGrid');
                 grid.innerHTML = '';
+                
+                // Modifier le grid pour avoir 8 colonnes : heures + 7 jours
+                grid.style.gridTemplateColumns = '80px repeat(7, 1fr)';
 
                 const dayNames = ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'];
                 const today = new Date();
-                today.setHours(0, 0, 0, 0); // Reset time for comparison
+                today.setHours(0, 0, 0, 0);
 
-                console.log('Début de semaine actuelle:', this.currentWeekStart.toLocaleDateString('fr-FR'));
+                // Première colonne : en-tête des heures
+                const timeHeaderColumn = document.createElement('div');
+                timeHeaderColumn.style.borderRight = '2px solid #dee2e6';
+                timeHeaderColumn.style.background = '#f8f9fa';
+                
+                // En-tête "Heure"
+                const timeHeader = document.createElement('div');
+                timeHeader.style.height = '60px';
+                timeHeader.style.background = '#1E3A8A';
+                timeHeader.style.color = 'white';
+                timeHeader.style.display = 'flex';
+                timeHeader.style.alignItems = 'center';
+                timeHeader.style.justifyContent = 'center';
+                timeHeader.style.fontWeight = 'bold';
+                timeHeader.style.fontSize = '14px';
+                timeHeader.textContent = 'Heure';
+                timeHeaderColumn.appendChild(timeHeader);
 
-                // Créer les colonnes pour chaque jour de la semaine
+                // Créneaux horaires
+                const totalHours = this.maxHour - this.minHour + 1;
+                for (let i = 0; i < totalHours; i++) {
+                    const hour = this.minHour + i;
+                    const timeSlot = document.createElement('div');
+                    timeSlot.style.height = '60px';
+                    timeSlot.style.borderBottom = '1px solid #e9ecef';
+                    timeSlot.style.display = 'flex';
+                    timeSlot.style.alignItems = 'center';
+                    timeSlot.style.justifyContent = 'center';
+                    timeSlot.style.fontSize = '12px';
+                    timeSlot.style.color = '#666';
+                    timeSlot.style.fontWeight = '500';
+                    timeSlot.textContent = `${hour.toString().padStart(2, '0')}:00`;
+                    timeHeaderColumn.appendChild(timeSlot);
+                }
+                grid.appendChild(timeHeaderColumn);
+
+                // Colonnes des jours
                 for (let i = 0; i < 7; i++) {
                     const currentDate = new Date(this.currentWeekStart);
                     currentDate.setDate(this.currentWeekStart.getDate() + i);
 
-                    console.log(`Jour ${i}: ${currentDate.toLocaleDateString('fr-FR')}`);
-
                     const dayColumn = document.createElement('div');
-                    dayColumn.className = 'day-column';
+                    dayColumn.style.borderRight = i === 6 ? 'none' : '1px solid #dee2e6';
+                    dayColumn.style.position = 'relative';
 
                     // En-tête du jour
                     const dayHeader = document.createElement('div');
-                    dayHeader.className = 'day-header';
+                    dayHeader.style.background = '#1E3A8A';
+                    dayHeader.style.color = 'white';
+                    dayHeader.style.padding = '15px 5px';
+                    dayHeader.style.textAlign = 'center';
+                    dayHeader.style.fontWeight = 'bold';
+                    dayHeader.style.fontSize = '14px';
+                    dayHeader.style.height = '60px';
+                    dayHeader.style.display = 'flex';
+                    dayHeader.style.flexDirection = 'column';
+                    dayHeader.style.alignItems = 'center';
+                    dayHeader.style.justifyContent = 'center';
                     
-                    // Comparer les dates sans l'heure
                     const currentDateOnly = new Date(currentDate);
                     currentDateOnly.setHours(0, 0, 0, 0);
                     
                     if (currentDateOnly.getTime() === today.getTime()) {
-                        dayHeader.classList.add('today');
-                        console.log(`Jour actuel détecté: ${currentDate.toLocaleDateString('fr-FR')}`);
+                        dayHeader.style.background = 'linear-gradient(45deg, #ffc107, #ff8f00)';
                     }
 
                     dayHeader.innerHTML = `
-                        <div class="day-name">${dayNames[i]}</div>
-                        <div class="day-number">${currentDate.getDate()}</div>
+                        <div style="font-size: 12px; opacity: 0.9;">${dayNames[i]}</div>
+                        <div style="font-size: 18px; font-weight: bold;">${currentDate.getDate()}</div>
                     `;
-
                     dayColumn.appendChild(dayHeader);
 
                     // Grille horaire
                     const timeGrid = document.createElement('div');
-                    timeGrid.className = 'time-grid';
-                    
-                    // Hauteur fixe basée sur la plage horaire 7h-23h (17 heures)
-                    const totalHours = this.maxHour - this.minHour + 1;
+                    timeGrid.style.position = 'relative';
                     timeGrid.style.height = `${totalHours * 60}px`;
 
-                    // Ajouter les lignes horaires de 7h à 23h
-                    for (let i = 0; i < totalHours; i++) {
-                        const hour = this.minHour + i;
+                    // Lignes horaires
+                    for (let j = 0; j < totalHours; j++) {
                         const hourLine = document.createElement('div');
-                        hourLine.className = 'hour-line';
-                        hourLine.style.top = `${i * 60}px`;
+                        hourLine.style.position = 'absolute';
+                        hourLine.style.left = '0';
+                        hourLine.style.right = '0';
+                        hourLine.style.height = '60px';
+                        hourLine.style.borderBottom = '1px solid #e9ecef';
+                        hourLine.style.top = `${j * 60}px`;
+                        if (j % 2 === 1) {
+                            hourLine.style.backgroundColor = 'rgba(0,0,0,0.02)';
+                        }
                         timeGrid.appendChild(hourLine);
                     }
 
-                    // Ajouter les événements de ce jour
+                    // Événements
                     const dayEvents = this.getEventsForDate(currentDate);
-                    console.log(`Événements pour ${currentDate.toLocaleDateString('fr-FR')}:`, dayEvents.length);
-                    
-                    // Détecter les superpositions
                     const overlappingGroups = this.detectOverlaps(dayEvents);
-                    
-                    // Créer un map pour savoir quels événements sont dans quels groupes
                     const eventOverlapMap = new Map();
                     
                     overlappingGroups.forEach(group => {
@@ -1017,7 +1052,7 @@
                     dayEvents.forEach(event => {
                         const overlaps = eventOverlapMap.get(event) || [];
                         const eventElement = this.createEventElement(event, overlaps);
-                        if (eventElement) { // Vérifier que l'élément a été créé
+                        if (eventElement) {
                             timeGrid.appendChild(eventElement);
                         }
                     });
