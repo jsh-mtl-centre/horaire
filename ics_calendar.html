@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calendrier Multi-ICS</title>
+    <title>Horaire JSH Montréal-Centre</title>
     <style>
         * {
             margin: 0;
@@ -13,7 +13,7 @@
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: #1E3A8A;
             min-height: 100vh;
             color: #333;
         }
@@ -61,7 +61,7 @@
         }
 
         .btn {
-            background: linear-gradient(45deg, #667eea, #764ba2);
+            background: #1E3A8A;
             color: white;
             border: none;
             padding: 10px 20px;
@@ -84,7 +84,7 @@
         }
 
         .btn.reload {
-            background: linear-gradient(45deg, #28a745, #20c997);
+            background: #1E3A8A;
         }
 
         .current-month {
@@ -149,7 +149,7 @@
             width: 16px;
             height: 16px;
             border: 2px solid #ccc;
-            border-top: 2px solid #667eea;
+            border-top: 2px solid #C41E3A;
             border-radius: 50%;
             animation: spin 1s linear infinite;
         }
@@ -218,7 +218,7 @@
 
         .time-slot:first-child {
             height: 60px;
-            background: linear-gradient(45deg, #667eea, #764ba2);
+            background: #1E3A8A;
             color: white;
             font-weight: bold;
         }
@@ -239,7 +239,7 @@
         }
 
         .day-header {
-            background: linear-gradient(45deg, #667eea, #764ba2);
+            background: #1E3A8A;
             color: white;
             padding: 15px 5px;
             text-align: center;
@@ -472,7 +472,7 @@
 
         <div class="main-content">
             <div class="header">
-                <h1>Calendrier Multi-ICS</h1>
+                <h1>Horaire JSH Montréal-Centre</h1>
                 
                 <div class="controls">
                     <div class="nav-buttons">
@@ -835,10 +835,8 @@
                     item.style.setProperty('--calendar-color-rgb', this.hexToRgb(calendar.color));
                     
                     const statusIndicator = this.getStatusIndicator(calendar.status);
-                    const eventCount = calendar.events.length;
-                    const statusText = calendar.status === 'loaded' ? `${eventCount} evt` : 
-                                     calendar.status === 'loading' ? 'chargement...' : 
-                                     'erreur';
+                    const statusText = calendar.status === 'loading' ? 'chargement...' : 
+                                     calendar.status === 'error' ? 'erreur' : '';
 
                     item.innerHTML = `
                         <input type="checkbox" class="ics-checkbox" 
@@ -906,22 +904,20 @@
                 weekEnd.setDate(this.currentWeekStart.getDate() + 6);
 
                 const monthNames = [
-                    'Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin',
-                    'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'
+                    'janvier', 'février', 'mars', 'avril', 'mai', 'juin',
+                    'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre'
                 ];
 
-                // Titre principal
+                // Format: "29 septembre au 5 octobre"
+                let weekText;
                 if (this.currentWeekStart.getMonth() === weekEnd.getMonth()) {
-                    document.getElementById('currentMonth').textContent = 
-                        `${monthNames[this.currentWeekStart.getMonth()]} ${this.currentWeekStart.getFullYear()}`;
+                    weekText = `${this.currentWeekStart.getDate()} au ${weekEnd.getDate()} ${monthNames[this.currentWeekStart.getMonth()]}`;
                 } else {
-                    document.getElementById('currentMonth').textContent = 
-                        `${monthNames[this.currentWeekStart.getMonth()]} - ${monthNames[weekEnd.getMonth()]} ${this.currentWeekStart.getFullYear()}`;
+                    weekText = `${this.currentWeekStart.getDate()} ${monthNames[this.currentWeekStart.getMonth()]} au ${weekEnd.getDate()} ${monthNames[weekEnd.getMonth()]}`;
                 }
 
-                // Info de la semaine
-                document.getElementById('weekInfo').textContent = 
-                    `${this.currentWeekStart.getDate()} - ${weekEnd.getDate()}`;
+                document.getElementById('currentMonth').textContent = weekText;
+                document.getElementById('weekInfo').textContent = '';
             }
 
             renderTimeColumn() {
@@ -1132,7 +1128,7 @@
                     }
                     
                     if (overlappingEvents.length > 1) {
-                        // Vérifier si ce groupe n'existe pas déjà
+                        // Vérifier si ce groupe n'existe pas déjà 
                         const existingGroup = overlappingGroups.find(group => 
                             group.some(e => e === event1)
                         );
