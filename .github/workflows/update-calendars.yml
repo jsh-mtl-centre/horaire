@@ -1,0 +1,64 @@
+name: Update Calendar List
+
+on:
+  push:
+    paths:
+      - 'ics_groupes/*.ics'
+      - 'ics_arenas/*.ics'
+  workflow_dispatch: # Permet de déclencher manuellement
+
+jobs:
+  update-calendar-list:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Generate calendar list
+        run: |
+          # Créer le fichier JSON avec la liste des calendriers
+          echo '{
+            "groupes": [' > calendars.json
+          
+          # Ajouter les fichiers du dossier ics_groupes
+          first=true
+          for file in ics_groupes/*.ics; do
+            if [ -f "$file" ]; then
+              filename=$(basename "$file")
+              name=$(echo "$filename" | sed 's/.ics$//' | sed 's/_/ /g')
+              if [ "$first" = true ]; then
+                first=false
+              else
+                echo ',' >> calendars.json
+              fi
+              echo "    {\"name\": \"$name\", \"fileName\": \"$filename\"}" >> calendars.json
+            fi
+          done
+          
+          echo '  ],
+            "arenas": [' >> calendars.json
+          
+          # Ajouter les fichiers du dossier ics_arenas
+          first=true
+          for file in ics_arenas/*.ics; do
+            if [ -f "$file" ]; then
+              filename=$(basename "$file")
+              name=$(echo "$filename" | sed 's/.ics$//' | sed 's/_/ /g')
+              if [ "$first" = true ]; then
+                first=false
+              else
+                echo ',' >> calendars.json
+              fi
+              echo "    {\"name\": \"$name\", \"fileName\": \"$filename\"}" >> calendars.json
+            fi
+          done
+          
+          echo '  ]
+          }' >> calendars.json
+      
+      - name: Commit changes
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add calendars.json
+          git diff --staged --quiet || git commit -m "Auto-update calendar list"
+          git push
