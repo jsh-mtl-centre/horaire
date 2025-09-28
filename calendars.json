@@ -6,7 +6,9 @@
 ,
     {"name": "GARDIENS-PERF", "fileName": "GARDIENS-PERF.ics"}
 ,
-    {"name": "M11-BB", "fileName": "M11-BB.ics"}
+    {"name": "M11-BB-1", "fileName": "M11-BB-1.ics"}
+,
+    {"name": "M11-BB-2", "fileName": "M11-BB-2.ics"}
 ,
     {"name": "M11-GR1", "fileName": "M11-GR1.ics"}
 ,
@@ -34,8 +36,6 @@
 ,
     {"name": "M21-D", "fileName": "M21-D.ics"}
 ,
-    {"name": "M21-GR1", "fileName": "M21-GR1.ics"}
-,
     {"name": "M21-HOCKEYLIBRE", "fileName": "M21-HOCKEYLIBRE.ics"}
 ,
     {"name": "MAHG 0 1", "fileName": "MAHG_0_1.ics"}
@@ -49,14 +49,6 @@
 ,
     {"name": "F-BOUILLON", "fileName": "F-BOUILLON.ics"}
 ,
-    {"name": "G-MANTHA", "fileName": "G-MANTHA.ics"}
-,
-    {"name": "M-BRODEUR", "fileName": "M-BRODEUR.ics"}
-,
     {"name": "MONT-ROYAL", "fileName": "MONT-ROYAL.ics"}
-,
-    {"name": "R-GILBERT", "fileName": "R-GILBERT.ics"}
-,
-    {"name": "ST-CHARLES", "fileName": "ST-CHARLES.ics"}
   ]
 }
