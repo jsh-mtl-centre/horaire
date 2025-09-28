@@ -293,6 +293,16 @@
             calendar.events = parseIcsData(icsData);
         }
 
+        function unescapeIcsText(text) {
+            if (!text) return text;
+            return text
+                .replace(/\\,/g, ',')
+                .replace(/\\;/g, ';')
+                .replace(/\\n/g, '\n')
+                .replace(/\\N/g, '\n')
+                .replace(/\\\\/g, '\\');
+        }
+
         function parseIcsData(icsData) {
             const events = [];
             const lines = icsData.split('\n');
@@ -313,14 +323,14 @@
                     currentEvent = null;
                 } else if (currentEvent) {
                     const [key, ...valueParts] = line.split(':');
-                    const value = valueParts.join(':');
+                    const value = unescapeIcsText(valueParts.join(':'));
                     
                     switch (key.split(';')[0]) {
                         case 'DTSTART':
-                            currentEvent.dtstart = value;
+                            currentEvent.dtstart = valueParts.join(':'); // Ne pas unescape les dates
                             break;
                         case 'DTEND':
-                            currentEvent.dtend = value;
+                            currentEvent.dtend = valueParts.join(':'); // Ne pas unescape les dates
                             break;
                         case 'SUMMARY':
                             currentEvent.summary = value;
