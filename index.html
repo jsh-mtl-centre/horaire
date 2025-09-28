@@ -550,39 +550,35 @@
                     const currentPath = this.isArenaMode ? 'ics_arenas' : 'ics_groupes';
                     console.log(`Découverte des fichiers .ics dans le répertoire ${currentPath}...`);
                     
-                    // URL de l'API GitHub pour lister les fichiers
-                    const apiUrl = `https://api.github.com/repos/${this.repoConfig.owner}/${this.repoConfig.repo}/contents/${currentPath}?ref=${this.repoConfig.branch}`;
+                    // Charger le fichier JSON généré par GitHub Actions
+                    const jsonUrl = `https://${this.repoConfig.owner}.github.io/${this.repoConfig.repo}/calendars.json`;
                     
-                    const response = await fetch(apiUrl);
+                    const response = await fetch(jsonUrl);
                     if (!response.ok) {
-                        throw new Error(`Erreur API GitHub: ${response.status}`);
+                        throw new Error(`Erreur lors du chargement du JSON: ${response.status}`);
                     }
                     
-                    const files = await response.json();
-                    console.log(`${files.length} fichiers trouvés dans le répertoire`);
+                    const calendarsData = await response.json();
                     
-                    // Filtrer les fichiers .ics
-                    const icsFiles = files.filter(file => 
-                        file.type === 'file' && 
-                        file.name.toLowerCase().endsWith('.ics')
-                    );
+                    // Sélectionner les bons fichiers selon le mode
+                    const files = this.isArenaMode ? calendarsData.arenas : calendarsData.groupes;
                     
-                    console.log(`${icsFiles.length} fichiers .ics trouvés:`, icsFiles.map(f => f.name));
+                    console.log(`${files.length} fichiers .ics trouvés:`, files.map(f => f.fileName));
                     
-                    if (icsFiles.length === 0) {
+                    if (files.length === 0) {
                         const modeText = this.isArenaMode ? 'arenas' : 'groupes';
-                        throw new Error(`Aucun fichier .ics trouvé dans le répertoire ${currentPath} (mode ${modeText})`);
+                        throw new Error(`Aucun fichier .ics trouvé pour le mode ${modeText}`);
                     }
                     
                     // Créer la liste des calendriers avec leurs préférences sauvegardées
-                    this.icsCalendars = icsFiles.map((file, index) => {
-                        const calendarName = this.formatCalendarName(file.name);
+                    this.icsCalendars = files.map((file, index) => {
+                        const calendarName = file.name; // Le nom est déjà formaté dans le JSON
                         const savedState = this.loadCalendarPreferences();
                         
                         return {
-                            url: file.download_url,
+                            url: `https://${this.repoConfig.owner}.github.io/${this.repoConfig.repo}/${currentPath}/${file.fileName}`,
                             name: calendarName,
-                            fileName: file.name,
+                            fileName: file.fileName,
                             active: savedState[calendarName] !== undefined ? savedState[calendarName] : true,
                             color: this.colorPalette[index % this.colorPalette.length],
                             events: [],
