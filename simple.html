@@ -224,8 +224,13 @@
 
         async function loadCalendars() {
             try {
+                // Cache buster qui change toutes les 10 minutes
+                const now = new Date();
+                const roundedTime = Math.floor(now.getTime() / (10 * 60 * 1000)) * (10 * 60 * 1000);
+                const cacheBuster = `t=${roundedTime}`;
+                
                 // Charger le fichier JSON généré par GitHub Actions
-                const response = await fetch(`https://${repoConfig.owner}.github.io/${repoConfig.repo}/calendars.json`);
+                const response = await fetch(`https://${repoConfig.owner}.github.io/${repoConfig.repo}/calendars.json?${cacheBuster}`);
                 
                 if (!response.ok) {
                     throw new Error(`Erreur lors du chargement: ${response.status}`);
@@ -242,7 +247,7 @@
                     const calendar = {
                         name: file.name,
                         fileName: file.fileName,
-                        url: `https://${repoConfig.owner}.github.io/${repoConfig.repo}/ics_groupes/${file.fileName}`,
+                        url: `https://${repoConfig.owner}.github.io/${repoConfig.repo}/ics_groupes/${file.fileName}?${cacheBuster}`,
                         events: []
                     };
                     calendars.push(calendar);

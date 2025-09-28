@@ -635,19 +635,26 @@
                 
                 try {
                     console.log(`Chargement du calendrier: ${calendar.name}`);
-                    console.log(`URL: ${calendar.url}`);
+                    
+                    // Ajouter un timestamp arrondi aux 10 minutes pour éviter le cache
+                    const now = new Date();
+                    const roundedTime = Math.floor(now.getTime() / (10 * 60 * 1000)) * (10 * 60 * 1000);
+                    const cacheBuster = `?t=${roundedTime}`;
+                    const urlWithCacheBuster = calendar.url + cacheBuster;
+                    
+                    console.log(`URL avec cache buster: ${urlWithCacheBuster}`);
                     
                     // Essayer d'abord directement
                     let response;
                     try {
-                        response = await fetch(calendar.url);
+                        response = await fetch(urlWithCacheBuster);
                         if (!response.ok) {
                             throw new Error(`HTTP ${response.status}`);
                         }
                     } catch (error) {
                         console.log('Échec de la requête directe, utilisation du proxy CORS...');
                         // Utiliser un proxy CORS si la requête directe échoue
-                        response = await fetch(`https://api.allorigins.win/raw?url=${encodeURIComponent(calendar.url)}`);
+                        response = await fetch(`https://api.allorigins.win/raw?url=${encodeURIComponent(urlWithCacheBuster)}`);
                         if (!response.ok) {
                             throw new Error(`Proxy HTTP ${response.status}`);
                         }
