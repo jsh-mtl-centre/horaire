@@ -166,6 +166,21 @@
             color: #6c4e00;
         }
         
+        .instructions {
+            background: #e7f3ff;
+            border: 1px solid #bee5eb;
+            border-radius: 6px;
+            padding: 15px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            color: #0c5460;
+        }
+        
+        .instructions h3 {
+            margin-bottom: 10px;
+            color: #0c5460;
+        }
+        
         /* Responsive design */
         @media (max-width: 768px) {
             body {
@@ -241,57 +256,44 @@
         };
 
         // Démarrer automatiquement au chargement de la page
-        window.addEventListener('load', async () => {
-            await loadSection('ics_groupes', 'groupsSection');
-            await loadSection('ics_arenas', 'arenasSection');
-        });
+        window.addEventListener('load', loadCalendars);
 
-        async function loadSection(directory, sectionId) {
-            const sectionElement = document.getElementById(sectionId);
-            
+        async function loadCalendars() {
             try {
-                const files = await discoverIcsFiles(directory);
-                renderIcsFiles(files, sectionElement);
+                // Charger le fichier JSON généré par GitHub Actions
+                const response = await fetch(`https://${repoConfig.owner}.github.io/${repoConfig.repo}/calendars.json`);
+                
+                if (!response.ok) {
+                    throw new Error(`Erreur lors du chargement: ${response.status}`);
+                }
+                
+                const calendarsData = await response.json();
+                
+                // Traiter les calendriers de groupes
+                const groupsData = calendarsData.groupes.map(file => ({
+                    name: file.name,
+                    fileName: file.fileName,
+                    url: `https://${repoConfig.owner}.github.io/${repoConfig.repo}/ics_groupes/${file.fileName}`,
+                    subscribeUrl: `webcal://${repoConfig.owner}.github.io/${repoConfig.repo}/ics_groupes/${file.fileName}`
+                }));
+                
+                // Traiter les calendriers d'arenas
+                const arenasData = calendarsData.arenas.map(file => ({
+                    name: file.name,
+                    fileName: file.fileName,
+                    url: `https://${repoConfig.owner}.github.io/${repoConfig.repo}/ics_arenas/${file.fileName}`,
+                    subscribeUrl: `webcal://${repoConfig.owner}.github.io/${repoConfig.repo}/ics_arenas/${file.fileName}`
+                }));
+                
+                // Afficher les résultats
+                renderIcsFiles(groupsData, document.getElementById('groupsSection'));
+                renderIcsFiles(arenasData, document.getElementById('arenasSection'));
+                
             } catch (error) {
-                console.error(`Erreur pour ${directory}:`, error);
-                showError(sectionElement, `Erreur: ${error.message}`);
+                console.error('Erreur:', error);
+                showError(document.getElementById('groupsSection'), `Erreur: ${error.message}`);
+                showError(document.getElementById('arenasSection'), `Erreur: ${error.message}`);
             }
-        }
-
-        async function discoverIcsFiles(directory) {
-            console.log(`Découverte des fichiers .ics dans le répertoire ${directory}...`);
-            
-            const apiUrl = `https://api.github.com/repos/${repoConfig.owner}/${repoConfig.repo}/contents/${directory}?ref=${repoConfig.branch}`;
-            
-            const response = await fetch(apiUrl);
-            if (!response.ok) {
-                throw new Error(`Erreur API GitHub: ${response.status}`);
-            }
-            
-            const files = await response.json();
-            const icsFiles = files.filter(file => 
-                file.type === 'file' && 
-                file.name.toLowerCase().endsWith('.ics')
-            );
-            
-            if (icsFiles.length === 0) {
-                throw new Error(`Aucun fichier .ics trouvé dans le répertoire ${directory}`);
-            }
-            
-            return icsFiles.map(file => {
-                const githubPagesUrl = `https://${repoConfig.owner}.github.io/${repoConfig.repo}/${directory}/${file.name}`;
-                return {
-                    name: formatCalendarName(file.name),
-                    fileName: file.name,
-                    url: githubPagesUrl,
-                    // Créer l'URL d'abonnement (webcal)
-                    subscribeUrl: githubPagesUrl.replace('https://', 'webcal://')
-                };
-            });
-        }
-
-        function formatCalendarName(fileName) {
-            return fileName.replace('.ics', '').replace(/_/g, ' ');
         }
 
         function renderIcsFiles(files, sectionElement) {
