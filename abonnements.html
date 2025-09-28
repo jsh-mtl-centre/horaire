@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Abonnement aux calendriers</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            background-color: #f8f9fa;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            text-align: center;
+            color: #343a40;
+            margin-bottom: 30px;
+        }
+        
+        .section {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+            overflow: hidden;
+        }
+        
+        .section-header {
+            background: #007bff;
+            color: white;
+            padding: 20px;
+            font-size: 20px;
+            font-weight: 600;
+        }
+        
+        .section-content {
+            padding: 20px;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #6c757d;
+            font-style: italic;
+        }
+        
+        .ics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 15px;
+        }
+        
+        .ics-card {
+            border: 1px solid #dee2e6;
+            border-radius: 6px;
+            padding: 15px;
+            background: #f8f9fa;
+            transition: all 0.3s ease;
+        }
+        
+        .ics-card:hover {
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            transform: translateY(-2px);
+        }
+        
+        .ics-name {
+            font-weight: 600;
+            font-size: 16px;
+            color: #343a40;
+            margin-bottom: 10px;
+        }
+        
+        .ics-link {
+            display: inline-block;
+            background: #007bff;
+            color: white;
+            padding: 8px 16px;
+            text-decoration: none;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: 500;
+            transition: background-color 0.3s;
+        }
+        
+        .ics-link:hover {
+            background: #0056b3;
+            color: white;
+        }
+        
+        .copy-button {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            margin-left: 8px;
+            transition: background-color 0.3s;
+        }
+        
+        .copy-button:hover {
+            background: #1e7e34;
+        }
+        
+        .copy-success {
+            background: #6c757d !important;
+            cursor: default;
+        }
+        
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+        
+        .no-files {
+            text-align: center;
+            padding: 40px;
+            color: #6c757d;
+            font-style: italic;
+        }
+        
+        .instructions {
+            background: #e7f3ff;
+            border: 1px solid #bee5eb;
+            border-radius: 6px;
+            padding: 15px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            color: #0c5460;
+        }
+        
+        .instructions h3 {
+            margin-bottom: 10px;
+            color: #0c5460;
+        }
+        
+        /* Responsive design */
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+            
+            .ics-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .section-header {
+                padding: 15px;
+                font-size: 18px;
+            }
+            
+            .section-content {
+                padding: 15px;
+            }
+            
+            .ics-card {
+                padding: 12px;
+            }
+            
+            .copy-button {
+                margin-left: 0;
+                margin-top: 8px;
+                display: block;
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Abonnement aux calendriers</h1>
+        
+        <div class="instructions">
+            <h3>Comment s'abonner :</h3>
+            <p><strong>Option 1 :</strong> Cliquez sur "S'abonner" pour ouvrir directement dans votre application de calendrier par défaut.</p>
+            <p><strong>Option 2 :</strong> Cliquez sur "Copier le lien" puis ajoutez l'URL copiée dans votre application de calendrier (Google Calendar, Outlook, etc.)</p>
+        </div>
+        
+        <div class="section">
+            <div class="section-header">📅 Calendriers par équipe</div>
+            <div class="section-content" id="groupsSection">
+                <div class="loading">Chargement des calendriers d'équipes...</div>
+            </div>
+        </div>
+        
+        <div class="section">
+            <div class="section-header">🏒 Calendriers par aréna</div>
+            <div class="section-content" id="arenasSection">
+                <div class="loading">Chargement des calendriers d'arénas...</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const repoConfig = {
+            owner: 'jsh-mtl-centre',
+            repo: 'horaire',
+            branch: 'main'
+        };
+
+        // Démarrer automatiquement au chargement de la page
+        window.addEventListener('load', async () => {
+            await loadSection('ics_groupes', 'groupsSection');
+            await loadSection('ics_arenas', 'arenasSection');
+        });
+
+        async function loadSection(directory, sectionId) {
+            const sectionElement = document.getElementById(sectionId);
+            
+            try {
+                const files = await discoverIcsFiles(directory);
+                renderIcsFiles(files, sectionElement);
+            } catch (error) {
+                console.error(`Erreur pour ${directory}:`, error);
+                showError(sectionElement, `Erreur: ${error.message}`);
+            }
+        }
+
+        async function discoverIcsFiles(directory) {
+            console.log(`Découverte des fichiers .ics dans le répertoire ${directory}...`);
+            
+            const apiUrl = `https://api.github.com/repos/${repoConfig.owner}/${repoConfig.repo}/contents/${directory}?ref=${repoConfig.branch}`;
+            
+            const response = await fetch(apiUrl);
+            if (!response.ok) {
+                throw new Error(`Erreur API GitHub: ${response.status}`);
+            }
+            
+            const files = await response.json();
+            const icsFiles = files.filter(file => 
+                file.type === 'file' && 
+                file.name.toLowerCase().endsWith('.ics')
+            );
+            
+            if (icsFiles.length === 0) {
+                throw new Error(`Aucun fichier .ics trouvé dans le répertoire ${directory}`);
+            }
+            
+            return icsFiles.map(file => {
+                const githubPagesUrl = `https://${repoConfig.owner}.github.io/${repoConfig.repo}/${directory}/${file.name}`;
+                return {
+                    name: formatCalendarName(file.name),
+                    fileName: file.name,
+                    url: githubPagesUrl,
+                    // Créer l'URL d'abonnement (webcal)
+                    subscribeUrl: githubPagesUrl.replace('https://', 'webcal://')
+                };
+            });
+        }
+
+        function formatCalendarName(fileName) {
+            return fileName.replace('.ics', '').replace(/_/g, ' ');
+        }
+
+        function renderIcsFiles(files, sectionElement) {
+            if (files.length === 0) {
+                sectionElement.innerHTML = '<div class="no-files">Aucun calendrier trouvé</div>';
+                return;
+            }
+
+            const grid = document.createElement('div');
+            grid.className = 'ics-grid';
+
+            files.forEach(file => {
+                const card = document.createElement('div');
+                card.className = 'ics-card';
+
+                card.innerHTML = `
+                    <div class="ics-name">${escapeHtml(file.name)}</div>
+                    <a href="${file.subscribeUrl}" class="ics-link">S'abonner</a>
+                    <button class="copy-button" onclick="copyToClipboard('${file.url}', this)">Copier le lien</button>
+                `;
+
+                grid.appendChild(card);
+            });
+
+            sectionElement.innerHTML = '';
+            sectionElement.appendChild(grid);
+        }
+
+        async function copyToClipboard(url, button) {
+            try {
+                await navigator.clipboard.writeText(url);
+                const originalText = button.textContent;
+                button.textContent = 'Copié !';
+                button.classList.add('copy-success');
+                
+                setTimeout(() => {
+                    button.textContent = originalText;
+                    button.classList.remove('copy-success');
+                }, 2000);
+            } catch (err) {
+                console.error('Erreur lors de la copie:', err);
+                
+                // Fallback pour les navigateurs plus anciens
+                const textArea = document.createElement('textarea');
+                textArea.value = url;
+                document.body.appendChild(textArea);
+                textArea.select();
+                
+                try {
+                    document.execCommand('copy');
+                    const originalText = button.textContent;
+                    button.textContent = 'Copié !';
+                    button.classList.add('copy-success');
+                    
+                    setTimeout(() => {
+                        button.textContent = originalText;
+                        button.classList.remove('copy-success');
+                    }, 2000);
+                } catch (fallbackErr) {
+                    console.error('Erreur lors de la copie (fallback):', fallbackErr);
+                    alert('Impossible de copier automatiquement. Voici le lien :\n' + url);
+                }
+                
+                document.body.removeChild(textArea);
+            }
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        function showError(sectionElement, message) {
+            sectionElement.innerHTML = `<div class="error">${message}</div>`;
+        }
+    </script>
+</body>
+</html>
