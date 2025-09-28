@@ -30,6 +30,33 @@
             gap: 15px;
         }
         
+        .mode-toggle {
+            display: flex;
+            background: #e9ecef;
+            border-radius: 4px;
+            overflow: hidden;
+            border: 1px solid #ddd;
+        }
+        
+        .mode-toggle button {
+            padding: 8px 16px;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+        
+        .mode-toggle button.active {
+            background: #007bff;
+            color: white;
+        }
+        
+        .mode-toggle button:not(.active):hover {
+            background: #dee2e6;
+        }
+        
         .header select {
             padding: 8px 12px;
             border: 1px solid #ddd;
@@ -195,6 +222,11 @@
 </head>
 <body>
     <div class="header">
+        <div class="mode-toggle">
+            <button id="groupesBtn" class="active" onclick="switchMode('groupes')">Groupes</button>
+            <button id="arenasBtn" onclick="switchMode('arenas')">Arénas</button>
+        </div>
+        
         <select id="groupSelect" onchange="filterEvents()">
             <option value="all">Tous les groupes</option>
         </select>
@@ -218,12 +250,36 @@
         
         let allEvents = [];
         let calendars = [];
+        let currentMode = 'groupes'; // 'groupes' ou 'arenas'
 
         // Démarrer automatiquement au chargement de la page
         window.addEventListener('load', loadCalendars);
 
+        function switchMode(mode) {
+            currentMode = mode;
+            
+            // Mettre à jour les boutons
+            document.getElementById('groupesBtn').classList.toggle('active', mode === 'groupes');
+            document.getElementById('arenasBtn').classList.toggle('active', mode === 'arenas');
+            
+            // Mettre à jour le texte du select
+            const select = document.getElementById('groupSelect');
+            const allOption = select.querySelector('option[value="all"]');
+            if (mode === 'groupes') {
+                allOption.textContent = 'Tous les groupes';
+            } else {
+                allOption.textContent = 'Toutes les arénas';
+            }
+            
+            // Recharger les calendriers pour le nouveau mode
+            loadCalendars();
+        }
+
         async function loadCalendars() {
             try {
+                // Afficher le loading
+                document.getElementById('eventsContainer').innerHTML = '<div class="loading">Chargement des événements...</div>';
+                
                 // Cache buster qui change toutes les 10 minutes
                 const now = new Date();
                 const roundedTime = Math.floor(now.getTime() / (10 * 60 * 1000)) * (10 * 60 * 1000);
@@ -238,16 +294,20 @@
                 
                 const calendarsData = await response.json();
                 
-                // Traiter seulement les calendriers de groupes (ignorer les arenas)
+                // Traiter selon le mode sélectionné
                 allEvents = [];
                 calendars = [];
                 
-                // Ajouter seulement les groupes
-                for (const file of calendarsData.groupes) {
+                // Choisir la source et le répertoire selon le mode
+                const sourceData = currentMode === 'groupes' ? calendarsData.groupes : calendarsData.arenas;
+                const icsFolder = currentMode === 'groupes' ? 'ics_groupes' : 'ics_arenas';
+                
+                // Ajouter les calendriers du mode sélectionné
+                for (const file of sourceData) {
                     const calendar = {
                         name: file.name,
                         fileName: file.fileName,
-                        url: `https://${repoConfig.owner}.github.io/${repoConfig.repo}/ics_groupes/${file.fileName}?${cacheBuster}`,
+                        url: `https://${repoConfig.owner}.github.io/${repoConfig.repo}/${icsFolder}/${file.fileName}?${cacheBuster}`,
                         events: []
                     };
                     calendars.push(calendar);
@@ -356,6 +416,11 @@
         function populateGroupSelect() {
             const select = document.getElementById('groupSelect');
             
+            // Vider les options existantes sauf la première
+            while (select.children.length > 1) {
+                select.removeChild(select.lastChild);
+            }
+            
             calendars.forEach(calendar => {
                 const option = document.createElement('option');
                 option.value = calendar.name;
@@ -370,7 +435,7 @@
             
             let filteredEvents = allEvents;
             
-            // Filtrer par groupe
+            // Filtrer par groupe/aréna
             if (selectedGroup !== 'all') {
                 filteredEvents = filteredEvents.filter(event => event.calendarName === selectedGroup);
             }
