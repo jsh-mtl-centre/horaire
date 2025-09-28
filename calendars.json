@@ -1,0 +1,62 @@
+{
+  "groupes": [
+    {"name": "DEBUTANTS", "fileName": "DEBUTANTS.ics"}
+,
+    {"name": "GARDIENS-INIT", "fileName": "GARDIENS-INIT.ics"}
+,
+    {"name": "GARDIENS-PERF", "fileName": "GARDIENS-PERF.ics"}
+,
+    {"name": "HOCKEY LIBRE JUNIOR", "fileName": "HOCKEY_LIBRE_JUNIOR.ics"}
+,
+    {"name": "M11-BB", "fileName": "M11-BB.ics"}
+,
+    {"name": "M11-GR1", "fileName": "M11-GR1.ics"}
+,
+    {"name": "M11-GR2", "fileName": "M11-GR2.ics"}
+,
+    {"name": "M13-BB", "fileName": "M13-BB.ics"}
+,
+    {"name": "M13-GR1", "fileName": "M13-GR1.ics"}
+,
+    {"name": "M13-GR2", "fileName": "M13-GR2.ics"}
+,
+    {"name": "M13-GR3", "fileName": "M13-GR3.ics"}
+,
+    {"name": "M15-BB", "fileName": "M15-BB.ics"}
+,
+    {"name": "M15-GR1", "fileName": "M15-GR1.ics"}
+,
+    {"name": "M15-GR2", "fileName": "M15-GR2.ics"}
+,
+    {"name": "M18-BB", "fileName": "M18-BB.ics"}
+,
+    {"name": "M18-GR1", "fileName": "M18-GR1.ics"}
+,
+    {"name": "M21-C", "fileName": "M21-C.ics"}
+,
+    {"name": "M21-D", "fileName": "M21-D.ics"}
+,
+    {"name": "M21-GR1", "fileName": "M21-GR1.ics"}
+,
+    {"name": "MAHG 0 1", "fileName": "MAHG_0_1.ics"}
+,
+    {"name": "MAHG 2 3", "fileName": "MAHG_2_3.ics"}
+,
+    {"name": "MAHG 4a b", "fileName": "MAHG_4a_b.ics"}
+  ],
+  "arenas": [
+    {"name": "C-HOUDE", "fileName": "C-HOUDE.ics"}
+,
+    {"name": "F-BOUILLON", "fileName": "F-BOUILLON.ics"}
+,
+    {"name": "G-MANTHA", "fileName": "G-MANTHA.ics"}
+,
+    {"name": "M-BRODEUR", "fileName": "M-BRODEUR.ics"}
+,
+    {"name": "MONT-ROYAL", "fileName": "MONT-ROYAL.ics"}
+,
+    {"name": "R-GILBERT", "fileName": "R-GILBERT.ics"}
+,
+    {"name": "ST-CHARLES", "fileName": "ST-CHARLES.ics"}
+  ]
+}
