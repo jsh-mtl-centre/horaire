@@ -233,37 +233,16 @@
                 
                 const calendarsData = await response.json();
                 
-                // Traiter les calendriers de groupes et arenas
+                // Traiter seulement les calendriers de groupes (ignorer les arenas)
                 allEvents = [];
                 calendars = [];
                 
-                // Ajouter les groupes
+                // Ajouter seulement les groupes
                 for (const file of calendarsData.groupes) {
                     const calendar = {
                         name: file.name,
                         fileName: file.fileName,
                         url: `https://${repoConfig.owner}.github.io/${repoConfig.repo}/ics_groupes/${file.fileName}`,
-                        events: []
-                    };
-                    calendars.push(calendar);
-                    
-                    try {
-                        await loadCalendarEvents(calendar);
-                        calendar.events.forEach(event => {
-                            event.calendarName = calendar.name;
-                        });
-                        allEvents.push(...calendar.events);
-                    } catch (error) {
-                        console.error(`Erreur pour ${calendar.name}:`, error);
-                    }
-                }
-                
-                // Ajouter les arenas
-                for (const file of calendarsData.arenas) {
-                    const calendar = {
-                        name: file.name,
-                        fileName: file.fileName,
-                        url: `https://${repoConfig.owner}.github.io/${repoConfig.repo}/ics_arenas/${file.fileName}`,
                         events: []
                     };
                     calendars.push(calendar);
