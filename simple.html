@@ -3,80 +3,61 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Scanner ICS GitHub</title>
+    <title>Horaires</title>
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
         body {
-            font-family: Arial, sans-serif;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-            background-color: #f5f5f5;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.5;
+            background-color: #f8f9fa;
+            padding: 10px;
         }
         
         .header {
             background: white;
-            padding: 20px;
+            padding: 15px;
             border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            margin-bottom: 20px;
-        }
-        
-        .scan-btn {
-            background: #007bff;
-            color: white;
-            border: none;
-            padding: 12px 24px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 16px;
-        }
-        
-        .scan-btn:hover {
-            background: #0056b3;
-        }
-        
-        .scan-btn:disabled {
-            background: #6c757d;
-            cursor: not-allowed;
-        }
-        
-        .filter-section {
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            margin-bottom: 20px;
-            display: none;
-        }
-        
-        .filter-buttons {
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            margin-bottom: 15px;
             display: flex;
             flex-wrap: wrap;
-            gap: 10px;
-            margin-bottom: 15px;
+            align-items: center;
+            gap: 15px;
         }
         
-        .filter-btn {
-            padding: 8px 16px;
-            border: 1px solid #007bff;
-            background: white;
-            color: #007bff;
+        .header select {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
             border-radius: 4px;
+            font-size: 14px;
+            min-width: 150px;
+        }
+        
+        .checkbox-container {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .checkbox-container input[type="checkbox"] {
+            transform: scale(1.2);
+        }
+        
+        .checkbox-container label {
+            font-size: 14px;
             cursor: pointer;
-            transition: all 0.3s;
         }
         
-        .filter-btn.active {
-            background: #007bff;
-            color: white;
-        }
-        
-        .filter-btn:hover {
-            background: #e9ecef;
-        }
-        
-        .filter-btn.active:hover {
-            background: #0056b3;
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #6c757d;
+            font-style: italic;
         }
         
         .events-table {
@@ -85,19 +66,21 @@
             background: white;
             border-radius: 8px;
             overflow: hidden;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
         }
         
         .events-table th,
         .events-table td {
-            padding: 12px;
+            padding: 12px 8px;
             text-align: left;
-            border-bottom: 1px solid #dee2e6;
+            border-bottom: 1px solid #eee;
         }
         
         .events-table th {
             background: #f8f9fa;
-            font-weight: bold;
+            font-weight: 600;
+            font-size: 14px;
+            color: #495057;
         }
         
         .events-table tr:hover {
@@ -106,44 +89,55 @@
         
         .events-table tr.past-event {
             text-decoration: line-through;
-            opacity: 0.6;
+            opacity: 0.5;
         }
         
         .day-column {
-            font-weight: bold;
+            font-weight: 600;
             color: #007bff;
             white-space: nowrap;
+            font-size: 13px;
         }
         
         .datetime-column {
             white-space: nowrap;
             font-family: monospace;
+            font-size: 13px;
         }
         
         .duration-column {
             white-space: nowrap;
             color: #6c757d;
+            font-size: 13px;
         }
         
         .summary-column {
-            font-weight: bold;
+            font-weight: 500;
         }
         
         .description-column {
-            max-width: 300px;
+            max-width: 200px;
             overflow: hidden;
             text-overflow: ellipsis;
+            white-space: nowrap;
         }
         
         .location-column {
             color: #6c757d;
             font-style: italic;
+            max-width: 150px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
         }
         
-        .loading {
+        .no-events {
             text-align: center;
-            padding: 20px;
+            padding: 40px;
             color: #6c757d;
+            font-style: italic;
+            background: white;
+            border-radius: 8px;
         }
         
         .error {
@@ -154,27 +148,66 @@
             margin: 10px 0;
         }
         
-        .no-events {
-            text-align: center;
-            padding: 20px;
-            color: #6c757d;
-            font-style: italic;
+        /* Responsive design */
+        @media (max-width: 768px) {
+            body {
+                padding: 5px;
+            }
+            
+            .header {
+                padding: 10px;
+                flex-direction: column;
+                align-items: stretch;
+                gap: 10px;
+            }
+            
+            .header select {
+                min-width: auto;
+                width: 100%;
+            }
+            
+            .events-table {
+                font-size: 12px;
+            }
+            
+            .events-table th,
+            .events-table td {
+                padding: 8px 4px;
+            }
+            
+            .description-column {
+                max-width: 120px;
+            }
+            
+            .location-column {
+                max-width: 100px;
+            }
+            
+            /* Masquer certaines colonnes sur mobile très petit */
+            @media (max-width: 480px) {
+                .description-column,
+                .location-column {
+                    display: none;
+                }
+            }
         }
     </style>
 </head>
 <body>
     <div class="header">
-        <h1>Scanner de fichiers ICS GitHub</h1>
-        <button class="scan-btn" id="scanBtn" onclick="scanIcsFiles()">Scanner les fichiers ICS</button>
+        <select id="groupSelect" onchange="filterEvents()">
+            <option value="all">Tous les groupes</option>
+        </select>
+        
+        <div class="checkbox-container">
+            <input type="checkbox" id="showPastEvents" onchange="filterEvents()">
+            <label for="showPastEvents">Afficher les événements passés</label>
+        </div>
     </div>
     
-    <div class="filter-section" id="filterSection">
-        <h3>Filtrer par calendrier:</h3>
-        <div class="filter-buttons" id="filterButtons"></div>
-        <div id="eventsCount"></div>
+    <div id="eventsContainer">
+        <div class="loading">Chargement des événements...</div>
     </div>
-    
-    <div id="eventsContainer"></div>
 
     <script>
         const repoConfig = {
@@ -184,31 +217,25 @@
         };
         
         let allEvents = [];
-        let activeFilters = new Set();
+        let calendars = [];
+
+        // Démarrer automatiquement au chargement de la page
+        window.addEventListener('load', scanIcsFiles);
 
         async function scanIcsFiles() {
-            const scanBtn = document.getElementById('scanBtn');
-            scanBtn.disabled = true;
-            scanBtn.textContent = 'Scan en cours...';
-            
             try {
                 await discoverIcsFiles();
                 await loadAllCalendars();
-                setupFilters();
-                renderEvents();
+                populateGroupSelect();
+                filterEvents();
             } catch (error) {
                 console.error('Erreur:', error);
                 showError(`Erreur: ${error.message}`);
             }
-            
-            scanBtn.disabled = false;
-            scanBtn.textContent = 'Scanner les fichiers ICS';
         }
 
         async function discoverIcsFiles() {
             const currentPath = 'ics_groupes';
-            console.log(`Découverte des fichiers .ics dans le répertoire ${currentPath}...`);
-            
             const apiUrl = `https://api.github.com/repos/${repoConfig.owner}/${repoConfig.repo}/contents/${currentPath}?ref=${repoConfig.branch}`;
             
             const response = await fetch(apiUrl);
@@ -217,17 +244,16 @@
             }
             
             const files = await response.json();
-            
             const icsFiles = files.filter(file => 
                 file.type === 'file' && 
                 file.name.toLowerCase().endsWith('.ics')
             );
             
             if (icsFiles.length === 0) {
-                throw new Error(`Aucun fichier .ics trouvé dans le répertoire ${currentPath}`);
+                throw new Error(`Aucun fichier .ics trouvé`);
             }
             
-            window.icsCalendars = icsFiles.map((file) => ({
+            calendars = icsFiles.map((file) => ({
                 url: file.download_url,
                 name: formatCalendarName(file.name),
                 fileName: file.name,
@@ -242,10 +268,9 @@
         async function loadAllCalendars() {
             allEvents = [];
             
-            for (const calendar of window.icsCalendars) {
+            for (const calendar of calendars) {
                 try {
                     await loadCalendarEvents(calendar);
-                    // Ajouter le nom du calendrier à chaque événement
                     calendar.events.forEach(event => {
                         event.calendarName = calendar.name;
                     });
@@ -255,7 +280,6 @@
                 }
             }
             
-            // Trier tous les événements par date
             allEvents.sort((a, b) => a.startDate - b.startDate);
         }
 
@@ -326,83 +350,40 @@
             return new Date(year, month, day, hour, minute, second);
         }
 
-        function setupFilters() {
-            const filterSection = document.getElementById('filterSection');
-            const filterButtons = document.getElementById('filterButtons');
+        function populateGroupSelect() {
+            const select = document.getElementById('groupSelect');
             
-            // Bouton "Tous"
-            const allButton = document.createElement('button');
-            allButton.className = 'filter-btn active';
-            allButton.textContent = 'Tous';
-            allButton.onclick = () => toggleFilter(null);
-            filterButtons.appendChild(allButton);
-            
-            // Boutons pour chaque calendrier
-            window.icsCalendars.forEach(calendar => {
-                const button = document.createElement('button');
-                button.className = 'filter-btn';
-                button.textContent = calendar.name;
-                button.onclick = () => toggleFilter(calendar.name);
-                filterButtons.appendChild(button);
+            calendars.forEach(calendar => {
+                const option = document.createElement('option');
+                option.value = calendar.name;
+                option.textContent = calendar.name;
+                select.appendChild(option);
             });
-            
-            filterSection.style.display = 'block';
-            updateEventCount();
         }
 
-        function toggleFilter(calendarName) {
-            const buttons = document.querySelectorAll('.filter-btn');
+        function filterEvents() {
+            const selectedGroup = document.getElementById('groupSelect').value;
+            const showPast = document.getElementById('showPastEvents').checked;
             
-            if (calendarName === null) {
-                // Bouton "Tous" cliqué
-                activeFilters.clear();
-                buttons.forEach(btn => btn.classList.remove('active'));
-                buttons[0].classList.add('active'); // Activer le bouton "Tous"
-            } else {
-                // Bouton calendrier spécifique cliqué
-                buttons[0].classList.remove('active'); // Désactiver "Tous"
-                
-                const button = Array.from(buttons).find(btn => btn.textContent === calendarName);
-                
-                if (activeFilters.has(calendarName)) {
-                    activeFilters.delete(calendarName);
-                    button.classList.remove('active');
-                } else {
-                    activeFilters.add(calendarName);
-                    button.classList.add('active');
-                }
-                
-                // Si aucun filtre actif, réactiver "Tous"
-                if (activeFilters.size === 0) {
-                    buttons[0].classList.add('active');
-                }
+            let filteredEvents = allEvents;
+            
+            // Filtrer par groupe
+            if (selectedGroup !== 'all') {
+                filteredEvents = filteredEvents.filter(event => event.calendarName === selectedGroup);
             }
             
-            renderEvents();
-            updateEventCount();
-        }
-
-        function getFilteredEvents() {
-            if (activeFilters.size === 0) {
-                return allEvents;
+            // Filtrer les événements passés
+            if (!showPast) {
+                filteredEvents = filteredEvents.filter(event => !event.isPast);
             }
-            return allEvents.filter(event => activeFilters.has(event.calendarName));
-        }
-
-        function updateEventCount() {
-            const filteredEvents = getFilteredEvents();
-            const futureEvents = filteredEvents.filter(event => !event.isPast).length;
-            const pastEvents = filteredEvents.filter(event => event.isPast).length;
             
-            document.getElementById('eventsCount').textContent = 
-                `${filteredEvents.length} événements (${futureEvents} à venir, ${pastEvents} passés)`;
+            renderEvents(filteredEvents);
         }
 
-        function renderEvents() {
+        function renderEvents(events) {
             const container = document.getElementById('eventsContainer');
-            const filteredEvents = getFilteredEvents();
             
-            if (filteredEvents.length === 0) {
+            if (events.length === 0) {
                 container.innerHTML = '<div class="no-events">Aucun événement trouvé</div>';
                 return;
             }
@@ -414,12 +395,11 @@
                 <thead>
                     <tr>
                         <th>Jour</th>
-                        <th>Date et Heure</th>
+                        <th>Date/Heure</th>
                         <th>Durée</th>
                         <th>Résumé</th>
-                        <th>Description</th>
-                        <th>Lieu</th>
-                        <th>Calendrier</th>
+                        <th class="description-column">Description</th>
+                        <th class="location-column">Lieu</th>
                     </tr>
                 </thead>
                 <tbody></tbody>
@@ -427,7 +407,7 @@
             
             const tbody = table.querySelector('tbody');
             
-            filteredEvents.forEach(event => {
+            events.forEach(event => {
                 const row = document.createElement('tr');
                 if (event.isPast) {
                     row.classList.add('past-event');
@@ -445,9 +425,8 @@
                     <td class="datetime-column">${dateTime}</td>
                     <td class="duration-column">${duration}</td>
                     <td class="summary-column">${escapeHtml(summary)}</td>
-                    <td class="description-column">${escapeHtml(description)}</td>
-                    <td class="location-column">${escapeHtml(location)}</td>
-                    <td>${escapeHtml(event.calendarName)}</td>
+                    <td class="description-column" title="${escapeHtml(description)}">${escapeHtml(description)}</td>
+                    <td class="location-column" title="${escapeHtml(location)}">${escapeHtml(location)}</td>
                 `;
                 
                 tbody.appendChild(row);
@@ -458,7 +437,7 @@
         }
 
         function getDayOfWeek(date) {
-            const days = ['Dimanche', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi'];
+            const days = ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam'];
             return days[date.getDay()];
         }
 
@@ -478,9 +457,9 @@
             const minutes = Math.floor((durationMs % (1000 * 60 * 60)) / (1000 * 60));
             
             if (hours > 0) {
-                return `${hours}h${minutes > 0 ? ` ${minutes}min` : ''}`;
+                return `${hours}h${minutes > 0 ? ` ${minutes}m` : ''}`;
             } else {
-                return `${minutes}min`;
+                return `${minutes}m`;
             }
         }
 
@@ -492,10 +471,7 @@
 
         function showError(message) {
             const container = document.getElementById('eventsContainer');
-            const error = document.createElement('div');
-            error.className = 'error';
-            error.textContent = message;
-            container.appendChild(error);
+            container.innerHTML = `<div class="error">${message}</div>`;
         }
     </script>
 </body>
