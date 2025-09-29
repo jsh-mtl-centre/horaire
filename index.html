@@ -1126,12 +1126,21 @@
                 const endTimeStr = event.allDay ? '' : 
                     ` - ${endTime.getHours().toString().padStart(2, '0')}:${endTime.getMinutes().toString().padStart(2, '0')}`;
 
+                const descriptionHtml = event.description ? `<span class="event-title" style="opacity: 0.8; font-style: italic;">${event.description}</span>` : '';
+
                 eventElement.innerHTML = `
                     <span class="event-time">${timeStr}${endTimeStr}</span>
                     <span class="event-title">${event.summary}</span>
-                `;
+                    ${descriptionHtml}
+`;
 
-                eventElement.title = `${event.summary}\nCalendrier: ${event.calendar}\nHeure: ${timeStr}${endTimeStr}\nDate: ${startTime.toLocaleDateString('fr-FR')}`;
+                let tooltipText = `${event.summary}\nCalendrier: ${event.calendar}\nHeure: ${timeStr}${endTimeStr}\nDate: ${startTime.toLocaleDateString('fr-FR')}`;
+
+                if (event.description) {
+                    tooltipText += `\n\nDescription: ${event.description}`;
+                }
+
+                eventElement.title = tooltipText;
 
                 return eventElement;
             }
