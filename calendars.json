@@ -14,6 +14,8 @@
 ,
     {"name": "M11-GR2", "fileName": "M11-GR2.ics"}
 ,
+    {"name": "M11-S", "fileName": "M11-S.ics"}
+,
     {"name": "M13-BB", "fileName": "M13-BB.ics"}
 ,
     {"name": "M13-GR1", "fileName": "M13-GR1.ics"}
@@ -22,11 +24,25 @@
 ,
     {"name": "M13-GR3", "fileName": "M13-GR3.ics"}
 ,
+    {"name": "M13-A", "fileName": "M13-A.ics"}
+,
+    {"name": "M13-B-FAUCONS", "fileName": "M13-B-FAUCONS.ics"}
+,
+    {"name": "M13-B-PHENIX", "fileName": "M13-B-PHENIX.ics"}
+,
+    {"name": "M13-C", "fileName": "M13-C.ics"}
+,
     {"name": "M15-BB", "fileName": "M15-BB.ics"}
 ,
     {"name": "M15-GR1", "fileName": "M15-GR1.ics"}
 ,
     {"name": "M15-GR2", "fileName": "M15-GR2.ics"}
+,
+    {"name": "M15-A", "fileName": "M15-A.ics"}
+,
+    {"name": "M15-B", "fileName": "M15-B.ics"}
+,
+    {"name": "M15-C", "fileName": "M15-C.ics"}
 ,
     {"name": "M18-BB", "fileName": "M18-BB.ics"}
 ,
@@ -47,9 +63,9 @@
     {"name": "MAHG 4a b", "fileName": "MAHG_4a_b.ics"}
   ],
   "arenas": [
-    {"name": "C-HOUDE", "fileName": "C-HOUDE.ics"}
+    {"name": "CAMILLIEN-HOUDE", "fileName": "CAMILLIEN-HOUDE.ics"}
 ,
-    {"name": "F-BOUILLON", "fileName": "F-BOUILLON.ics"}
+    {"name": "FRANCIS-BOUILLON", "fileName": "FRANCIS-BOUILLON.ics"}
 ,
     {"name": "MONT-ROYAL", "fileName": "MONT-ROYAL.ics"}
   ]
