@@ -993,6 +993,11 @@
                     dayColumn.style.borderRight = i === 6 ? 'none' : '1px solid #dee2e6';
                     dayColumn.style.position = 'relative';
 
+                    // Ajouter cette ligne pour colorer le week-end
+                    if (i === 5 || i === 6) { // Samedi (5) et Dimanche (6)
+                        dayColumn.style.backgroundColor = '#e8f4f8'; // ou toute couleur légèrement plus foncée
+                    }
+
                     // En-tête du jour
                     const dayHeader = document.createElement('div');
                     dayHeader.style.background = '#1E3A8A';
