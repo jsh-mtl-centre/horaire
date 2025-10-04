@@ -110,8 +110,17 @@
             color: #495057;
         }
         
-        .events-table tr:hover {
+        .events-table tr.event-row {
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+        
+        .events-table tr.event-row:hover {
             background: #f8f9fa;
+        }
+        
+        .events-table tr.event-row.expanded {
+            background: #e7f3ff;
         }
         
         .events-table tr.past-event {
@@ -156,6 +165,63 @@
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
+        }
+        
+        /* Rangée de détails expansible */
+        .details-row {
+            display: none;
+            background: #f0f8ff;
+        }
+        
+        .details-row.show {
+            display: table-row;
+        }
+        
+        .details-cell {
+            padding: 15px 20px !important;
+            border-bottom: 2px solid #007bff !important;
+        }
+        
+        .details-content {
+            display: grid;
+            gap: 12px;
+        }
+        
+        .detail-section {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        
+        .detail-label {
+            font-weight: 600;
+            color: #007bff;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .detail-value {
+            color: #333;
+            line-height: 1.6;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+        
+        .detail-value.location-link {
+            color: #007bff;
+            cursor: pointer;
+            text-decoration: underline;
+        }
+        
+        .detail-value.location-link:hover {
+            color: #0056b3;
+        }
+        
+        .expand-indicator {
+            font-size: 10px;
+            margin-left: 5px;
+            color: #6c757d;
         }
         
         .no-events {
@@ -208,6 +274,10 @@
             
             .location-column {
                 max-width: 100px;
+            }
+            
+            .details-cell {
+                padding: 12px 10px !important;
             }
             
             /* Masquer certaines colonnes sur mobile très petit */
@@ -448,6 +518,35 @@
             renderEvents(filteredEvents);
         }
 
+        function toggleEventDetails(eventIndex) {
+            const detailsRow = document.getElementById(`details-${eventIndex}`);
+            const eventRow = document.getElementById(`event-${eventIndex}`);
+            
+            if (detailsRow.classList.contains('show')) {
+                detailsRow.classList.remove('show');
+                eventRow.classList.remove('expanded');
+            } else {
+                // Fermer toutes les autres rangées ouvertes
+                document.querySelectorAll('.details-row.show').forEach(row => {
+                    row.classList.remove('show');
+                });
+                document.querySelectorAll('.event-row.expanded').forEach(row => {
+                    row.classList.remove('expanded');
+                });
+                
+                detailsRow.classList.add('show');
+                eventRow.classList.add('expanded');
+            }
+        }
+
+        function openGoogleMaps(event, location) {
+            event.stopPropagation();
+            if (location) {
+                const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(location)}`;
+                window.open(mapsUrl, '_blank');
+            }
+        }
+
         function renderEvents(events) {
             const container = document.getElementById('eventsContainer');
             
@@ -475,11 +574,15 @@
             
             const tbody = table.querySelector('tbody');
             
-            events.forEach(event => {
+            events.forEach((event, index) => {
+                // Rangée principale
                 const row = document.createElement('tr');
+                row.className = 'event-row';
+                row.id = `event-${index}`;
                 if (event.isPast) {
                     row.classList.add('past-event');
                 }
+                row.onclick = () => toggleEventDetails(index);
                 
                 const dayOfWeek = getDayOfWeek(event.startDate);
                 const dateTime = formatDateTime(event.startDate);
@@ -492,12 +595,54 @@
                     <td class="day-column">${dayOfWeek}</td>
                     <td class="datetime-column">${dateTime}</td>
                     <td class="duration-column">${duration}</td>
-                    <td class="summary-column">${escapeHtml(summary)}</td>
+                    <td class="summary-column">${escapeHtml(summary)}<span class="expand-indicator">▼</span></td>
                     <td class="description-column" title="${escapeHtml(description)}">${escapeHtml(description)}</td>
                     <td class="location-column" title="${escapeHtml(location)}">${escapeHtml(location)}</td>
                 `;
                 
                 tbody.appendChild(row);
+                
+                // Rangée de détails (cachée par défaut)
+                const detailsRow = document.createElement('tr');
+                detailsRow.className = 'details-row';
+                detailsRow.id = `details-${index}`;
+                
+                const detailsCell = document.createElement('td');
+                detailsCell.className = 'details-cell';
+                detailsCell.colSpan = 6;
+                
+                const hasDescription = description.trim().length > 0;
+                const hasLocation = location.trim().length > 0;
+                
+                let detailsHTML = '<div class="details-content">';
+                
+                if (hasDescription) {
+                    detailsHTML += `
+                        <div class="detail-section">
+                            <div class="detail-label">Description</div>
+                            <div class="detail-value">${escapeHtml(description)}</div>
+                        </div>
+                    `;
+                }
+                
+                if (hasLocation) {
+                    detailsHTML += `
+                        <div class="detail-section">
+                            <div class="detail-label">Lieu</div>
+                            <div class="detail-value location-link" onclick="openGoogleMaps(event, '${escapeHtml(location).replace(/'/g, "&#39;")}')">${escapeHtml(location)}</div>
+                        </div>
+                    `;
+                }
+                
+                if (!hasDescription && !hasLocation) {
+                    detailsHTML += '<div class="detail-value">Aucun détail supplémentaire disponible</div>';
+                }
+                
+                detailsHTML += '</div>';
+                
+                detailsCell.innerHTML = detailsHTML;
+                detailsRow.appendChild(detailsCell);
+                tbody.appendChild(detailsRow);
             });
             
             container.innerHTML = '';
