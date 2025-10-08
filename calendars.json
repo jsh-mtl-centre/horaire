@@ -18,12 +18,6 @@
 ,
     {"name": "M13-BB", "fileName": "M13-BB.ics"}
 ,
-    {"name": "M13-GR1", "fileName": "M13-GR1.ics"}
-,
-    {"name": "M13-GR2", "fileName": "M13-GR2.ics"}
-,
-    {"name": "M13-GR3", "fileName": "M13-GR3.ics"}
-,
     {"name": "M13-A", "fileName": "M13-A.ics"}
 ,
     {"name": "M13-B-FAUCONS", "fileName": "M13-B-FAUCONS.ics"}
@@ -33,10 +27,6 @@
     {"name": "M13-C", "fileName": "M13-C.ics"}
 ,
     {"name": "M15-BB", "fileName": "M15-BB.ics"}
-,
-    {"name": "M15-GR1", "fileName": "M15-GR1.ics"}
-,
-    {"name": "M15-GR2", "fileName": "M15-GR2.ics"}
 ,
     {"name": "M15-A", "fileName": "M15-A.ics"}
 ,
