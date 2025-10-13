@@ -10,11 +10,15 @@
 ,
     {"name": "M11-BB-2", "fileName": "M11-BB-2.ics"}
 ,
-    {"name": "M11-GR1", "fileName": "M11-GR1.ics"}
+    {"name": "M11-A", "fileName": "M11-A.ics"}
 ,
-    {"name": "M11-GR2", "fileName": "M11-GR2.ics"}
+    {"name": "M11-B-FAUCONS", "fileName": "M11-B-FAUCONS.ics"}
 ,
-    {"name": "M11-S", "fileName": "M11-S.ics"}
+    {"name": "M11-B-PHENIX", "fileName": "M11-B-PHENIX.ics"}
+,
+    {"name": "M11-C-FAUCONS", "fileName": "M11-C-FAUCONS.ics"}
+,
+    {"name": "M11-C-PHENIX", "fileName": "M11-C-PHENIX.ics"}
 ,
     {"name": "M13-BB", "fileName": "M13-BB.ics"}
 ,
@@ -42,9 +46,9 @@
 ,
     {"name": "M21-C", "fileName": "M21-C.ics"}
 ,
-    {"name": "M21-D", "fileName": "M21-D.ics"}
+    {"name": "M21-D-PHENIX", "fileName": "M21-D-PHENIX.ics"}
 ,
-    {"name": "M21-HOCKEYLIBRE", "fileName": "M21-HOCKEYLIBRE.ics"}
+    {"name": "M21-D-FAUCONS", "fileName": "M21-D-FAUCONS.ics"}
 ,
     {"name": "MAHG 0 1", "fileName": "MAHG_0_1.ics"}
 ,
