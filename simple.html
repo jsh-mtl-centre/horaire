@@ -551,8 +551,8 @@
                 // Retirer les backslashes d'échappement (format iCalendar)
                 cleanLocation = cleanLocation.replace(/\\/g, '');
                 
-                // Remplacer les apostrophes typographiques par des apostrophes standard
-                cleanLocation = cleanLocation.replace(/['']/g, "'");
+                // Supprimer complètement toutes les apostrophes
+                cleanLocation = cleanLocation.replace(/[''']/g, '');
                 
                 const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(cleanLocation)}`;
                 window.open(mapsUrl, '_blank');
