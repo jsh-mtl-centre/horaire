@@ -541,16 +541,12 @@
         }
 
         function openGoogleMaps(event, location) {
-            event.stopPropagation();
+            event.stopPropagagation();
             if (location) {
-                // Retirer le nom du bâtiment (tout ce qui est avant la première virgule)
-                let cleanLocation = location;
-                const parts = location.split(',');
-                
-                if (parts.length > 1) {
-                    // Prendre tout sauf la première partie (le nom du bâtiment)
-                    cleanLocation = parts.slice(1).join(',').trim();
-                }
+                // Remplacer les apostrophes typographiques par des apostrophes standards
+                const cleanLocation = location
+                    .replace(/'/g, "'")  // Apostrophe typographique → apostrophe standard
+                    .replace(/'/g, "'"); // Autre variante d'apostrophe typographique
                 
                 const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(cleanLocation)}`;
                 window.open(mapsUrl, '_blank');
