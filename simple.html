@@ -630,7 +630,7 @@
                     detailsHTML += `
                         <div class="detail-section">
                             <div class="detail-label">Lieu</div>
-                            <div class="detail-value location-link" onclick="openGoogleMaps(event, '${escapeHtml(location).replace(/'/g, "\\'")}')">${escapeHtml(location)}</div>
+                            <div class="detail-value location-link" onclick='openGoogleMaps(event, "${escapeHtml(location)}")'>${escapeHtml(location)}</div>
                         </div>
                     `;
                 }
