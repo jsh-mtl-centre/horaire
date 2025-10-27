@@ -543,10 +543,8 @@
         function openGoogleMaps(event, location) {
             event.stopPropagagation();
             if (location) {
-                // Remplacer les apostrophes typographiques par des apostrophes standards
-                const cleanLocation = location
-                    .replace(/'/g, "'")  // Apostrophe typographique → apostrophe standard
-                    .replace(/'/g, "'"); // Autre variante d'apostrophe typographique
+                // Retirer toutes les apostrophes
+                const cleanLocation = location.replace(/['']/g, '');
                 
                 const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(cleanLocation)}`;
                 window.open(mapsUrl, '_blank');
