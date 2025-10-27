@@ -543,7 +543,21 @@
         function openGoogleMaps(event, location) {
             event.stopPropagation();
             if (location) {
-                const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(location)}`;
+                // Nettoyer l'adresse pour améliorer la recherche Google Maps
+                let cleanLocation = location;
+                
+                // Si l'adresse commence par un nom de bâtiment suivi d'une virgule,
+                // on peut soit le garder, soit ne garder que l'adresse réelle
+                // Option 1 : Garder toute l'adresse (recommandé)
+                cleanLocation = location.trim();
+                
+                // Option 2 : Supprimer le nom du bâtiment si nécessaire (décommentez si besoin)
+                // const parts = location.split(',');
+                // if (parts.length > 1) {
+                //     cleanLocation = parts.slice(1).join(',').trim();
+                // }
+                
+                const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(cleanLocation)}`;
                 window.open(mapsUrl, '_blank');
             }
         }
