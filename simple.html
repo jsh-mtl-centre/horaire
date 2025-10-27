@@ -543,19 +543,14 @@
         function openGoogleMaps(event, location) {
             event.stopPropagation();
             if (location) {
-                // Nettoyer l'adresse pour améliorer la recherche Google Maps
+                // Retirer le nom du bâtiment (tout ce qui est avant la première virgule)
                 let cleanLocation = location;
+                const parts = location.split(',');
                 
-                // Si l'adresse commence par un nom de bâtiment suivi d'une virgule,
-                // on peut soit le garder, soit ne garder que l'adresse réelle
-                // Option 1 : Garder toute l'adresse (recommandé)
-                cleanLocation = location.trim();
-                
-                // Option 2 : Supprimer le nom du bâtiment si nécessaire (décommentez si besoin)
-                // const parts = location.split(',');
-                // if (parts.length > 1) {
-                //     cleanLocation = parts.slice(1).join(',').trim();
-                // }
+                if (parts.length > 1) {
+                    // Prendre tout sauf la première partie (le nom du bâtiment)
+                    cleanLocation = parts.slice(1).join(',').trim();
+                }
                 
                 const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(cleanLocation)}`;
                 window.open(mapsUrl, '_blank');
