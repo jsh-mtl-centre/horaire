@@ -541,18 +541,10 @@
         }
 
         function openGoogleMaps(event, location) {
-            event.stopPropagation();
+            event.stopPropagagation();
             if (location) {
-                let cleanLocation = location;
-                
-                // Retirer le préfixe "LOCATION:" si présent
-                cleanLocation = cleanLocation.replace(/^LOCATION:/i, '').trim();
-                
-                // Retirer les backslashes d'échappement (format iCalendar)
-                cleanLocation = cleanLocation.replace(/\\/g, '');
-                
-                // Supprimer complètement toutes les apostrophes
-                cleanLocation = cleanLocation.replace(/[''']/g, '');
+                // Supprimer uniquement les apostrophes
+                const cleanLocation = location.replace(/'/g, '');
                 
                 const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(cleanLocation)}`;
                 window.open(mapsUrl, '_blank');
