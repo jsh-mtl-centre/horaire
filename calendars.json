@@ -54,7 +54,11 @@
 ,
     {"name": "MAHG 0 1", "fileName": "MAHG_0_1.ics"}
 ,
+    {"name": "M7", "fileName": "M7.ics"}
+,
     {"name": "MAHG 2 3", "fileName": "MAHG_2_3.ics"}
+,
+    {"name": "MAHG 3a b", "fileName": "MAHG_4a_b.ics"}
 ,
     {"name": "MAHG 4a b", "fileName": "MAHG_4a_b.ics"}
   ],
