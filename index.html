@@ -103,6 +103,9 @@
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
             position: sticky;
             top: 20px;
+            max-height: calc(100vh - 40px);
+            display: flex;
+            flex-direction: column;
         }
 
         .ics-manager h3 {
@@ -112,12 +115,35 @@
             align-items: center;
             justify-content: space-between;
             font-size: 1.2em;
+            flex-shrink: 0;
         }
 
         .ics-list {
             display: flex;
             flex-direction: column;
             gap: 12px;
+            max-height: calc(100vh - 220px);
+            overflow-y: auto;
+            overflow-x: hidden;
+            padding-right: 8px;
+        }
+
+        .ics-list::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .ics-list::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+
+        .ics-list::-webkit-scrollbar-thumb {
+            background: #1E3A8A;
+            border-radius: 10px;
+        }
+
+        .ics-list::-webkit-scrollbar-thumb:hover {
+            background: #152d6b;
         }
 
         .ics-item {
@@ -383,12 +409,14 @@
 
             .ics-manager {
                 position: static;
+                max-height: none;
             }
 
             .ics-list {
                 flex-direction: row;
                 flex-wrap: wrap;
                 gap: 8px;
+                max-height: 300px;
             }
 
             .ics-item {
