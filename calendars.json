@@ -1,68 +1,48 @@
 {
   "groupes": [
-    {"name": "DEBUTANTS", "fileName": "DEBUTANTS.ics"}
-,
-    {"name": "GARDIENS-INIT", "fileName": "GARDIENS-INIT.ics"}
-,
-    {"name": "GARDIENS-PERF", "fileName": "GARDIENS-PERF.ics"}
-,
-    {"name": "M11-BB-1", "fileName": "M11-BB-1.ics"}
-,
-    {"name": "M11-BB-2", "fileName": "M11-BB-2.ics"}
-,
-    {"name": "M11-A", "fileName": "M11-A.ics"}
-,
-    {"name": "M11-B-FAUCONS", "fileName": "M11-B-FAUCONS.ics"}
-,
-    {"name": "M11-B-PHENIX", "fileName": "M11-B-PHENIX.ics"}
-,
-    {"name": "M11-C-FAUCONS", "fileName": "M11-C-FAUCONS.ics"}
-,
-    {"name": "M11-C-PHENIX", "fileName": "M11-C-PHENIX.ics"}
-,
-    {"name": "M13-BB", "fileName": "M13-BB.ics"}
-,
-    {"name": "M13-A", "fileName": "M13-A.ics"}
-,
-    {"name": "M13-B-FAUCONS", "fileName": "M13-B-FAUCONS.ics"}
-,
-    {"name": "M13-B-PHENIX", "fileName": "M13-B-PHENIX.ics"}
-,
-    {"name": "M13-C", "fileName": "M13-C.ics"}
-,
-    {"name": "M15-BB", "fileName": "M15-BB.ics"}
-,
-    {"name": "M15-A", "fileName": "M15-A.ics"}
-,
-    {"name": "M15-B", "fileName": "M15-B.ics"}
-,
-    {"name": "M15-C", "fileName": "M15-C.ics"}
-,
-    {"name": "M18-BB", "fileName": "M18-BB.ics"}
-,
-    {"name": "M18-A", "fileName": "M18-A.ics"}
-,
-    {"name": "M18-B", "fileName": "M18-B.ics"}
-,
-    {"name": "M21-C", "fileName": "M21-C.ics"}
-,
-    {"name": "M21-D-PHENIX", "fileName": "M21-D-PHENIX.ics"}
-,
-    {"name": "M21-D-FAUCONS", "fileName": "M21-D-FAUCONS.ics"}
-,
-    {"name": "M21-HOCKEYLIBRE", "fileName": "M21-HOCKEYLIBRE.ics"}
-,
-    {"name": "M7", "fileName": "M7.ics"}
-,
-    {"name": "MAHG 3a b", "fileName": "MAHG_3a_b.ics"}
-,
-    {"name": "MAHG 4a b", "fileName": "MAHG_4a_b.ics"}
+    {"name": "DEBUTANTS", "fileName": "DEBUTANTS.ics"},
+    {"name": "GARDIENS-INIT", "fileName": "GARDIENS-INIT.ics"},
+    {"name": "GARDIENS-PERF", "fileName": "GARDIENS-PERF.ics"},
+    {"name": "M11-BB-1", "fileName": "M11-BB-1.ics"},
+    {"name": "M11-BB-2", "fileName": "M11-BB-2.ics"},
+    {"name": "M11-A", "fileName": "M11-A.ics"},
+    {"name": "M11-B-FAUCONS", "fileName": "M11-B-FAUCONS.ics"},
+    {"name": "M11-B-PHENIX", "fileName": "M11-B-PHENIX.ics"},
+    {"name": "M11-C-FAUCONS", "fileName": "M11-C-FAUCONS.ics"},
+    {"name": "M11-C-PHENIX", "fileName": "M11-C-PHENIX.ics"},
+    {"name": "M13-BB", "fileName": "M13-BB.ics"},
+    {"name": "M13-A", "fileName": "M13-A.ics"},
+    {"name": "M13-B-FAUCONS", "fileName": "M13-B-FAUCONS.ics"},
+    {"name": "M13-B-PHENIX", "fileName": "M13-B-PHENIX.ics"},
+    {"name": "M13-C", "fileName": "M13-C.ics"},
+    {"name": "M15-BB", "fileName": "M15-BB.ics"},
+    {"name": "M15-A", "fileName": "M15-A.ics"},
+    {"name": "M15-B", "fileName": "M15-B.ics"},
+    {"name": "M15-C", "fileName": "M15-C.ics"},
+    {"name": "M18-BB", "fileName": "M18-BB.ics"},
+    {"name": "M18-A", "fileName": "M18-A.ics"},
+    {"name": "M18-B", "fileName": "M18-B.ics"},
+    {"name": "M21-C", "fileName": "M21-C.ics"},
+    {"name": "M21-D-PHENIX", "fileName": "M21-D-PHENIX.ics"},
+    {"name": "M21-D-FAUCONS", "fileName": "M21-D-FAUCONS.ics"},
+    {"name": "M21-HOCKEYLIBRE", "fileName": "M21-HOCKEYLIBRE.ics"},
+    {"name": "MAHG1-LYNX-1", "fileName": "MAHG1-LYNX-1.ics"},
+    {"name": "MAHG1-LYNX-2", "fileName": "MAHG1-LYNX-2.ics"},
+    {"name": "MAHG1-LYNX-3", "fileName": "MAHG1-LYNX-3.ics"},
+    {"name": "MAHG2-TIGRES-1", "fileName": "MAHG2-TIGRES-1.ics"},
+    {"name": "MAHG2-TIGRES-2", "fileName": "MAHG2-TIGRES-2.ics"},
+    {"name": "MAHG2-TIGRES-3", "fileName": "MAHG2-TIGRES-3.ics"},
+    {"name": "M9-D-GRIZZLYS", "fileName": "M9-D-GRIZZLYS.ics"},
+    {"name": "M9-D-LOUPS", "fileName": "M9-D-LOUPS.ics"},
+    {"name": "M9-C-ECLAIRS", "fileName": "M9-C-ECLAIRS.ics"},
+    {"name": "M9-C-TONNERRE", "fileName": "M9-C-TONNERRE.ics"},
+    {"name": "M9-B-GAULOIS", "fileName": "M9-B-GAULOIS.ics"},
+    {"name": "M9-B-VIKINGS", "fileName": "M9-B-VIKINGS.ics"},
+    {"name": "M9-A-PHENIX", "fileName": "M9-A-PHENIX.ics"}
   ],
   "arenas": [
-    {"name": "CAMILLIEN-HOUDE", "fileName": "CAMILLIEN-HOUDE.ics"}
-,
-    {"name": "FRANCIS-BOUILLON", "fileName": "FRANCIS-BOUILLON.ics"}
-,
+    {"name": "CAMILLIEN-HOUDE", "fileName": "CAMILLIEN-HOUDE.ics"},
+    {"name": "FRANCIS-BOUILLON", "fileName": "FRANCIS-BOUILLON.ics"},
     {"name": "MONT-ROYAL", "fileName": "MONT-ROYAL.ics"}
   ]
 }
