@@ -20,7 +20,7 @@ DTSTART;TZID=America/Montreal:20260109T173000
 DTEND;TZID=America/Montreal:20260109T184000
 SUMMARY:M11-BB-1 (JEAN-LAURIN)
 LOCATION:JEAN-LAURIN\, 8515 rue du Saint-Jacques\, Saint-Augustin\, Mirabel\, QC
-DESCRIPTION:Match #403 vs Lions St-Jerôme
+DESCRIPTION:Match #403 vs Lions St-Jerôme (tournoi Mirabel)
 STATUS:CONFIRMED
 END:VEVENT
 BEGIN:VEVENT
@@ -29,7 +29,7 @@ DTSTART;TZID=America/Montreal:20260110T114500
 DTEND;TZID=America/Montreal:20260110T125500
 SUMMARY:M11-BB-1 (JEAN-LAURIN)
 LOCATION:JEAN-LAURIN\, 8515 rue du Saint-Jacques\, Saint-Augustin\, Mirabel\, QC
-DESCRIPTION:Match #409 vs Ice Dogs Casselman
+DESCRIPTION:Match #409 vs Ice Dogs Casselman (tournoi Mirabel)
 STATUS:CONFIRMED
 END:VEVENT
 BEGIN:VEVENT
@@ -38,7 +38,7 @@ DTSTART;TZID=America/Montreal:20260110T170000
 DTEND;TZID=America/Montreal:20260110T181000
 SUMMARY:M11-BB-1 (JEAN-LAURIN)
 LOCATION:JEAN-LAURIN\, 8515 rue du Saint-Jacques\, Saint-Augustin\, Mirabel\, QC
-DESCRIPTION:Match #410 vs Concordes 1 Mirabel-Lachute
+DESCRIPTION:Match #410 vs Concordes 1 Mirabel-Lachute (tournoi Mirabel)
 STATUS:CONFIRMED
 END:VEVENT
 END:VCALENDAR
