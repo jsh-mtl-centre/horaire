@@ -341,7 +341,7 @@ END:VEVENT
 BEGIN:VEVENT
 UID:m15-b-larocque-a-20260130T163000@calendar.local
 DTSTART;TZID=America/Montreal:20260130T163000
-DTEND;TZID=America/Montreal:20260130T171500
+DTEND;TZID=America/Montreal:20260130T174500
 SUMMARY:M15-B (LAROCQUE-A)
 LOCATION:LAROCQUE-A\, 370 Av. Lareau\, Saint-Jean-sur-Richelieu\, QC J2X 4K5
 DESCRIPTION:Match #33 vs Aigles de St-Jean (2) (tournoi St-Jean)
