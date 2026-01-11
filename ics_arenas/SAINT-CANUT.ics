@@ -11,7 +11,7 @@ DTSTART;TZID=America/Montreal:20260130T180000
 DTEND;TZID=America/Montreal:20260130T190000
 SUMMARY:M9-C-TONNERRE (SAINT-CANUT)
 LOCATION:SAINT-CANUT\, 15 005 chemin Dupuis\, Saint-Canut\, Mirabel\, QC
-DESCRIPTION:Match #218 vs Grizzlys Mascouche
+DESCRIPTION:Match #218 vs Grizzlys Mascouche (tournoi mirabel)
 STATUS:CONFIRMED
 END:VEVENT
 BEGIN:VEVENT
@@ -20,7 +20,7 @@ DTSTART;TZID=America/Montreal:20260131T190000
 DTEND;TZID=America/Montreal:20260131T200000
 SUMMARY:M9-C-TONNERRE (SAINT-CANUT)
 LOCATION:SAINT-CANUT\, 15 005 chemin Dupuis\, Saint-Canut\, Mirabel\, QC
-DESCRIPTION:Match #243 vs Olympiques Repentigny
+DESCRIPTION:Match #243 vs Olympiques Repentigny (tournoi mirabel)
 STATUS:CONFIRMED
 END:VEVENT
 END:VCALENDAR
