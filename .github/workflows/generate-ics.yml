@@ -1,28 +1,14 @@
 name: Générer Calendriers ICS
 
 on:
-  # Exécution automatique chaque dimanche à 6h00 (heure UTC = 2h EST)
-  schedule:
-    - cron: '0 6 * * 0'
-  
-  # Permettre l'exécution manuelle depuis l'onglet Actions
   workflow_dispatch:
-    inputs:
-      include_non_affecte:
-        description: 'Inclure créneaux non affectés?'
-        required: false
-        default: 'false'
-        type: choice
-        options:
-          - 'true'
-          - 'false'
 
 jobs:
   generate:
     runs-on: ubuntu-latest
     
     permissions:
-      contents: write  # Nécessaire pour committer les fichiers
+      contents: write
 
     steps:
       - name: Checkout repository
@@ -34,38 +20,19 @@ jobs:
           python-version: '3.11'
 
       - name: Install dependencies
-        run: pip install pandas requests
-
-      - name: Créer les dossiers de sortie
-        run: |
-          mkdir -p horaire/ics_groupes
-          mkdir -p horaire/ics_arenas
+        run: pip install pandas
 
       - name: Générer les fichiers ICS
-        env:
-          INCLUDE_NON_AFFECTE: ${{ github.event.inputs.include_non_affecte || 'false' }}
-        run: python scripts/generate_ics.py
+        run: python generate_ics.py
 
-      - name: Vérifier les fichiers générés
-        run: |
-          echo "=== Fichiers ICS générés ==="
-          find horaire/ -name "*.ics" | sort
-          echo ""
-          echo "=== Nombre de fichiers ==="
-          find horaire/ -name "*.ics" | wc -l
-
-      - name: Commit et push les fichiers ICS
+      - name: Commit et push
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
-          git add horaire/
-          
-          # Commit seulement si des changements existent
+          git add ics_groupes/ ics_arenas/
           if git diff --staged --quiet; then
-            echo "✅ Aucun changement détecté, pas de commit nécessaire"
+            echo "Aucun changement"
           else
-            TIMESTAMP=$(date -u +"%Y-%m-%d %H:%M UTC")
-            git commit -m "🗓️ Mise à jour calendriers ICS - $TIMESTAMP"
+            git commit -m "🗓️ Mise à jour calendriers ICS"
             git push
-            echo "✅ Fichiers ICS mis à jour et poussés!"
           fi
