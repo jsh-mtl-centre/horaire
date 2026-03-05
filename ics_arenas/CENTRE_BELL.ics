@@ -6,8 +6,8 @@ METHOD:PUBLISH
 X-WR-CALNAME:Arena CENTRE BELL
 X-WR-TIMEZONE:America/Montreal
 BEGIN:VEVENT
-UID:m9-b-vikings-centre_bell-20260322T080000@calendar.local
-DTSTART;TZID=America/Montreal:20260322T080000
+UID:m9-b-vikings-centre_bell-20260322T064500@calendar.local
+DTSTART;TZID=America/Montreal:20260322T064500
 DTEND;TZID=America/Montreal:20260322T130000
 SUMMARY:M9-B-VIKINGS (CENTRE BELL)
 LOCATION:CENTRE BELL\, 1909 Av. des Canadiens-de-Montréal\, Montréal\, QC H3B 2S2
