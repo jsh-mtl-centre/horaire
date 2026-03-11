@@ -474,9 +474,9 @@ DESCRIPTION:Pratique demi-glace
 STATUS:CONFIRMED
 END:VEVENT
 BEGIN:VEVENT
-UID:m11-c-phenix-clement-jetté-20260311T180000@calendar.local
-DTSTART;TZID=America/Montreal:20260311T180000
-DTEND;TZID=America/Montreal:20260311T190000
+UID:m11-c-phenix-clement-jetté-20260313T180000@calendar.local
+DTSTART;TZID=America/Montreal:20260313T180000
+DTEND;TZID=America/Montreal:20260313T190000
 SUMMARY:M11-C-PHENIX (CLEMENT-JETTÉ)
 LOCATION:CLEMENT-JETTÉ\, 8780 Av. Dubuisson\, Montréal\, QC H1L 2W5
 DESCRIPTION:Match #4371 vs Faucons de JSH Mtl-Centre (séries)
