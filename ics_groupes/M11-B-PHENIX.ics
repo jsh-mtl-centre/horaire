@@ -555,9 +555,9 @@ DESCRIPTION:Match #2 vs Grizzly 1 Ste-Julie (tournoi St-Rémi)
 STATUS:CONFIRMED
 END:VEVENT
 BEGIN:VEVENT
-UID:m11-b-phenix-csr_desjardins-20260417T100000@calendar.local
-DTSTART;TZID=America/Montreal:20260417T100000
-DTEND;TZID=America/Montreal:20260417T110000
+UID:m11-b-phenix-csr_desjardins-20260417T130000@calendar.local
+DTSTART;TZID=America/Montreal:20260417T130000
+DTEND;TZID=America/Montreal:20260417T140000
 SUMMARY:M11-B-PHENIX (CSR DESJARDINS)
 LOCATION:CSR DESJARDINS\, 170 Rue Saint-Viateur\, Saint-Rémi\, QC J0L 2L0
 DESCRIPTION:Match #4 vs Lynx 2 St-Constant (tournoi St-Rémi)
