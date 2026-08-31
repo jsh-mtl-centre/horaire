@@ -1,7 +1,7 @@
 {
   "groupes": [
-  {"name": "GARDIENS-GR1", "fileName": "GARDIENS-GR1.ics"},
-  {"name": "GARDIENS-GR2", "fileName": "GARDIENS-GR2.ics"},
+  {"name": "GARDIENS-INIT", "fileName": "GARDIENS-INIT.ics"},
+  {"name": "GARDIENS-PERF", "fileName": "GARDIENS-PERF.ics"},
   {"name": "M5", "fileName": "M5.ics"},
   {"name": "M7-GR1", "fileName": "M7-GR1.ics"},
   {"name": "M7-GR2", "fileName": "M7-GR2.ics"},
@@ -26,6 +26,8 @@
   "arenas": [
     {"name": "CAMILLIEN-HOUDE", "fileName": "CAMILLIEN-HOUDE.ics"},
     {"name": "FRANCIS-BOUILLON", "fileName": "FRANCIS-BOUILLON.ics"},
-    {"name": "MONT-ROYAL", "fileName": "MONT-ROYAL.ics"}
+    {"name": "MONT-ROYAL", "fileName": "MONT-ROYAL.ics"},
+    {"name": "ST-LOUIS", "fileName": "ST-LOUIS.ics"},
+    {"name": "CLÉMENT-JETTÉ", "fileName": "CLÉMENT-JETTÉ.ics"}
   ]
 }
