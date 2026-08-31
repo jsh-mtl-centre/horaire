@@ -1,7 +1,28 @@
 {
   "groupes": [
-    {"name": "TEST", "fileName": "TEST.ics"}
-  ],
+  {"name": "GARDIENS-GR1", "fileName": "GARDIENS-GR1.ics"},
+  {"name": "GARDIENS-GR2", "fileName": "GARDIENS-GR2.ics"},
+  {"name": "M5", "fileName": "M5.ics"},
+  {"name": "M7-GR1", "fileName": "M7-GR1.ics"},
+  {"name": "M7-GR2", "fileName": "M7-GR2.ics"},
+  {"name": "M9-GR1", "fileName": "M9-GR1.ics"},
+  {"name": "M9-GR2", "fileName": "M9-GR2.ics"},
+  {"name": "M11-GR1", "fileName": "M11-GR1.ics"},
+  {"name": "M11-GR2", "fileName": "M11-GR2.ics"},
+  {"name": "M11-GR3", "fileName": "M11-GR3.ics"},
+  {"name": "M13-GR1", "fileName": "M13-GR1.ics"},
+  {"name": "M13-GR2", "fileName": "M13-GR2.ics"},
+  {"name": "M13-GR3", "fileName": "M13-GR3.ics"},
+  {"name": "M15-GR1", "fileName": "M15-GR1.ics"},
+  {"name": "M15-GR2", "fileName": "M15-GR2.ics"},
+  {"name": "M17", "fileName": "M17.ics"},
+  {"name": "M19", "fileName": "M19.ics"},
+  {"name": "M22", "fileName": "M22.ics"},
+  {"name": "SENIOR", "fileName": "SENIOR.ics"},
+  {"name": "M15F", "fileName": "M15F.ics"},
+  {"name": "M18F", "fileName": "M18F.ics"},
+  {"name": "M21F", "fileName": "M21F.ics"}
+],
   "arenas": [
     {"name": "CAMILLIEN-HOUDE", "fileName": "CAMILLIEN-HOUDE.ics"},
     {"name": "FRANCIS-BOUILLON", "fileName": "FRANCIS-BOUILLON.ics"},
