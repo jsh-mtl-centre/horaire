@@ -2,7 +2,8 @@
   "groupes": [
   {"name": "GARDIENS-INIT", "fileName": "GARDIENS-INIT.ics"},
   {"name": "GARDIENS-PERF", "fileName": "GARDIENS-PERF.ics"},
-  {"name": "M5", "fileName": "M5.ics"},
+  {"name": "M5-GR1", "fileName": "M5-GR1.ics"},
+  {"name": "M5-GR2", "fileName": "M5-GR2.ics"},
   {"name": "M7-MAHG0", "fileName": "M7-MAHG0.ics"},
   {"name": "M7-MAHG1", "fileName": "M7-MAHG1.ics"},
   {"name": "M7-MAHG2", "fileName": "M7-MAHG2.ics"},
