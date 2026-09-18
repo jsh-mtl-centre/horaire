@@ -25,8 +25,7 @@
   {"name": "M22", "fileName": "M22.ics"},
   {"name": "SENIOR", "fileName": "SENIOR.ics"},
   {"name": "M15F", "fileName": "M15F.ics"},
-  {"name": "M18F", "fileName": "M18F.ics"},
-  {"name": "M21F", "fileName": "M21F.ics"}
+  {"name": "M18F", "fileName": "M18F.ics"}
 ],
   "arenas": [
     {"name": "CAMILLIEN-HOUDE", "fileName": "CAMILLIEN-HOUDE.ics"},
