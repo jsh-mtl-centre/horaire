@@ -324,7 +324,7 @@ def process_csv(csv_file: str, arenas_file: str, include_non_affecte: bool = Fal
             filename = f"{output_dir}/{safe_name}.ics"
             
             try:
-                with open(filename, 'w', encoding='utf-8') as f:
+                with open(filename, 'w', encoding='utf-8', newline='\n') as f:
                     f.write(calendar_content)
                 print(f"✅ {filename} créé ({len(events)} événements)")
             except Exception as e:
@@ -347,7 +347,7 @@ def process_csv(csv_file: str, arenas_file: str, include_non_affecte: bool = Fal
                 filename = f"{arena_output_dir}/{safe_arena_name}.ics"
                 
                 try:
-                    with open(filename, 'w', encoding='utf-8') as f:
+                    with open(filename, 'w', encoding='utf-8', newline='\n') as f:
                         f.write(calendar_content)
                     print(f"🏟️  {filename} créé ({len(arena_events)} événements)")
                 except Exception as e:
