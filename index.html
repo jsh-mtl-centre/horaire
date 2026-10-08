@@ -109,7 +109,7 @@
         }
 
         .ics-manager h3 {
-            margin-bottom: 20px;
+            margin-bottom: 12px;
             color: #333;
             display: flex;
             align-items: center;
@@ -121,7 +121,7 @@
         .ics-list {
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            gap: 4px;
             max-height: calc(100vh - 220px);
             overflow-y: auto;
             overflow-x: hidden;
@@ -149,14 +149,14 @@
         .ics-item {
             background: white;
             border: 2px solid #eee;
-            border-radius: 10px;
-            padding: 15px;
+            border-radius: 6px;
+            padding: 4px 6px;
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 6px;
             transition: all 0.3s ease;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-            position: relative;
+            cursor: pointer;
+            min-width: 0;
         }
 
         .ics-item.active {
@@ -168,46 +168,20 @@
             opacity: 0.6;
         }
 
-        .ics-item.loading::after {
-            content: '';
-            position: absolute;
-            top: 50%;
-            right: 15px;
-            width: 16px;
-            height: 16px;
-            border: 2px solid #ccc;
-            border-top: 2px solid #C41E3A;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
         .ics-checkbox {
             margin: 0;
-            transform: scale(1.3);
             flex-shrink: 0;
-        }
-
-        .ics-details {
-            flex: 1;
-            min-width: 0;
+            cursor: pointer;
         }
 
         .ics-name {
+            flex: 1;
+            min-width: 0;
             font-weight: 600;
             color: #333;
-            font-size: 14px;
-            margin-bottom: 4px;
-        }
-
-        .ics-status {
             font-size: 12px;
-            color: #666;
-            font-style: italic;
+            line-height: 1.25;
+            overflow-wrap: anywhere;
         }
 
         .calendar {
@@ -370,11 +344,10 @@
         }
 
         .status-indicator {
-            width: 10px;
-            height: 10px;
+            width: 8px;
+            height: 8px;
             border-radius: 50%;
             display: inline-block;
-            margin-left: 8px;
             flex-shrink: 0;
         }
 
@@ -413,19 +386,9 @@
             }
 
             .ics-list {
-                flex-direction: row;
-                flex-wrap: wrap;
-                gap: 8px;
                 max-height: 300px;
             }
 
-            .ics-item {
-                flex: 1;
-                min-width: 200px;
-                padding: 10px;
-                font-size: 12px;
-            }
-            
             .controls {
                 justify-content: center;
                 text-align: center;
@@ -458,14 +421,6 @@
 
             .calendar-container {
                 overflow-x: auto;
-            }
-
-            .ics-list {
-                flex-direction: column;
-            }
-
-            .ics-item {
-                min-width: auto;
             }
         }
     </style>
@@ -867,26 +822,24 @@
                 icsList.innerHTML = '';
 
                 this.icsCalendars.forEach((calendar, index) => {
-                    const item = document.createElement('div');
+                    // Un <label> rend toute la case cliquable
+                    const item = document.createElement('label');
                     item.className = `ics-item ${calendar.active ? 'active' : ''} ${calendar.status === 'loading' ? 'loading' : ''}`;
                     item.style.setProperty('--calendar-color', calendar.color);
                     item.style.setProperty('--calendar-color-rgb', this.hexToRgb(calendar.color));
-                    
-                    const statusIndicator = this.getStatusIndicator(calendar.status);
-                    const statusText = calendar.status === 'loading' ? 'chargement...' : 
+
+                    // Pastille seulement pendant le chargement ou en cas d'erreur
+                    const statusIndicator = calendar.status === 'loaded' ? '' : this.getStatusIndicator(calendar.status);
+                    const statusText = calendar.status === 'loading' ? 'chargement...' :
                                      calendar.status === 'error' ? 'erreur' : '';
+                    item.title = statusText ? `${calendar.name} (${statusText})` : calendar.name;
 
                     item.innerHTML = `
-                        <input type="checkbox" class="ics-checkbox" 
-                               ${calendar.active ? 'checked' : ''} 
+                        <input type="checkbox" class="ics-checkbox"
+                               ${calendar.active ? 'checked' : ''}
                                onchange="window.calendar.toggleCalendar(${index})">
-                        <div class="ics-details">
-                            <div class="ics-name" style="color: ${calendar.color}">
-                                ${calendar.name}
-                                ${statusIndicator}
-                            </div>
-                            <div class="ics-status">${statusText}</div>
-                        </div>
+                        <span class="ics-name" style="color: ${calendar.color}">${calendar.name}</span>
+                        ${statusIndicator}
                     `;
                     icsList.appendChild(item);
                 });
