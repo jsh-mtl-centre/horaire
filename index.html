@@ -1075,18 +1075,10 @@
 
                     // Événements
                     const dayEvents = this.getEventsForDate(currentDate);
-                    const overlappingGroups = this.detectOverlaps(dayEvents);
-                    const eventOverlapMap = new Map();
-                    
-                    overlappingGroups.forEach(group => {
-                        group.forEach(event => {
-                            eventOverlapMap.set(event, group);
-                        });
-                    });
-                    
+                    const eventLayout = this.computeEventLayout(dayEvents);
+
                     dayEvents.forEach(event => {
-                        const overlaps = eventOverlapMap.get(event) || [];
-                        const eventElement = this.createEventElement(event, overlaps);
+                        const eventElement = this.createEventElement(event, eventLayout.get(event));
                         if (eventElement) {
                             timeGrid.appendChild(eventElement);
                         }
@@ -1097,7 +1089,7 @@
                 }
             }
 
-            createEventElement(event, overlaps = []) {
+            createEventElement(event, position = { column: 0, columns: 1 }) {
                 const eventElement = document.createElement('div');
                 eventElement.className = 'event';
                 eventElement.style.backgroundColor = event.color;
@@ -1137,13 +1129,10 @@
                 eventElement.style.height = `${adjustedDuration}px`;
 
                 // Gestion des superpositions
-                const totalOverlaps = overlaps.length;
-                const eventIndex = overlaps.indexOf(event);
-                
-                if (totalOverlaps > 0) {
-                    const width = 100 / totalOverlaps;
-                    const leftOffset = (100 / totalOverlaps) * eventIndex;
-                    
+                if (position.columns > 1) {
+                    const width = 100 / position.columns;
+                    const leftOffset = width * position.column;
+
                     eventElement.style.width = `${width}%`;
                     eventElement.style.left = `${leftOffset}%`;
                     eventElement.style.right = 'auto';
@@ -1179,46 +1168,57 @@
                 return eventElement;
             }
 
-            // Fonction pour détecter les superpositions
-            detectOverlaps(events) {
-                const overlappingGroups = [];
-                
-                for (let i = 0; i < events.length; i++) {
-                    const event1 = events[i];
-                    const start1 = new Date(event1.dtstart);
-                    const end1 = event1.dtend ? new Date(event1.dtend) : 
-                                 event1.allDay ? new Date(start1.getTime() + 24 * 60 * 60 * 1000) :
-                                 new Date(start1.getTime() + 60 * 60 * 1000);
-                    
-                    // Trouver tous les événements qui se chevauchent avec celui-ci
-                    const overlappingEvents = [event1];
-                    
-                    for (let j = i + 1; j < events.length; j++) {
-                        const event2 = events[j];
-                        const start2 = new Date(event2.dtstart);
-                        const end2 = event2.dtend ? new Date(event2.dtend) : 
-                                     event2.allDay ? new Date(start2.getTime() + 24 * 60 * 60 * 1000) :
-                                     new Date(start2.getTime() + 60 * 60 * 1000);
-                        
-                        // Vérifier s'il y a chevauchement
-                        if (start1 < end2 && start2 < end1) {
-                            overlappingEvents.push(event2);
-                        }
+            getEventStartEnd(event) {
+                const start = new Date(event.dtstart).getTime();
+                const end = event.dtend ? new Date(event.dtend).getTime() :
+                            event.allDay ? start + 24 * 60 * 60 * 1000 :
+                            start + 60 * 60 * 1000;
+                return { start, end };
+            }
+
+            // Attribue une colonne à chaque événement pour éviter les superpositions.
+            // Les événements reliés par une chaîne de chevauchements forment un groupe
+            // qui partage la largeur du jour en autant de colonnes que nécessaire.
+            computeEventLayout(events) {
+                const layout = new Map();
+                const sorted = events
+                    .map(event => ({ event, ...this.getEventStartEnd(event) }))
+                    .sort((a, b) => a.start - b.start || b.end - a.end);
+
+                let group = [];
+                let columnEnds = [];
+                let groupEnd = -Infinity;
+
+                const closeGroup = () => {
+                    group.forEach(event => {
+                        layout.get(event).columns = columnEnds.length;
+                    });
+                    group = [];
+                    columnEnds = [];
+                };
+
+                sorted.forEach(({ event, start, end }) => {
+                    // L'événement ne chevauche rien dans le groupe courant : nouveau groupe
+                    if (start >= groupEnd) {
+                        closeGroup();
                     }
-                    
-                    if (overlappingEvents.length > 1) {
-                        // Vérifier si ce groupe n'existe pas déjà 
-                        const existingGroup = overlappingGroups.find(group => 
-                            group.some(e => e === event1)
-                        );
-                        
-                        if (!existingGroup) {
-                            overlappingGroups.push(overlappingEvents);
-                        }
+
+                    // Première colonne libérée avant le début de l'événement
+                    let column = columnEnds.findIndex(columnEnd => columnEnd <= start);
+                    if (column === -1) {
+                        column = columnEnds.length;
+                        columnEnds.push(end);
+                    } else {
+                        columnEnds[column] = end;
                     }
-                }
-                
-                return overlappingGroups;
+
+                    layout.set(event, { column, columns: 1 });
+                    group.push(event);
+                    groupEnd = group.length === 1 ? end : Math.max(groupEnd, end);
+                });
+                closeGroup();
+
+                return layout;
             }
 
             getEventsForDate(date) {
