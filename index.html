@@ -22,14 +22,14 @@
         .container {
             max-width: 1400px;
             margin: 0 auto;
-            padding: 20px;
+            padding: 10px;
             display: flex;
-            gap: 20px;
+            gap: 10px;
             min-height: calc(100vh - 40px);
         }
 
         .sidebar {
-            width: 300px;
+            width: 230px;
             flex-shrink: 0;
         }
 
@@ -42,8 +42,8 @@
             background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(10px);
             border-radius: 15px;
-            padding: 12px 20px;
-            margin-bottom: 12px;
+            padding: 8px 12px;
+            margin-bottom: 8px;
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
         }
 
@@ -102,23 +102,23 @@
             background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(10px);
             border-radius: 15px;
-            padding: 20px;
+            padding: 12px;
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
             position: sticky;
-            top: 20px;
-            max-height: calc(100vh - 40px);
+            top: 10px;
+            max-height: calc(100vh - 20px);
             display: flex;
             flex-direction: column;
         }
 
         .site-title {
-            font-size: 1.3em;
-            margin-bottom: 12px;
+            font-size: 1.15em;
+            margin-bottom: 8px;
             flex-shrink: 0;
         }
 
         .ics-manager h3 {
-            margin-bottom: 12px;
+            margin-bottom: 8px;
             color: #333;
             display: flex;
             align-items: center;
@@ -131,7 +131,8 @@
             display: flex;
             flex-direction: column;
             gap: 4px;
-            max-height: calc(100vh - 220px);
+            /* Occupe le reste de la hauteur du panneau et défile au besoin */
+            min-height: 0;
             overflow-y: auto;
             overflow-x: hidden;
             padding-right: 8px;
@@ -197,7 +198,7 @@
             background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(10px);
             border-radius: 15px;
-            padding: 20px;
+            padding: 8px;
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
         }
 
@@ -205,7 +206,9 @@
             display: flex;
             background: white;
             border-radius: 8px;
-            overflow: hidden;
+            /* La grille défile seule si la fenêtre est trop basse (voir computeHourHeight) */
+            overflow-x: hidden;
+            overflow-y: auto;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
 
@@ -441,10 +444,10 @@
                 <h1 class="site-title">JSH Montréal-Centre</h1>
                 <h3>
                     <div style="display: flex; gap: 8px;">
-                        <button class="btn" onclick="toggleAllCalendars()" id="toggleAllBtn" style="padding: 8px 12px; font-size: 12px;">
+                        <button class="btn" onclick="toggleAllCalendars()" id="toggleAllBtn" style="padding: 6px 10px; font-size: 12px;">
                             Tout cocher
                         </button>
-                        <button class="btn reload" onclick="reloadAllCalendars()" id="reloadBtn" style="padding: 8px 12px;">
+                        <button class="btn reload" onclick="reloadAllCalendars()" id="reloadBtn" style="padding: 6px 10px; font-size: 12px;">
                             🔄
                         </button>
                     </div>
@@ -484,7 +487,13 @@
                 // Plage horaire fixe de 7h à 23h
                 this.minHour = 7;
                 this.maxHour = 23;
-                
+
+                // Hauteur d'une heure en pixels, ajustée à la fenêtre (voir computeHourHeight)
+                this.hourHeight = 60;
+                this.minHourHeight = 30;
+                this.maxHourHeight = 60;
+                this.dayHeaderHeight = 32;
+
                 // Mode arenas
                 this.isArenaMode = false;
                 
@@ -512,6 +521,13 @@
             }
 
             async init() {
+                // Réajuster la hauteur des heures quand la fenêtre change de taille
+                let resizeFrame = null;
+                window.addEventListener('resize', () => {
+                    cancelAnimationFrame(resizeFrame);
+                    resizeFrame = requestAnimationFrame(() => this.renderWeekGrid());
+                });
+
                 this.render();
                 this.renderIcsList();
                 this.updateModeButton();
@@ -919,10 +935,35 @@
                 document.getElementById('weekInfo').textContent = '';
             }
 
+            // Hauteur d'une heure pour que la semaine tienne dans la fenêtre sans défilement.
+            // Si la fenêtre est trop basse, on garde une hauteur lisible et seule la grille défile.
+            computeHourHeight() {
+                const container = document.querySelector('.calendar-container');
+
+                // Mise en page empilée (tablette, téléphone) : la page défile normalement
+                if (window.matchMedia('(max-width: 1024px)').matches) {
+                    container.style.maxHeight = '';
+                    return this.maxHourHeight;
+                }
+
+                const totalHours = this.maxHour - this.minHour + 1;
+                const bottomSpace = parseFloat(getComputedStyle(document.querySelector('.calendar')).paddingBottom)
+                    + parseFloat(getComputedStyle(document.querySelector('.container')).paddingBottom);
+                const containerTop = container.getBoundingClientRect().top + window.scrollY;
+                const availableHeight = Math.max(window.innerHeight - containerTop - bottomSpace, 200);
+
+                container.style.maxHeight = `${availableHeight}px`;
+                const hourHeight = Math.floor((availableHeight - this.dayHeaderHeight) / totalHours);
+                return Math.min(this.maxHourHeight, Math.max(this.minHourHeight, hourHeight));
+            }
+
             renderWeekGrid() {
                 const grid = document.getElementById('calendarGrid');
+                const container = grid.parentElement;
+                const scrollTop = container.scrollTop;
+                this.hourHeight = this.computeHourHeight();
                 grid.innerHTML = '';
-                
+
                 // Modifier le grid pour avoir 8 colonnes : heures + 7 jours
                 grid.style.gridTemplateColumns = '80px repeat(7, 1fr)';
 
@@ -935,9 +976,12 @@
                 timeHeaderColumn.style.borderRight = '2px solid #dee2e6';
                 timeHeaderColumn.style.background = '#f8f9fa';
                 
-                // En-tête "Heure"
+                // En-tête "Heure" (reste visible si la grille défile)
                 const timeHeader = document.createElement('div');
-                timeHeader.style.height = '60px';
+                timeHeader.style.height = `${this.dayHeaderHeight}px`;
+                timeHeader.style.position = 'sticky';
+                timeHeader.style.top = '0';
+                timeHeader.style.zIndex = '30';
                 timeHeader.style.background = '#1E3A8A';
                 timeHeader.style.color = 'white';
                 timeHeader.style.display = 'flex';
@@ -953,7 +997,7 @@
                 for (let i = 0; i < totalHours; i++) {
                     const hour = this.minHour + i;
                     const timeSlot = document.createElement('div');
-                    timeSlot.style.height = '60px';
+                    timeSlot.style.height = `${this.hourHeight}px`;
                     timeSlot.style.borderBottom = '1px solid #e9ecef';
                     timeSlot.style.display = 'flex';
                     timeSlot.style.alignItems = 'center';
@@ -980,19 +1024,22 @@
                         dayColumn.style.backgroundColor = '#e8f4f8'; // ou toute couleur légèrement plus foncée
                     }
 
-                    // En-tête du jour
+                    // En-tête du jour, sur une ligne (reste visible si la grille défile)
                     const dayHeader = document.createElement('div');
                     dayHeader.style.background = '#1E3A8A';
                     dayHeader.style.color = 'white';
-                    dayHeader.style.padding = '15px 5px';
+                    dayHeader.style.padding = '0 5px';
                     dayHeader.style.textAlign = 'center';
                     dayHeader.style.fontWeight = 'bold';
                     dayHeader.style.fontSize = '14px';
-                    dayHeader.style.height = '60px';
+                    dayHeader.style.height = `${this.dayHeaderHeight}px`;
                     dayHeader.style.display = 'flex';
-                    dayHeader.style.flexDirection = 'column';
                     dayHeader.style.alignItems = 'center';
                     dayHeader.style.justifyContent = 'center';
+                    dayHeader.style.gap = '6px';
+                    dayHeader.style.position = 'sticky';
+                    dayHeader.style.top = '0';
+                    dayHeader.style.zIndex = '30';
                     
                     const currentDateOnly = new Date(currentDate);
                     currentDateOnly.setHours(0, 0, 0, 0);
@@ -1002,15 +1049,15 @@
                     }
 
                     dayHeader.innerHTML = `
-                        <div style="font-size: 12px; opacity: 0.9;">${dayNames[i]}</div>
-                        <div style="font-size: 18px; font-weight: bold;">${currentDate.getDate()}</div>
+                        <span style="font-size: 12px; opacity: 0.9;">${dayNames[i]}</span>
+                        <span style="font-size: 16px; font-weight: bold;">${currentDate.getDate()}</span>
                     `;
                     dayColumn.appendChild(dayHeader);
 
                     // Grille horaire
                     const timeGrid = document.createElement('div');
                     timeGrid.style.position = 'relative';
-                    timeGrid.style.height = `${totalHours * 60}px`;
+                    timeGrid.style.height = `${totalHours * this.hourHeight}px`;
 
                     // Lignes horaires
                     for (let j = 0; j < totalHours; j++) {
@@ -1018,9 +1065,9 @@
                         hourLine.style.position = 'absolute';
                         hourLine.style.left = '0';
                         hourLine.style.right = '0';
-                        hourLine.style.height = '60px';
+                        hourLine.style.height = `${this.hourHeight}px`;
                         hourLine.style.borderBottom = '1px solid #e9ecef';
-                        hourLine.style.top = `${j * 60}px`;
+                        hourLine.style.top = `${j * this.hourHeight}px`;
                         if (j % 2 === 1) {
                             hourLine.style.backgroundColor = 'rgba(0,0,0,0.02)';
                         }
@@ -1041,6 +1088,9 @@
                     dayColumn.appendChild(timeGrid);
                     grid.appendChild(dayColumn);
                 }
+
+                // Garder la position de défilement de la grille d'une semaine à l'autre
+                container.scrollTop = scrollTop;
             }
 
             createEventElement(event, position = { column: 0, columns: 1 }) {
@@ -1079,8 +1129,9 @@
                 const adjustedEndMinutes = Math.min(maxMinutes, endMinutes);
                 const adjustedDuration = Math.max(adjustedEndMinutes - adjustedStartMinutes, 15);
 
-                eventElement.style.top = `${adjustedStartMinutes}px`;
-                eventElement.style.height = `${adjustedDuration}px`;
+                const pixelsPerMinute = this.hourHeight / 60;
+                eventElement.style.top = `${adjustedStartMinutes * pixelsPerMinute}px`;
+                eventElement.style.height = `${adjustedDuration * pixelsPerMinute}px`;
 
                 // Gestion des superpositions
                 if (position.columns > 1) {
