@@ -29,7 +29,7 @@
         }
 
         .sidebar {
-            width: 230px;
+            width: 240px;
             flex-shrink: 0;
         }
 
@@ -125,6 +125,11 @@
             justify-content: space-between;
             font-size: 1.2em;
             flex-shrink: 0;
+        }
+
+        /* Un bouton trop large passe à la ligne en entier au lieu de couper son texte */
+        .ics-manager h3 .btn {
+            white-space: nowrap;
         }
 
         .ics-list {
@@ -443,7 +448,7 @@
             <div class="ics-manager">
                 <h1 class="site-title">JSH Montréal-Centre</h1>
                 <h3>
-                    <div style="display: flex; gap: 8px;">
+                    <div style="display: flex; flex-wrap: wrap; gap: 8px;">
                         <button class="btn" onclick="toggleAllCalendars()" id="toggleAllBtn" style="padding: 6px 10px; font-size: 12px;">
                             Tout cocher
                         </button>
