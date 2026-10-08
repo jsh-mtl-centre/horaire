@@ -834,16 +834,9 @@
                 const toggleBtn = document.getElementById('toggleAllBtn');
                 if (!toggleBtn) return;
                 
+                // Doit refléter l'action de toggleAllCalendars : tout cocher sauf si tout est déjà coché
                 const allChecked = this.icsCalendars.every(cal => cal.active);
-                const allUnchecked = this.icsCalendars.every(cal => !cal.active);
-                
-                if (allChecked) {
-                    toggleBtn.textContent = 'Tout décocher';
-                } else if (allUnchecked) {
-                    toggleBtn.textContent = 'Tout cocher';
-                } else {
-                    toggleBtn.textContent = 'Tout décocher';
-                }
+                toggleBtn.textContent = allChecked ? 'Tout décocher' : 'Tout cocher';
             }
 
             saveCalendarPreferences() {
