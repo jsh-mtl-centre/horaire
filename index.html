@@ -42,23 +42,26 @@
             background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(10px);
             border-radius: 15px;
-            padding: 20px;
-            margin-bottom: 20px;
+            padding: 12px 20px;
+            margin-bottom: 12px;
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
         }
 
         .controls {
             display: flex;
             flex-wrap: wrap;
-            gap: 15px;
+            gap: 10px;
             align-items: center;
-            margin-bottom: 20px;
         }
 
         .nav-buttons {
             display: flex;
-            gap: 10px;
+            gap: 8px;
             align-items: center;
+        }
+
+        .nav-buttons .btn {
+            padding: 6px 14px;
         }
 
         .btn {
@@ -89,10 +92,10 @@
         }
 
         .current-month {
-            font-size: 1.5em;
+            font-size: 1.25em;
             font-weight: bold;
             color: #333;
-            margin: 0 20px;
+            margin: 0 10px;
         }
 
         .ics-manager {
@@ -106,6 +109,12 @@
             max-height: calc(100vh - 40px);
             display: flex;
             flex-direction: column;
+        }
+
+        .site-title {
+            font-size: 1.3em;
+            margin-bottom: 12px;
+            flex-shrink: 0;
         }
 
         .ics-manager h3 {
@@ -393,9 +402,9 @@
                 justify-content: center;
                 text-align: center;
             }
-            
+
             .current-month {
-                margin: 10px 0;
+                margin: 0;
                 order: -1;
                 width: 100%;
             }
@@ -429,6 +438,7 @@
     <div class="container">
         <div class="sidebar">
             <div class="ics-manager">
+                <h1 class="site-title">JSH Montréal-Centre</h1>
                 <h3>
                     <div style="display: flex; gap: 8px;">
                         <button class="btn" onclick="toggleAllCalendars()" id="toggleAllBtn" style="padding: 8px 12px; font-size: 12px;">
@@ -445,8 +455,6 @@
 
         <div class="main-content">
             <div class="header">
-                <h1>Horaire JSH Montréal-Centre</h1>
-                
                 <div class="controls">
                     <div class="nav-buttons">
                         <button class="btn" onclick="previousWeek()">‹ Semaine précédente</button>
