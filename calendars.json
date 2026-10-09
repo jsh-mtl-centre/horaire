@@ -29,10 +29,12 @@
   {"name": "M22-C", "fileName": "M22-C.ics"},
   {"name": "M22-D", "fileName": "M22-D.ics"},
   {"name": "SENIOR", "fileName": "SENIOR.ics"},
+  {"name": "M12F-B-HARFANGS", "fileName": "M12F-B-HARFANGS.ics"},
   {"name": "M15F-GR1", "fileName": "M15F-GR1.ics"},
   {"name": "M15F-GR2", "fileName": "M15F-GR2.ics"},
   {"name": "M18F-GR1", "fileName": "M18F-GR1.ics"},
-  {"name": "M18F-GR2", "fileName": "M18F-GR2.ics"}
+  {"name": "M18F-GR2", "fileName": "M18F-GR2.ics"},
+  {"name": "M18F-A", "fileName": "M18F-A.ics"}
 ],
   "arenas": [
     {"name": "CAMILLIEN-HOUDE", "fileName": "CAMILLIEN-HOUDE.ics"},
