@@ -239,7 +239,10 @@
                 <div class="loading">Chargement des calendriers d'équipes...</div>
             </div>
         </div>
-        
+
+        <!-- Une section par entrée de « sections » dans calendars.json -->
+        <div id="extraSections"></div>
+
         <div class="section">
             <div class="section-header">🏒 Calendriers par aréna</div>
             <div class="section-content" id="arenasSection">
@@ -269,13 +272,14 @@
                 
                 const calendarsData = await response.json();
                 
-                // Traiter les calendriers de groupes
-                const groupsData = calendarsData.groupes.map(file => ({
+                // Traiter les calendriers de groupes (ceux des sections sont aussi dans ics_groupes)
+                const toGroupCalendar = file => ({
                     name: file.name,
                     fileName: file.fileName,
                     url: `https://${repoConfig.owner}.github.io/${repoConfig.repo}/ics_groupes/${file.fileName}`,
                     subscribeUrl: `webcal://${repoConfig.owner}.github.io/${repoConfig.repo}/ics_groupes/${file.fileName}`
-                }));
+                });
+                const groupsData = calendarsData.groupes.map(toGroupCalendar);
                 
                 // Traiter les calendriers d'arenas
                 const arenasData = calendarsData.arenas.map(file => ({
@@ -288,6 +292,18 @@
                 // Afficher les résultats
                 renderIcsFiles(groupsData, document.getElementById('groupsSection'));
                 renderIcsFiles(arenasData, document.getElementById('arenasSection'));
+
+                const extraSections = document.getElementById('extraSections');
+                (calendarsData.sections || []).forEach(section => {
+                    const sectionElement = document.createElement('div');
+                    sectionElement.className = 'section';
+                    sectionElement.innerHTML = `
+                        <div class="section-header">${escapeHtml(section.titre)}</div>
+                        <div class="section-content"></div>
+                    `;
+                    extraSections.appendChild(sectionElement);
+                    renderIcsFiles(section.groupes.map(toGroupCalendar), sectionElement.querySelector('.section-content'));
+                });
                 
             } catch (error) {
                 console.error('Erreur:', error);

@@ -369,8 +369,13 @@
                 allEvents = [];
                 calendars = [];
                 
-                // Choisir la source et le répertoire selon le mode
-                const sourceData = currentMode === 'groupes' ? calendarsData.groupes : calendarsData.arenas;
+                // Choisir la source et le répertoire selon le mode.
+                // Les groupes d'une section suivent les autres groupes, sous le titre de la section.
+                const sourceData = currentMode === 'groupes' ? [
+                    ...calendarsData.groupes,
+                    ...(calendarsData.sections || []).flatMap(section =>
+                        section.groupes.map(file => ({ ...file, section: section.titre })))
+                ] : calendarsData.arenas;
                 const icsFolder = currentMode === 'groupes' ? 'ics_groupes' : 'ics_arenas';
                 
                 // Ajouter les calendriers du mode sélectionné
@@ -378,6 +383,7 @@
                     const calendar = {
                         name: file.name,
                         fileName: file.fileName,
+                        section: file.section,
                         url: `https://${repoConfig.owner}.github.io/${repoConfig.repo}/${icsFolder}/${file.fileName}?${cacheBuster}`,
                         events: []
                     };
@@ -492,11 +498,23 @@
                 select.removeChild(select.lastChild);
             }
             
+            let optgroup = null;
             calendars.forEach(calendar => {
                 const option = document.createElement('option');
                 option.value = calendar.name;
                 option.textContent = calendar.name;
-                select.appendChild(option);
+
+                // Les calendriers d'une section sont regroupés sous son titre
+                if (calendar.section) {
+                    if (!optgroup || optgroup.label !== calendar.section) {
+                        optgroup = document.createElement('optgroup');
+                        optgroup.label = calendar.section;
+                        select.appendChild(optgroup);
+                    }
+                    optgroup.appendChild(option);
+                } else {
+                    select.appendChild(option);
+                }
             });
         }
 

@@ -199,6 +199,17 @@
             overflow-wrap: anywhere;
         }
 
+        /* Titre d'une section de calendriers (« sections » dans calendars.json) */
+        .ics-section-title {
+            margin-top: 8px;
+            padding-top: 8px;
+            border-top: 2px solid #1E3A8A;
+            color: #1E3A8A;
+            font-size: 12px;
+            font-weight: 700;
+            line-height: 1.3;
+        }
+
         .calendar {
             background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(10px);
@@ -573,8 +584,13 @@
                     
                     const calendarsData = await response.json();
                     
-                    // Sélectionner les bons fichiers selon le mode
-                    const files = this.isArenaMode ? calendarsData.arenas : calendarsData.groupes;
+                    // Sélectionner les bons fichiers selon le mode.
+                    // Les groupes d'une section suivent les autres groupes, sous le titre de la section.
+                    const files = this.isArenaMode ? calendarsData.arenas : [
+                        ...calendarsData.groupes,
+                        ...(calendarsData.sections || []).flatMap(section =>
+                            section.groupes.map(file => ({ ...file, section: section.titre })))
+                    ];
                     
                     console.log(`${files.length} fichiers .ics trouvés:`, files.map(f => f.fileName));
                     
@@ -592,6 +608,7 @@
                             url: `https://${this.repoConfig.owner}.github.io/${this.repoConfig.repo}/${currentPath}/${file.fileName}`,
                             name: calendarName,
                             fileName: file.fileName,
+                            section: file.section,
                             active: savedState[calendarName] !== undefined ? savedState[calendarName] : true,
                             color: this.colorPalette[index % this.colorPalette.length],
                             events: [],
@@ -850,7 +867,17 @@
                 const icsList = document.getElementById('icsList');
                 icsList.innerHTML = '';
 
+                let currentSection;
                 this.icsCalendars.forEach((calendar, index) => {
+                    // Titre de section avant le premier calendrier de chaque section
+                    if (calendar.section && calendar.section !== currentSection) {
+                        const sectionTitle = document.createElement('div');
+                        sectionTitle.className = 'ics-section-title';
+                        sectionTitle.textContent = calendar.section;
+                        icsList.appendChild(sectionTitle);
+                    }
+                    currentSection = calendar.section;
+
                     // Un <label> rend toute la case cliquable
                     const item = document.createElement('label');
                     item.className = `ics-item ${calendar.active ? 'active' : ''} ${calendar.status === 'loading' ? 'loading' : ''}`;

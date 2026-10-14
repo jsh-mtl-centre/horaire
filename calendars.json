@@ -41,6 +41,29 @@
   {"name": "M18F-A", "fileName": "M18F-A.ics"},
   {"name": "M18F-B", "fileName": "M18F-B.ics"}
 ],
+  "sections": [
+    {
+      "titre": "Power skating JSH – AA",
+      "groupes": [
+        {"name": "POWERSKATING-M11-AA", "fileName": "POWERSKATING-M11-AA.ics"},
+        {"name": "POWERSKATING-M13-AA", "fileName": "POWERSKATING-M13-AA.ics"},
+        {"name": "POWERSKATING-M15-AA", "fileName": "POWERSKATING-M15-AA.ics"},
+        {"name": "POWERSKATING-M17-AA", "fileName": "POWERSKATING-M17-AA.ics"},
+        {"name": "POWERSKATING-M19-AA", "fileName": "POWERSKATING-M19-AA.ics"}
+      ]
+    },
+    {
+      "titre": "Power skating JSH – Féminin",
+      "groupes": [
+        {"name": "POWERSKATING-M12F-A", "fileName": "POWERSKATING-M12F-A.ics"},
+        {"name": "POWERSKATING-M12F-B", "fileName": "POWERSKATING-M12F-B.ics"},
+        {"name": "POWERSKATING-M15F-A", "fileName": "POWERSKATING-M15F-A.ics"},
+        {"name": "POWERSKATING-M15F-B", "fileName": "POWERSKATING-M15F-B.ics"},
+        {"name": "POWERSKATING-M18F-A", "fileName": "POWERSKATING-M18F-A.ics"},
+        {"name": "POWERSKATING-M18F-B", "fileName": "POWERSKATING-M18F-B.ics"}
+      ]
+    }
+  ],
   "arenas": [
     {"name": "CAMILLIEN-HOUDE", "fileName": "CAMILLIEN-HOUDE.ics"},
     {"name": "FRANCIS-BOUILLON", "fileName": "FRANCIS-BOUILLON.ics"},
