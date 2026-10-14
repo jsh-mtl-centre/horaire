@@ -43,7 +43,8 @@
 ],
   "sections": [
     {
-      "titre": "Power skating JSH – AA",
+      "title": "Power skating JSH – AA",
+      "checkedByDefault": false,
       "groupes": [
         {"name": "POWERSKATING-M11-AA", "fileName": "POWERSKATING-M11-AA.ics"},
         {"name": "POWERSKATING-M13-AA", "fileName": "POWERSKATING-M13-AA.ics"},
@@ -53,7 +54,8 @@
       ]
     },
     {
-      "titre": "Power skating JSH – Féminin",
+      "title": "Power skating JSH – Féminin",
+      "checkedByDefault": false,
       "groupes": [
         {"name": "POWERSKATING-M12F-A", "fileName": "POWERSKATING-M12F-A.ics"},
         {"name": "POWERSKATING-M12F-B", "fileName": "POWERSKATING-M12F-B.ics"},

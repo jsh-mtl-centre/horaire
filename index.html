@@ -589,7 +589,7 @@
                     const files = this.isArenaMode ? calendarsData.arenas : [
                         ...calendarsData.groupes,
                         ...(calendarsData.sections || []).flatMap(section =>
-                            section.groupes.map(file => ({ ...file, section: section.titre })))
+                            section.groupes.map(file => ({ ...file, section: section.title, checkedByDefault: section.checkedByDefault })))
                     ];
                     
                     console.log(`${files.length} fichiers .ics trouvés:`, files.map(f => f.fileName));
@@ -603,13 +603,16 @@
                     this.icsCalendars = files.map((file, index) => {
                         const calendarName = file.name; // Le nom est déjà formaté dans le JSON
                         const savedState = this.loadCalendarPreferences();
+                        // Sans préférence enregistrée, un calendrier est coché, sauf si sa section a « checkedByDefault »: false
+                        const activeByDefault = file.checkedByDefault !== false;
                         
                         return {
                             url: `https://${this.repoConfig.owner}.github.io/${this.repoConfig.repo}/${currentPath}/${file.fileName}`,
                             name: calendarName,
                             fileName: file.fileName,
                             section: file.section,
-                            active: savedState[calendarName] !== undefined ? savedState[calendarName] : true,
+                            activeByDefault,
+                            active: savedState[calendarName] !== undefined ? savedState[calendarName] : activeByDefault,
                             color: this.colorPalette[index % this.colorPalette.length],
                             events: [],
                             status: 'loading'
@@ -817,8 +820,14 @@
                 this.updateToggleAllButton();
             }
 
+            // Les calendriers décochés par défaut ne comptent pas : sinon, dès la première visite,
+            // le bouton afficherait « Tout cocher » alors que presque tout est coché
+            allDefaultCalendarsChecked() {
+                return this.icsCalendars.filter(cal => cal.activeByDefault).every(cal => cal.active);
+            }
+
             toggleAllCalendars() {
-                const allChecked = this.icsCalendars.every(cal => cal.active);
+                const allChecked = this.allDefaultCalendarsChecked();
                 
                 this.icsCalendars.forEach(calendar => {
                     calendar.active = !allChecked;
@@ -836,7 +845,7 @@
                 if (!toggleBtn) return;
                 
                 // Doit refléter l'action de toggleAllCalendars : tout cocher sauf si tout est déjà coché
-                const allChecked = this.icsCalendars.every(cal => cal.active);
+                const allChecked = this.allDefaultCalendarsChecked();
                 toggleBtn.textContent = allChecked ? 'Tout décocher' : 'Tout cocher';
             }
 

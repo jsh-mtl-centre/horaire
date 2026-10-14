@@ -374,7 +374,7 @@
                 const sourceData = currentMode === 'groupes' ? [
                     ...calendarsData.groupes,
                     ...(calendarsData.sections || []).flatMap(section =>
-                        section.groupes.map(file => ({ ...file, section: section.titre })))
+                        section.groupes.map(file => ({ ...file, section: section.title })))
                 ] : calendarsData.arenas;
                 const icsFolder = currentMode === 'groupes' ? 'ics_groupes' : 'ics_arenas';
                 
