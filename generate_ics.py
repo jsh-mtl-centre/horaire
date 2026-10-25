@@ -1,4 +1,5 @@
 import csv
+import json
 import os
 import pandas as pd
 from datetime import datetime, timedelta
@@ -82,6 +83,17 @@ def load_team_names(filename: str) -> Dict[str, str]:
     except Exception as e:
         print(f"❌ Erreur chargement noms d'équipes: {e}")
         return {}
+
+def load_published_arenas(filename: str):
+    """Noms de fichier des arénas publiées (liste « arenas » de calendars.json), ou None si illisible"""
+    try:
+        with open(filename, encoding='utf-8') as f:
+            published = {arena['fileName'] for arena in json.load(f).get('arenas', [])}
+        print(f"✅ {len(published)} arénas publiées dans {filename}")
+        return published
+    except Exception as e:
+        print(f"❌ Erreur lecture {filename}, tous les calendriers d'arénas seront créés: {e}")
+        return None
 
 def parse_date_iso(date_str):
     """Parse une date au format ISO YYYY-MM-DD ou DD/MM/YYYY"""
@@ -278,12 +290,16 @@ def get_safe_filename(group_name: str) -> str:
     safe_name = re.sub(r'\s+', '_', safe_name)
     return safe_name
 
-def process_csv(csv_file: str, arenas_file: str, include_non_affecte: bool = False, teams_file: str = None):
-    """Traite le fichier principal et génère les calendriers"""
+def process_csv(csv_file: str, arenas_file: str, include_non_affecte: bool = False, teams_file: str = None,
+                calendars_file: str = None):
+    """Traite le fichier principal et génère les calendriers.
+
+    calendars_file : calendars.json. Seules les arénas de sa liste « arenas » ont un calendrier."""
 
     print("🏒 Chargement des adresses des arenas...")
     arena_addresses = load_arena_addresses(arenas_file)
     team_names = load_team_names(teams_file) if teams_file else {}
+    published_arenas = load_published_arenas(calendars_file) if calendars_file else None
 
     print(f"\n📖 Lecture de {csv_file}...")
     print(f"📋 Créneaux non affectés: {'✅ Inclus' if include_non_affecte else '❌ Exclus'}")
@@ -385,7 +401,13 @@ def process_csv(csv_file: str, arenas_file: str, include_non_affecte: bool = Fal
     arena_output_dir = "ics_arenas"
     os.makedirs(arena_output_dir, exist_ok=True)
     
+    skipped_arenas = []
     for arena, rows in events_by_arena.items():
+        safe_arena_name = get_safe_filename(arena)
+        if published_arenas is not None and f"{safe_arena_name}.ics" not in published_arenas:
+            skipped_arenas.append(arena)
+            continue
+
         if rows:
             arena_events = []
             for row in merge_internal_games(rows, team_names):
@@ -395,7 +417,6 @@ def process_csv(csv_file: str, arenas_file: str, include_non_affecte: bool = Fal
             
             if arena_events:
                 calendar_content = create_ics_file(arena_events, f"Arena {arena}")
-                safe_arena_name = get_safe_filename(arena)
                 filename = f"{arena_output_dir}/{safe_arena_name}.ics"
                 
                 try:
@@ -404,6 +425,9 @@ def process_csv(csv_file: str, arenas_file: str, include_non_affecte: bool = Fal
                     print(f"🏟️  {filename} créé ({len(arena_events)} événements)")
                 except Exception as e:
                     print(f"❌ Erreur création {filename}: {e}")
+    
+    if skipped_arenas:
+        print(f"⏭️  {len(skipped_arenas)} arénas absentes de calendars.json, sans calendrier: {skipped_arenas}")
     
     print(f"\n📁 Fichiers groupes dans: {output_dir}/")
     print(f"📁 Fichiers arenas dans: {arena_output_dir}/")
@@ -417,8 +441,9 @@ def main():
     csv_file = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTko9LGXacAQt9cVw019lXwRThQoUiQugy8yzoxSqIdt-ZjL-x8EuE2CK31AaXxyRcFnuaqtB7V_jY2/pub?gid=1017445105&single=true&output=csv"
     arenas_file = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTko9LGXacAQt9cVw019lXwRThQoUiQugy8yzoxSqIdt-ZjL-x8EuE2CK31AaXxyRcFnuaqtB7V_jY2/pub?gid=1484034317&single=true&output=csv"
     teams_file = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTko9LGXacAQt9cVw019lXwRThQoUiQugy8yzoxSqIdt-ZjL-x8EuE2CK31AaXxyRcFnuaqtB7V_jY2/pub?gid=2055974623&single=true&output=csv"
+    calendars_file = "calendars.json"
 
-    process_csv(csv_file, arenas_file, INCLUDE_NON_AFFECTE, teams_file)
+    process_csv(csv_file, arenas_file, INCLUDE_NON_AFFECTE, teams_file, calendars_file)
     print("\n🎉 Terminé!")
 
 if __name__ == "__main__":
