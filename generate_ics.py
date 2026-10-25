@@ -155,9 +155,14 @@ def create_ics_event(row: Dict, arena_addresses: Dict[str, str], arena_mode: boo
                      team_names: Dict[str, str] = None) -> str:
     """Crée un événement ICS à partir d'une ligne du CSV.
 
+    Le titre d'une joute (Commentaire « vs … » ou « @ … ») commence par 🏒, celui du power skating
+    par ⛸️. Un événement sans description est décrit « Pratique » (« Power skating » au besoin), et
+    une demi-glace « Pratique (demi-glace) ».
+
     arena_mode : calendrier d'une aréna. Le titre donne le nom de l'équipe (team_names, sinon le code
-    d'affectation), sans l'aréna, et pour une joute (Commentaire « vs … » ou « @ … ») l'adversaire,
-    qui n'est alors plus dans la description."""
+    d'affectation), sans l'aréna, et pour une joute l'adversaire, qui n'est alors plus dans la
+    description. Calendrier d'équipe : le titre garde le code d'affectation et l'aréna, et la
+    description d'une joute donne « équipe vs adversaire · Match #… »."""
 
     date_obj = parse_date_iso(row.get('Date', ''))
     if not date_obj:
@@ -184,19 +189,27 @@ def create_ics_event(row: Dict, arena_addresses: Dict[str, str], arena_mode: boo
     uid = f"{safe_affectation}-{arena_for_uid}-{start_ics}@calendar.local"
 
     commentaire = row.get('Commentaire', '').strip()
-    joute = arena_mode and re.match(r'(vs|@) ', commentaire) is not None
+    joute = re.match(r'(vs|@) ', commentaire) is not None
+    power_skating = not joute and (affectation.upper().startswith('POWERSKATING')
+                                   or re.search(r'power\s*skating', commentaire, re.IGNORECASE) is not None)
+    team_name = (team_names or {}).get(affectation, affectation)
 
     if not affectation:
         title = "Non affecté"
     elif arena_mode:
-        title = clean_text_for_ics((team_names or {}).get(affectation, affectation))
+        title = clean_text_for_ics(team_name)
     else:
         title = clean_text_for_ics(affectation)
 
-    if joute:
+    if joute and arena_mode:
         title += f" {clean_text_for_ics(commentaire)}"
     elif arena and not arena_mode:
         title += f" ({arena})"
+
+    if joute:
+        title = f"🏒 {title}"
+    elif power_skating:
+        title = f"⛸️ {title}"
 
     location_parts = []
     if arena:
@@ -224,7 +237,11 @@ def create_ics_event(row: Dict, arena_addresses: Dict[str, str], arena_mode: boo
             desc_parts.append(f"Match #{no_match}")
 
     if commentaire and not joute:
-        desc_parts.append(commentaire)
+        desc_parts.append("Pratique (demi-glace)" if commentaire.lower() == 'demi-glace' else commentaire)
+    if joute and not arena_mode:
+        desc_parts = [" · ".join([f"{team_name} {commentaire}"] + desc_parts)]
+    if not desc_parts and affectation and not joute:
+        desc_parts.append("Power skating" if power_skating else "Pratique")
     
     description = clean_text_for_ics(" ".join(desc_parts)) if desc_parts else ""
     
@@ -240,15 +257,21 @@ END:VEVENT"""
     
     return event
 
-def merge_internal_games(rows: List[Dict], team_names: Dict[str, str]) -> List[Dict]:
-    """Calendrier d'une aréna : une joute JSH contre JSH occupe deux lignes à la même heure,
-    « vs … » pour l'équipe receveuse et « @ … » pour la visiteuse. On n'en garde qu'une,
-    celle de la receveuse, avec le nom de l'équipe visiteuse en commentaire, sans la
-    catégorie qui commence aussi le nom de la receveuse (« vs Phénix JSH »)."""
+def strip_category(name: str, other: str) -> str:
+    """Retire de name la catégorie qui commence aussi other (« M13-A Faucons JSH » → « Faucons JSH »)"""
+    category = other.split(' ', 1)[0] + ' '
+    return name[len(category):] if name.startswith(category) else name
+
+def name_internal_opponents(rows: List[Dict], team_names: Dict[str, str]) -> List[Dict]:
+    """Une joute JSH contre JSH occupe deux lignes à la même heure dans la même aréna, « vs … »
+    pour l'équipe receveuse et « @ … » pour la visiteuse. Chacune reçoit en commentaire le nom de
+    l'autre équipe, sans la catégorie commune (« vs Faucons JSH », « @ Phénix JSH »). La ligne de
+    la visiteuse est marquée _visiteur_interne : le calendrier de l'aréna n'affiche la joute qu'une fois."""
     games = {}
     for i, row in enumerate(rows):
         if re.match(r'(vs|@) ', row.get('Commentaire', '')):
-            slot = (row.get('Date'), row.get('Heure_debut'), row.get('Heure_fin'), row.get('No_match', ''))
+            slot = (row.get('Date'), row.get('Arena'), row.get('Heure_debut'), row.get('Heure_fin'),
+                    row.get('No_match', ''))
             games.setdefault(slot, []).append(i)
 
     rows = list(rows)
@@ -259,12 +282,10 @@ def merge_internal_games(rows: List[Dict], team_names: Dict[str, str]) -> List[D
         if rows[home]['Commentaire'].startswith('vs') and rows[away]['Commentaire'].startswith('@'):
             home_name = team_names.get(rows[home]['Affectation'], rows[home]['Affectation'])
             away_name = team_names.get(rows[away]['Affectation'], rows[away]['Affectation'])
-            category = home_name.split(' ', 1)[0] + ' '
-            if away_name.startswith(category):
-                away_name = away_name[len(category):]
-            rows[home] = {**rows[home], 'Commentaire': f"vs {away_name}"}
-            rows[away] = None
-    return [row for row in rows if row is not None]
+            rows[home] = {**rows[home], 'Commentaire': f"vs {strip_category(away_name, home_name)}"}
+            rows[away] = {**rows[away], 'Commentaire': f"@ {strip_category(home_name, away_name)}",
+                          '_visiteur_interne': True}
+    return rows
 
 def create_ics_file(events: List[str], calendar_name: str) -> str:
     """Crée le contenu complet d'un fichier ICS"""
@@ -324,8 +345,7 @@ def process_csv(csv_file: str, arenas_file: str, include_non_affecte: bool = Fal
         total_processed = len(df)
         tous_rows = []
 
-        for index, row in df.iterrows():
-            clean_row = row.to_dict()
+        for clean_row in name_internal_opponents([row.to_dict() for _, row in df.iterrows()], team_names):
             affectation = clean_row.get('Affectation', '').strip()
             arena = clean_row.get('Arena', '').strip()
             group = get_group_name(affectation)
@@ -348,7 +368,7 @@ def process_csv(csv_file: str, arenas_file: str, include_non_affecte: bool = Fal
                     events_by_arena[arena] = []
                 events_by_arena[arena].append(clean_row)
 
-            event_ics = create_ics_event(clean_row, arena_addresses)
+            event_ics = create_ics_event(clean_row, arena_addresses, team_names=team_names)
             if event_ics:
                 events_by_group[group].append(event_ics)
 
@@ -357,7 +377,7 @@ def process_csv(csv_file: str, arenas_file: str, include_non_affecte: bool = Fal
             arena = clean_row.get('Arena', '').strip()
             prefix = re.match(r'^(M\d+)-TOUS$', affectation, re.IGNORECASE).group(1)
 
-            event_ics = create_ics_event(clean_row, arena_addresses)
+            event_ics = create_ics_event(clean_row, arena_addresses, team_names=team_names)
             if not event_ics:
                 continue
 
@@ -410,7 +430,9 @@ def process_csv(csv_file: str, arenas_file: str, include_non_affecte: bool = Fal
 
         if rows:
             arena_events = []
-            for row in merge_internal_games(rows, team_names):
+            for row in rows:
+                if row.get('_visiteur_interne'):
+                    continue
                 event_ics = create_ics_event(row, arena_addresses, arena_mode=True, team_names=team_names)
                 if event_ics:
                     arena_events.append(event_ics)
