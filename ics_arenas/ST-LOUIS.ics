@@ -1275,66 +1275,21 @@ DESCRIPTION:Pratique (demi-glace)
 STATUS:CONFIRMED
 END:VEVENT
 BEGIN:VEVENT
-UID:powerskating-m12f-b-st-louis-20261108T120000@calendar.local
+UID:groupes-power_skating__facultatif_-st-louis-20261108T120000@calendar.local
 DTSTART;TZID=America/Montreal:20261108T120000
 DTEND;TZID=America/Montreal:20261108T130000
-SUMMARY:⛸️ M12F-B Power skating JSH
+SUMMARY:⛸️ Power Skating (facultatif)
 LOCATION:ST-LOUIS\, 5633 Rue Saint-Dominique\, Montréal\, QC H2T 1V7
-DESCRIPTION:Power Skating (facultatif)
+DESCRIPTION:Groupes : M11-B Faucons JSH\, M12F-A Power skating JSH\, M12F-B Power skating JSH\, M13-A Faucons JSH
 STATUS:CONFIRMED
 END:VEVENT
 BEGIN:VEVENT
-UID:powerskating-m12f-a-st-louis-20261108T120000@calendar.local
-DTSTART;TZID=America/Montreal:20261108T120000
-DTEND;TZID=America/Montreal:20261108T130000
-SUMMARY:⛸️ M12F-A Power skating JSH
-LOCATION:ST-LOUIS\, 5633 Rue Saint-Dominique\, Montréal\, QC H2T 1V7
-DESCRIPTION:Power Skating (facultatif)
-STATUS:CONFIRMED
-END:VEVENT
-BEGIN:VEVENT
-UID:m11-b-faucons-st-louis-20261108T120000@calendar.local
-DTSTART;TZID=America/Montreal:20261108T120000
-DTEND;TZID=America/Montreal:20261108T130000
-SUMMARY:⛸️ M11-B Faucons JSH
-LOCATION:ST-LOUIS\, 5633 Rue Saint-Dominique\, Montréal\, QC H2T 1V7
-DESCRIPTION:Power Skating (facultatif)
-STATUS:CONFIRMED
-END:VEVENT
-BEGIN:VEVENT
-UID:m13-a-faucons-st-louis-20261108T120000@calendar.local
-DTSTART;TZID=America/Montreal:20261108T120000
-DTEND;TZID=America/Montreal:20261108T130000
-SUMMARY:⛸️ M13-A Faucons JSH
-LOCATION:ST-LOUIS\, 5633 Rue Saint-Dominique\, Montréal\, QC H2T 1V7
-DESCRIPTION:Power Skating (facultatif)
-STATUS:CONFIRMED
-END:VEVENT
-BEGIN:VEVENT
-UID:m15-b-st-louis-20261108T130000@calendar.local
+UID:groupes-power_skating__facultatif_-st-louis-20261108T130000@calendar.local
 DTSTART;TZID=America/Montreal:20261108T130000
 DTEND;TZID=America/Montreal:20261108T140000
-SUMMARY:⛸️ M15-B Phénix JSH
+SUMMARY:⛸️ Power Skating (facultatif)
 LOCATION:ST-LOUIS\, 5633 Rue Saint-Dominique\, Montréal\, QC H2T 1V7
-DESCRIPTION:Power Skating (facultatif)
-STATUS:CONFIRMED
-END:VEVENT
-BEGIN:VEVENT
-UID:m15-c-st-louis-20261108T130000@calendar.local
-DTSTART;TZID=America/Montreal:20261108T130000
-DTEND;TZID=America/Montreal:20261108T140000
-SUMMARY:⛸️ M15-C Phénix JSH
-LOCATION:ST-LOUIS\, 5633 Rue Saint-Dominique\, Montréal\, QC H2T 1V7
-DESCRIPTION:Power Skating (facultatif)
-STATUS:CONFIRMED
-END:VEVENT
-BEGIN:VEVENT
-UID:m15-a-st-louis-20261108T130000@calendar.local
-DTSTART;TZID=America/Montreal:20261108T130000
-DTEND;TZID=America/Montreal:20261108T140000
-SUMMARY:⛸️ M15-A Phénix JSH
-LOCATION:ST-LOUIS\, 5633 Rue Saint-Dominique\, Montréal\, QC H2T 1V7
-DESCRIPTION:Power Skating (facultatif)
+DESCRIPTION:Groupes : M15-A Phénix JSH\, M15-B Phénix JSH\, M15-C Phénix JSH
 STATUS:CONFIRMED
 END:VEVENT
 BEGIN:VEVENT

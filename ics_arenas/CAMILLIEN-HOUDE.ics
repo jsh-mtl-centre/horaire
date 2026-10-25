@@ -681,57 +681,30 @@ DESCRIPTION:Pratique
 STATUS:CONFIRMED
 END:VEVENT
 BEGIN:VEVENT
-UID:m15-gr1-camillien-houde-20261004T120000@calendar.local
+UID:groupes-power_skating_groupe_1__facultatif_-camillien-houde-20261004T120000@calendar.local
 DTSTART;TZID=America/Montreal:20261004T120000
 DTEND;TZID=America/Montreal:20261004T130000
-SUMMARY:⛸️ M15-GR1
+SUMMARY:⛸️ Power Skating Groupe 1 (facultatif)
 LOCATION:CAMILLIEN-HOUDE\, 1696 Rue Montcalm\, Montréal\, QC H2L 3H4
-DESCRIPTION:Power Skating Groupe 1 (facultatif)
+DESCRIPTION:Groupes : M13-GR1\, M15-GR1
 STATUS:CONFIRMED
 END:VEVENT
 BEGIN:VEVENT
-UID:m13-gr1-camillien-houde-20261004T120000@calendar.local
-DTSTART;TZID=America/Montreal:20261004T120000
-DTEND;TZID=America/Montreal:20261004T130000
-SUMMARY:⛸️ M13-GR1
-LOCATION:CAMILLIEN-HOUDE\, 1696 Rue Montcalm\, Montréal\, QC H2L 3H4
-DESCRIPTION:Power Skating Groupe 1 (facultatif)
-STATUS:CONFIRMED
-END:VEVENT
-BEGIN:VEVENT
-UID:m11-gr2-camillien-houde-20261004T130000@calendar.local
+UID:groupes-power_skating_groupe_2__facultatif_-camillien-houde-20261004T130000@calendar.local
 DTSTART;TZID=America/Montreal:20261004T130000
 DTEND;TZID=America/Montreal:20261004T140000
-SUMMARY:⛸️ M11-GR2
+SUMMARY:⛸️ Power Skating Groupe 2 (facultatif)
 LOCATION:CAMILLIEN-HOUDE\, 1696 Rue Montcalm\, Montréal\, QC H2L 3H4
-DESCRIPTION:Power Skating Groupe 2 (facultatif)
+DESCRIPTION:Groupes : M11-GR2\, M13-GR2
 STATUS:CONFIRMED
 END:VEVENT
 BEGIN:VEVENT
-UID:m13-gr2-camillien-houde-20261004T130000@calendar.local
-DTSTART;TZID=America/Montreal:20261004T130000
-DTEND;TZID=America/Montreal:20261004T140000
-SUMMARY:⛸️ M13-GR2
-LOCATION:CAMILLIEN-HOUDE\, 1696 Rue Montcalm\, Montréal\, QC H2L 3H4
-DESCRIPTION:Power Skating Groupe 2 (facultatif)
-STATUS:CONFIRMED
-END:VEVENT
-BEGIN:VEVENT
-UID:m11-gr3-camillien-houde-20261004T140000@calendar.local
+UID:groupes-power_skating_groupe_3__facultatif_-camillien-houde-20261004T140000@calendar.local
 DTSTART;TZID=America/Montreal:20261004T140000
 DTEND;TZID=America/Montreal:20261004T150000
-SUMMARY:⛸️ M11-GR3
+SUMMARY:⛸️ Power Skating Groupe 3 (facultatif)
 LOCATION:CAMILLIEN-HOUDE\, 1696 Rue Montcalm\, Montréal\, QC H2L 3H4
-DESCRIPTION:Power Skating Groupe 3 (facultatif)
-STATUS:CONFIRMED
-END:VEVENT
-BEGIN:VEVENT
-UID:m13-gr3-camillien-houde-20261004T140000@calendar.local
-DTSTART;TZID=America/Montreal:20261004T140000
-DTEND;TZID=America/Montreal:20261004T150000
-SUMMARY:⛸️ M13-GR3
-LOCATION:CAMILLIEN-HOUDE\, 1696 Rue Montcalm\, Montréal\, QC H2L 3H4
-DESCRIPTION:Power Skating Groupe 3 (facultatif)
+DESCRIPTION:Groupes : M11-GR3\, M13-GR3
 STATUS:CONFIRMED
 END:VEVENT
 BEGIN:VEVENT
@@ -1032,66 +1005,30 @@ DESCRIPTION:Pratique
 STATUS:CONFIRMED
 END:VEVENT
 BEGIN:VEVENT
-UID:m11-a-camillien-houde-20261011T120000@calendar.local
+UID:groupes-power_skating__facultatif_-camillien-houde-20261011T120000@calendar.local
 DTSTART;TZID=America/Montreal:20261011T120000
 DTEND;TZID=America/Montreal:20261011T130000
-SUMMARY:⛸️ M11-A
+SUMMARY:⛸️ Power Skating (facultatif)
 LOCATION:CAMILLIEN-HOUDE\, 1696 Rue Montcalm\, Montréal\, QC H2L 3H4
-DESCRIPTION:Power Skating (facultatif)
+DESCRIPTION:Groupes : M11-A\, M13-A\, M13-B
 STATUS:CONFIRMED
 END:VEVENT
 BEGIN:VEVENT
-UID:m13-a-camillien-houde-20261011T120000@calendar.local
-DTSTART;TZID=America/Montreal:20261011T120000
-DTEND;TZID=America/Montreal:20261011T130000
-SUMMARY:⛸️ M13-A
-LOCATION:CAMILLIEN-HOUDE\, 1696 Rue Montcalm\, Montréal\, QC H2L 3H4
-DESCRIPTION:Power Skating (facultatif)
-STATUS:CONFIRMED
-END:VEVENT
-BEGIN:VEVENT
-UID:m13-b-camillien-houde-20261011T120000@calendar.local
-DTSTART;TZID=America/Montreal:20261011T120000
-DTEND;TZID=America/Montreal:20261011T130000
-SUMMARY:⛸️ M13-B
-LOCATION:CAMILLIEN-HOUDE\, 1696 Rue Montcalm\, Montréal\, QC H2L 3H4
-DESCRIPTION:Power Skating (facultatif)
-STATUS:CONFIRMED
-END:VEVENT
-BEGIN:VEVENT
-UID:m15-b-camillien-houde-20261011T130000@calendar.local
+UID:groupes-power_skating__facultatif_-camillien-houde-20261011T130000@calendar.local
 DTSTART;TZID=America/Montreal:20261011T130000
 DTEND;TZID=America/Montreal:20261011T140000
-SUMMARY:⛸️ M15-B Phénix JSH
+SUMMARY:⛸️ Power Skating (facultatif)
 LOCATION:CAMILLIEN-HOUDE\, 1696 Rue Montcalm\, Montréal\, QC H2L 3H4
-DESCRIPTION:Power Skating (facultatif)
+DESCRIPTION:Groupes : M15-B Phénix JSH\, M15-C Phénix JSH
 STATUS:CONFIRMED
 END:VEVENT
 BEGIN:VEVENT
-UID:m15-c-camillien-houde-20261011T130000@calendar.local
-DTSTART;TZID=America/Montreal:20261011T130000
-DTEND;TZID=America/Montreal:20261011T140000
-SUMMARY:⛸️ M15-C Phénix JSH
-LOCATION:CAMILLIEN-HOUDE\, 1696 Rue Montcalm\, Montréal\, QC H2L 3H4
-DESCRIPTION:Power Skating (facultatif)
-STATUS:CONFIRMED
-END:VEVENT
-BEGIN:VEVENT
-UID:m17-b-faucons-camillien-houde-20261011T140000@calendar.local
+UID:groupes-power_skating__facultatif_-camillien-houde-20261011T140000@calendar.local
 DTSTART;TZID=America/Montreal:20261011T140000
 DTEND;TZID=America/Montreal:20261011T150000
-SUMMARY:⛸️ M17-B Faucons JSH
+SUMMARY:⛸️ Power Skating (facultatif)
 LOCATION:CAMILLIEN-HOUDE\, 1696 Rue Montcalm\, Montréal\, QC H2L 3H4
-DESCRIPTION:Power Skating (facultatif)
-STATUS:CONFIRMED
-END:VEVENT
-BEGIN:VEVENT
-UID:m17-b-phenix-camillien-houde-20261011T140000@calendar.local
-DTSTART;TZID=America/Montreal:20261011T140000
-DTEND;TZID=America/Montreal:20261011T150000
-SUMMARY:⛸️ M17-B Phénix JSH
-LOCATION:CAMILLIEN-HOUDE\, 1696 Rue Montcalm\, Montréal\, QC H2L 3H4
-DESCRIPTION:Power Skating (facultatif)
+DESCRIPTION:Groupes : M17-B Faucons JSH\, M17-B Phénix JSH
 STATUS:CONFIRMED
 END:VEVENT
 BEGIN:VEVENT
@@ -1392,84 +1329,30 @@ DESCRIPTION:Pratique
 STATUS:CONFIRMED
 END:VEVENT
 BEGIN:VEVENT
-UID:m11-bb-camillien-houde-20261018T120000@calendar.local
+UID:groupes-power_skating__facultatif_-camillien-houde-20261018T120000@calendar.local
 DTSTART;TZID=America/Montreal:20261018T120000
 DTEND;TZID=America/Montreal:20261018T130000
-SUMMARY:⛸️ M11-BB Phénix de JSH
+SUMMARY:⛸️ Power Skating (facultatif)
 LOCATION:CAMILLIEN-HOUDE\, 1696 Rue Montcalm\, Montréal\, QC H2L 3H4
-DESCRIPTION:Power Skating (facultatif)
+DESCRIPTION:Groupes : M11-B Faucons JSH\, M11-BB Phénix de JSH
 STATUS:CONFIRMED
 END:VEVENT
 BEGIN:VEVENT
-UID:m11-b-faucons-camillien-houde-20261018T120000@calendar.local
-DTSTART;TZID=America/Montreal:20261018T120000
-DTEND;TZID=America/Montreal:20261018T130000
-SUMMARY:⛸️ M11-B Faucons JSH
-LOCATION:CAMILLIEN-HOUDE\, 1696 Rue Montcalm\, Montréal\, QC H2L 3H4
-DESCRIPTION:Power Skating (facultatif)
-STATUS:CONFIRMED
-END:VEVENT
-BEGIN:VEVENT
-UID:m13-c-phenix-camillien-houde-20261018T130000@calendar.local
+UID:groupes-power_skating__facultatif_-camillien-houde-20261018T130000@calendar.local
 DTSTART;TZID=America/Montreal:20261018T130000
 DTEND;TZID=America/Montreal:20261018T140000
-SUMMARY:⛸️ M13-C Phénix JSH
+SUMMARY:⛸️ Power Skating (facultatif)
 LOCATION:CAMILLIEN-HOUDE\, 1696 Rue Montcalm\, Montréal\, QC H2L 3H4
-DESCRIPTION:Power Skating (facultatif)
+DESCRIPTION:Groupes : M13-B Phénix JSH\, M13-C Phénix JSH\, M13-C Faucons JSH
 STATUS:CONFIRMED
 END:VEVENT
 BEGIN:VEVENT
-UID:m13-b-phenix-camillien-houde-20261018T130000@calendar.local
-DTSTART;TZID=America/Montreal:20261018T130000
-DTEND;TZID=America/Montreal:20261018T140000
-SUMMARY:⛸️ M13-B Phénix JSH
-LOCATION:CAMILLIEN-HOUDE\, 1696 Rue Montcalm\, Montréal\, QC H2L 3H4
-DESCRIPTION:Power Skating (facultatif)
-STATUS:CONFIRMED
-END:VEVENT
-BEGIN:VEVENT
-UID:m13-c-faucons-camillien-houde-20261018T130000@calendar.local
-DTSTART;TZID=America/Montreal:20261018T130000
-DTEND;TZID=America/Montreal:20261018T140000
-SUMMARY:⛸️ M13-C Faucons JSH
-LOCATION:CAMILLIEN-HOUDE\, 1696 Rue Montcalm\, Montréal\, QC H2L 3H4
-DESCRIPTION:Power Skating (facultatif)
-STATUS:CONFIRMED
-END:VEVENT
-BEGIN:VEVENT
-UID:powerskating-m15f-a-camillien-houde-20261018T140000@calendar.local
+UID:groupes-power_skating__facultatif_-camillien-houde-20261018T140000@calendar.local
 DTSTART;TZID=America/Montreal:20261018T140000
 DTEND;TZID=America/Montreal:20261018T150000
-SUMMARY:⛸️ M15F-A Power skating JSH
+SUMMARY:⛸️ Power Skating (facultatif)
 LOCATION:CAMILLIEN-HOUDE\, 1696 Rue Montcalm\, Montréal\, QC H2L 3H4
-DESCRIPTION:Power Skating (facultatif)
-STATUS:CONFIRMED
-END:VEVENT
-BEGIN:VEVENT
-UID:powerskating-m15f-b-camillien-houde-20261018T140000@calendar.local
-DTSTART;TZID=America/Montreal:20261018T140000
-DTEND;TZID=America/Montreal:20261018T150000
-SUMMARY:⛸️ M15F-B Power skating JSH
-LOCATION:CAMILLIEN-HOUDE\, 1696 Rue Montcalm\, Montréal\, QC H2L 3H4
-DESCRIPTION:Power Skating (facultatif)
-STATUS:CONFIRMED
-END:VEVENT
-BEGIN:VEVENT
-UID:powerskating-m18f-a-camillien-houde-20261018T140000@calendar.local
-DTSTART;TZID=America/Montreal:20261018T140000
-DTEND;TZID=America/Montreal:20261018T150000
-SUMMARY:⛸️ M18F-A Power skating JSH
-LOCATION:CAMILLIEN-HOUDE\, 1696 Rue Montcalm\, Montréal\, QC H2L 3H4
-DESCRIPTION:Power Skating (facultatif)
-STATUS:CONFIRMED
-END:VEVENT
-BEGIN:VEVENT
-UID:powerskating-m18f-b-camillien-houde-20261018T140000@calendar.local
-DTSTART;TZID=America/Montreal:20261018T140000
-DTEND;TZID=America/Montreal:20261018T150000
-SUMMARY:⛸️ M18F-B Power skating JSH
-LOCATION:CAMILLIEN-HOUDE\, 1696 Rue Montcalm\, Montréal\, QC H2L 3H4
-DESCRIPTION:Power Skating (facultatif)
+DESCRIPTION:Groupes : M15F-A Power skating JSH\, M15F-B Power skating JSH\, M18F-A Power skating JSH\, M18F-B Power skating JSH
 STATUS:CONFIRMED
 END:VEVENT
 BEGIN:VEVENT
@@ -1761,102 +1644,39 @@ DESCRIPTION:Pratique (demi-glace)
 STATUS:CONFIRMED
 END:VEVENT
 BEGIN:VEVENT
-UID:m19-a-camillien-houde-20261025T100000@calendar.local
+UID:groupes-hockey_libre-camillien-houde-20261025T100000@calendar.local
 DTSTART;TZID=America/Montreal:20261025T100000
 DTEND;TZID=America/Montreal:20261025T120000
-SUMMARY:M19-A Phénix JSH
+SUMMARY:Hockey libre
 LOCATION:CAMILLIEN-HOUDE\, 1696 Rue Montcalm\, Montréal\, QC H2L 3H4
-DESCRIPTION:Hockey libre
+DESCRIPTION:Groupes : M19-A Phénix JSH\, M19-B Phénix JSH
 STATUS:CONFIRMED
 END:VEVENT
 BEGIN:VEVENT
-UID:m19-b-camillien-houde-20261025T100000@calendar.local
-DTSTART;TZID=America/Montreal:20261025T100000
-DTEND;TZID=America/Montreal:20261025T120000
-SUMMARY:M19-B Phénix JSH
-LOCATION:CAMILLIEN-HOUDE\, 1696 Rue Montcalm\, Montréal\, QC H2L 3H4
-DESCRIPTION:Hockey libre
-STATUS:CONFIRMED
-END:VEVENT
-BEGIN:VEVENT
-UID:m15-b-camillien-houde-20261025T120000@calendar.local
+UID:groupes-power_skating__facultatif_-camillien-houde-20261025T120000@calendar.local
 DTSTART;TZID=America/Montreal:20261025T120000
 DTEND;TZID=America/Montreal:20261025T130000
-SUMMARY:⛸️ M15-B Phénix JSH
+SUMMARY:⛸️ Power Skating (facultatif)
 LOCATION:CAMILLIEN-HOUDE\, 1696 Rue Montcalm\, Montréal\, QC H2L 3H4
-DESCRIPTION:Power Skating (facultatif)
+DESCRIPTION:Groupes : M13-AA Power skating JSH\, M15-AA Power skating JSH\, M15-B Phénix JSH
 STATUS:CONFIRMED
 END:VEVENT
 BEGIN:VEVENT
-UID:powerskating-m13-aa-camillien-houde-20261025T120000@calendar.local
-DTSTART;TZID=America/Montreal:20261025T120000
-DTEND;TZID=America/Montreal:20261025T130000
-SUMMARY:⛸️ M13-AA Power skating JSH
-LOCATION:CAMILLIEN-HOUDE\, 1696 Rue Montcalm\, Montréal\, QC H2L 3H4
-DESCRIPTION:Power Skating (facultatif)
-STATUS:CONFIRMED
-END:VEVENT
-BEGIN:VEVENT
-UID:powerskating-m15-aa-camillien-houde-20261025T120000@calendar.local
-DTSTART;TZID=America/Montreal:20261025T120000
-DTEND;TZID=America/Montreal:20261025T130000
-SUMMARY:⛸️ M15-AA Power skating JSH
-LOCATION:CAMILLIEN-HOUDE\, 1696 Rue Montcalm\, Montréal\, QC H2L 3H4
-DESCRIPTION:Power Skating (facultatif)
-STATUS:CONFIRMED
-END:VEVENT
-BEGIN:VEVENT
-UID:m11-a-phenix-camillien-houde-20261025T130000@calendar.local
+UID:groupes-power_skating__facultatif_-camillien-houde-20261025T130000@calendar.local
 DTSTART;TZID=America/Montreal:20261025T130000
 DTEND;TZID=America/Montreal:20261025T140000
-SUMMARY:⛸️ M11-A Phénix JSH
+SUMMARY:⛸️ Power Skating (facultatif)
 LOCATION:CAMILLIEN-HOUDE\, 1696 Rue Montcalm\, Montréal\, QC H2L 3H4
-DESCRIPTION:Power Skating (facultatif)
+DESCRIPTION:Groupes : M11-A Phénix JSH\, M11-A Faucons JSH\, M11-B Phénix JSH
 STATUS:CONFIRMED
 END:VEVENT
 BEGIN:VEVENT
-UID:m11-a-faucons-camillien-houde-20261025T130000@calendar.local
-DTSTART;TZID=America/Montreal:20261025T130000
-DTEND;TZID=America/Montreal:20261025T140000
-SUMMARY:⛸️ M11-A Faucons JSH
-LOCATION:CAMILLIEN-HOUDE\, 1696 Rue Montcalm\, Montréal\, QC H2L 3H4
-DESCRIPTION:Power Skating (facultatif)
-STATUS:CONFIRMED
-END:VEVENT
-BEGIN:VEVENT
-UID:m11-b-phenix-camillien-houde-20261025T130000@calendar.local
-DTSTART;TZID=America/Montreal:20261025T130000
-DTEND;TZID=America/Montreal:20261025T140000
-SUMMARY:⛸️ M11-B Phénix JSH
-LOCATION:CAMILLIEN-HOUDE\, 1696 Rue Montcalm\, Montréal\, QC H2L 3H4
-DESCRIPTION:Power Skating (facultatif)
-STATUS:CONFIRMED
-END:VEVENT
-BEGIN:VEVENT
-UID:m13-b-faucons-camillien-houde-20261025T140000@calendar.local
+UID:groupes-power_skating__facultatif_-camillien-houde-20261025T140000@calendar.local
 DTSTART;TZID=America/Montreal:20261025T140000
 DTEND;TZID=America/Montreal:20261025T150000
-SUMMARY:⛸️ M13-B Faucons JSH
+SUMMARY:⛸️ Power Skating (facultatif)
 LOCATION:CAMILLIEN-HOUDE\, 1696 Rue Montcalm\, Montréal\, QC H2L 3H4
-DESCRIPTION:Power Skating (facultatif)
-STATUS:CONFIRMED
-END:VEVENT
-BEGIN:VEVENT
-UID:m13-c-condors-camillien-houde-20261025T140000@calendar.local
-DTSTART;TZID=America/Montreal:20261025T140000
-DTEND;TZID=America/Montreal:20261025T150000
-SUMMARY:⛸️ M13-C Condors JSH
-LOCATION:CAMILLIEN-HOUDE\, 1696 Rue Montcalm\, Montréal\, QC H2L 3H4
-DESCRIPTION:Power Skating (facultatif)
-STATUS:CONFIRMED
-END:VEVENT
-BEGIN:VEVENT
-UID:m15-c-camillien-houde-20261025T140000@calendar.local
-DTSTART;TZID=America/Montreal:20261025T140000
-DTEND;TZID=America/Montreal:20261025T150000
-SUMMARY:⛸️ M15-C Phénix JSH
-LOCATION:CAMILLIEN-HOUDE\, 1696 Rue Montcalm\, Montréal\, QC H2L 3H4
-DESCRIPTION:Power Skating (facultatif)
+DESCRIPTION:Groupes : M13-B Faucons JSH\, M13-C Condors JSH\, M15-C Phénix JSH
 STATUS:CONFIRMED
 END:VEVENT
 BEGIN:VEVENT
@@ -2166,102 +1986,30 @@ DESCRIPTION:Pratique
 STATUS:CONFIRMED
 END:VEVENT
 BEGIN:VEVENT
-UID:m11-c-phenix-camillien-houde-20261101T120000@calendar.local
+UID:groupes-power_skating__facultatif_-camillien-houde-20261101T120000@calendar.local
 DTSTART;TZID=America/Montreal:20261101T120000
 DTEND;TZID=America/Montreal:20261101T130000
-SUMMARY:⛸️ M11-C Phénix JSH
+SUMMARY:⛸️ Power Skating (facultatif)
 LOCATION:CAMILLIEN-HOUDE\, 1696 Rue Montcalm\, Montréal\, QC H2L 3H4
-DESCRIPTION:Power Skating (facultatif)
+DESCRIPTION:Groupes : M11-C Phénix JSH\, M11-C Faucons JSH\, M13-C Phénix JSH
 STATUS:CONFIRMED
 END:VEVENT
 BEGIN:VEVENT
-UID:m11-c-faucons-camillien-houde-20261101T120000@calendar.local
-DTSTART;TZID=America/Montreal:20261101T120000
-DTEND;TZID=America/Montreal:20261101T130000
-SUMMARY:⛸️ M11-C Faucons JSH
-LOCATION:CAMILLIEN-HOUDE\, 1696 Rue Montcalm\, Montréal\, QC H2L 3H4
-DESCRIPTION:Power Skating (facultatif)
-STATUS:CONFIRMED
-END:VEVENT
-BEGIN:VEVENT
-UID:m13-c-phenix-camillien-houde-20261101T120000@calendar.local
-DTSTART;TZID=America/Montreal:20261101T120000
-DTEND;TZID=America/Montreal:20261101T130000
-SUMMARY:⛸️ M13-C Phénix JSH
-LOCATION:CAMILLIEN-HOUDE\, 1696 Rue Montcalm\, Montréal\, QC H2L 3H4
-DESCRIPTION:Power Skating (facultatif)
-STATUS:CONFIRMED
-END:VEVENT
-BEGIN:VEVENT
-UID:powerskating-m11-aa-camillien-houde-20261101T130000@calendar.local
+UID:groupes-power_skating__facultatif_-camillien-houde-20261101T130000@calendar.local
 DTSTART;TZID=America/Montreal:20261101T130000
 DTEND;TZID=America/Montreal:20261101T140000
-SUMMARY:⛸️ M11-AA Power skating JSH
+SUMMARY:⛸️ Power Skating (facultatif)
 LOCATION:CAMILLIEN-HOUDE\, 1696 Rue Montcalm\, Montréal\, QC H2L 3H4
-DESCRIPTION:Power Skating (facultatif)
+DESCRIPTION:Groupes : M11-AA Power skating JSH\, M11-BB Phénix de JSH
 STATUS:CONFIRMED
 END:VEVENT
 BEGIN:VEVENT
-UID:m11-bb-camillien-houde-20261101T130000@calendar.local
-DTSTART;TZID=America/Montreal:20261101T130000
-DTEND;TZID=America/Montreal:20261101T140000
-SUMMARY:⛸️ M11-BB Phénix de JSH
-LOCATION:CAMILLIEN-HOUDE\, 1696 Rue Montcalm\, Montréal\, QC H2L 3H4
-DESCRIPTION:Power Skating (facultatif)
-STATUS:CONFIRMED
-END:VEVENT
-BEGIN:VEVENT
-UID:m17-b-phenix-camillien-houde-20261101T140000@calendar.local
+UID:groupes-power_skating__facultatif_-camillien-houde-20261101T140000@calendar.local
 DTSTART;TZID=America/Montreal:20261101T140000
 DTEND;TZID=America/Montreal:20261101T150000
-SUMMARY:⛸️ M17-B Phénix JSH
+SUMMARY:⛸️ Power Skating (facultatif)
 LOCATION:CAMILLIEN-HOUDE\, 1696 Rue Montcalm\, Montréal\, QC H2L 3H4
-DESCRIPTION:Power Skating (facultatif)
-STATUS:CONFIRMED
-END:VEVENT
-BEGIN:VEVENT
-UID:m17-b-faucons-camillien-houde-20261101T140000@calendar.local
-DTSTART;TZID=America/Montreal:20261101T140000
-DTEND;TZID=America/Montreal:20261101T150000
-SUMMARY:⛸️ M17-B Faucons JSH
-LOCATION:CAMILLIEN-HOUDE\, 1696 Rue Montcalm\, Montréal\, QC H2L 3H4
-DESCRIPTION:Power Skating (facultatif)
-STATUS:CONFIRMED
-END:VEVENT
-BEGIN:VEVENT
-UID:powerskating-m17-aa-camillien-houde-20261101T140000@calendar.local
-DTSTART;TZID=America/Montreal:20261101T140000
-DTEND;TZID=America/Montreal:20261101T150000
-SUMMARY:⛸️ M17-AA Power skating JSH
-LOCATION:CAMILLIEN-HOUDE\, 1696 Rue Montcalm\, Montréal\, QC H2L 3H4
-DESCRIPTION:Power Skating (facultatif)
-STATUS:CONFIRMED
-END:VEVENT
-BEGIN:VEVENT
-UID:powerskating-m19-aa-camillien-houde-20261101T140000@calendar.local
-DTSTART;TZID=America/Montreal:20261101T140000
-DTEND;TZID=America/Montreal:20261101T150000
-SUMMARY:⛸️ M19-AA Power skating JSH
-LOCATION:CAMILLIEN-HOUDE\, 1696 Rue Montcalm\, Montréal\, QC H2L 3H4
-DESCRIPTION:Power Skating (facultatif)
-STATUS:CONFIRMED
-END:VEVENT
-BEGIN:VEVENT
-UID:powerskating-m18f-a-camillien-houde-20261101T140000@calendar.local
-DTSTART;TZID=America/Montreal:20261101T140000
-DTEND;TZID=America/Montreal:20261101T150000
-SUMMARY:⛸️ M18F-A Power skating JSH
-LOCATION:CAMILLIEN-HOUDE\, 1696 Rue Montcalm\, Montréal\, QC H2L 3H4
-DESCRIPTION:Power Skating (facultatif)
-STATUS:CONFIRMED
-END:VEVENT
-BEGIN:VEVENT
-UID:m15-a-camillien-houde-20261101T140000@calendar.local
-DTSTART;TZID=America/Montreal:20261101T140000
-DTEND;TZID=America/Montreal:20261101T150000
-SUMMARY:⛸️ M15-A Phénix JSH
-LOCATION:CAMILLIEN-HOUDE\, 1696 Rue Montcalm\, Montréal\, QC H2L 3H4
-DESCRIPTION:Power Skating (facultatif)
+DESCRIPTION:Groupes : M15-A Phénix JSH\, M17-AA Power skating JSH\, M17-B Phénix JSH\, M17-B Faucons JSH\, M18F-A Power skating JSH\, M19-AA Power skating JSH
 STATUS:CONFIRMED
 END:VEVENT
 BEGIN:VEVENT

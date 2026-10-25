@@ -162,7 +162,10 @@ def create_ics_event(row: Dict, arena_addresses: Dict[str, str], arena_mode: boo
     arena_mode : calendrier d'une aréna. Le titre donne le nom de l'équipe (team_names, sinon le code
     d'affectation), sans l'aréna, et pour une joute l'adversaire, qui n'est alors plus dans la
     description. Calendrier d'équipe : le titre garde le code d'affectation et l'aréna, et la
-    description d'une joute donne « équipe vs adversaire · Match #… »."""
+    description d'une joute donne « équipe vs adversaire · Match #… ».
+
+    _groupes (calendrier d'aréna) : activité commune à plusieurs groupes, voir merge_shared_activities.
+    Le titre est le commentaire et la description la liste des groupes."""
 
     date_obj = parse_date_iso(row.get('Date', ''))
     if not date_obj:
@@ -206,6 +209,12 @@ def create_ics_event(row: Dict, arena_addresses: Dict[str, str], arena_mode: boo
     elif arena and not arena_mode:
         title += f" ({arena})"
 
+    groupes = row.get('_groupes')
+    if groupes:
+        activity_for_uid = re.sub(r'[^\w-]', '_', commentaire.lower())
+        uid = f"groupes-{activity_for_uid}-{arena_for_uid}-{start_ics}@calendar.local"
+        title = clean_text_for_ics(commentaire)
+
     location_parts = []
     if arena:
         location_parts.append(arena)
@@ -237,6 +246,9 @@ def create_ics_event(row: Dict, arena_addresses: Dict[str, str], arena_mode: boo
         desc_parts = [" · ".join([f"{team_name} {commentaire}"] + desc_parts)]
     if not desc_parts and affectation and not joute:
         desc_parts.append("Power skating" if power_skating else "Pratique")
+    if groupes:
+        names = sorted(((team_names or {}).get(g, g) for g in groupes), key=category_sort_key)
+        desc_parts = ["Groupes : " + ", ".join(names)]
     
     description = clean_text_for_ics(" ".join(desc_parts)) if desc_parts else ""
 
@@ -258,6 +270,11 @@ STATUS:CONFIRMED
 END:VEVENT"""
     
     return event
+
+def category_sort_key(name: str) -> List:
+    """Tri naturel sur la catégorie, le premier mot du nom (M5 < M11 < M13-A < M13-AA). Le tri
+    étant stable, les groupes d'une même catégorie gardent l'ordre de la feuille."""
+    return [int(part) if part.isdigit() else part for part in re.split(r'(\d+)', name.split(' ', 1)[0].lower())]
 
 def strip_category(name: str, other: str) -> str:
     """Retire de name la catégorie qui commence aussi other (« M13-A Faucons JSH » → « Faucons JSH »)"""
@@ -288,6 +305,26 @@ def name_internal_opponents(rows: List[Dict], team_names: Dict[str, str]) -> Lis
             rows[away] = {**rows[away], 'Commentaire': f"@ {strip_category(home_name, away_name)}",
                           '_visiteur_interne': True}
     return rows
+
+def merge_shared_activities(rows: List[Dict]) -> List[Dict]:
+    """Calendrier d'une aréna : les groupes à la même heure avec le même commentaire, qui n'est ni une
+    joute ni une pratique (power skating, hockey libre, patin libre…), ne forment qu'un événement.
+    La première ligne reçoit la liste des affectations (_groupes), les autres sont retirées."""
+    shared = {}
+    for i, row in enumerate(rows):
+        commentaire = row.get('Commentaire', '').strip()
+        if not commentaire or re.match(r'(vs |@ |pratique|demi-glace)', commentaire, re.IGNORECASE):
+            continue
+        slot = (row.get('Date'), row.get('Heure_debut'), row.get('Heure_fin'), commentaire.lower())
+        shared.setdefault(slot, []).append(i)
+
+    rows = list(rows)
+    for indices in shared.values():
+        if len(indices) > 1:
+            rows[indices[0]] = {**rows[indices[0]], '_groupes': [rows[i]['Affectation'] for i in indices]}
+            for i in indices[1:]:
+                rows[i] = None
+    return [row for row in rows if row is not None]
 
 def create_ics_file(events: List[str], calendar_name: str) -> str:
     """Crée le contenu complet d'un fichier ICS"""
@@ -432,9 +469,7 @@ def process_csv(csv_file: str, arenas_file: str, include_non_affecte: bool = Fal
 
         if rows:
             arena_events = []
-            for row in rows:
-                if row.get('_visiteur_interne'):
-                    continue
+            for row in merge_shared_activities([r for r in rows if not r.get('_visiteur_interne')]):
                 event_ics = create_ics_event(row, arena_addresses, arena_mode=True, team_names=team_names)
                 if event_ics:
                     arena_events.append(event_ics)
