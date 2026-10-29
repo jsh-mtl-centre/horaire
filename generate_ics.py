@@ -155,9 +155,9 @@ def create_ics_event(row: Dict, arena_addresses: Dict[str, str], arena_mode: boo
                      team_names: Dict[str, str] = None) -> str:
     """Crée un événement ICS à partir d'une ligne du CSV.
 
-    Le titre d'une joute (Commentaire « vs … » ou « @ … ») commence par 🏒, celui du power skating
-    par ⛸️. Un événement sans description est décrit « Pratique » (« Power skating » au besoin), et
-    une demi-glace « Pratique (demi-glace) ».
+    Le titre d'une joute (Commentaire « vs … » ou « @ … ») commence par 🏒, celui d'un tournoi
+    (colonne Tournoi cochée) par 🏆 et celui du power skating par ⛸️. Un événement sans description
+    est décrit « Pratique » (« Power skating » au besoin), et une demi-glace « Pratique (demi-glace) ».
 
     arena_mode : calendrier d'une aréna. Le titre donne le nom de l'équipe (team_names, sinon le code
     d'affectation), sans l'aréna, et pour une joute l'adversaire, qui n'est alors plus dans la
@@ -252,7 +252,9 @@ def create_ics_event(row: Dict, arena_addresses: Dict[str, str], arena_mode: boo
     
     description = clean_text_for_ics(" ".join(desc_parts)) if desc_parts else ""
 
-    if joute:
+    if row.get('Tournoi', '').strip().upper() == 'TRUE':
+        title = f"🏆 {title}"
+    elif joute:
         title = f"🏒 {title}"
     elif power_skating:
         title = f"⛸️ {title}"
