@@ -513,13 +513,6 @@
                 // Mode arenas
                 this.isArenaMode = false;
                 
-                // Configuration du répertoire GitHub
-                this.repoConfig = {
-                    owner: 'jsh-mtl-centre',
-                    repo: 'horaire',
-                    branch: 'main'
-                };
-                
                 // Palette de couleurs pour les calendriers (sans jaune clair : le texte blanc y est illisible)
                 this.colorPalette = [
                     '#667eea', '#e74c3c', '#2ecc71', '#f39c12',
@@ -574,10 +567,8 @@
                     const currentPath = this.isArenaMode ? 'ics_arenas' : 'ics_groupes';
                     console.log(`Découverte des fichiers .ics dans le répertoire ${currentPath}...`);
                     
-                    // Charger le fichier JSON généré par GitHub Actions
-                    const jsonUrl = `https://${this.repoConfig.owner}.github.io/${this.repoConfig.repo}/calendars.json`;
-                    
-                    const response = await fetch(jsonUrl);
+                    // Chemins relatifs : en local (python -m http.server), la page lit les fichiers non commités
+                    const response = await fetch('calendars.json');
                     if (!response.ok) {
                         throw new Error(`Erreur lors du chargement du JSON: ${response.status}`);
                     }
@@ -607,7 +598,7 @@
                         const activeByDefault = file.checkedByDefault !== false;
                         
                         return {
-                            url: `https://${this.repoConfig.owner}.github.io/${this.repoConfig.repo}/${currentPath}/${file.fileName}`,
+                            url: `${currentPath}/${file.fileName}`,
                             name: calendarName,
                             fileName: file.fileName,
                             section: file.section,
@@ -677,20 +668,9 @@
                     
                     console.log(`URL avec cache buster: ${urlWithCacheBuster}`);
                     
-                    // Essayer d'abord directement
-                    let response;
-                    try {
-                        response = await fetch(urlWithCacheBuster);
-                        if (!response.ok) {
-                            throw new Error(`HTTP ${response.status}`);
-                        }
-                    } catch (error) {
-                        console.log('Échec de la requête directe, utilisation du proxy CORS...');
-                        // Utiliser un proxy CORS si la requête directe échoue
-                        response = await fetch(`https://api.allorigins.win/raw?url=${encodeURIComponent(urlWithCacheBuster)}`);
-                        if (!response.ok) {
-                            throw new Error(`Proxy HTTP ${response.status}`);
-                        }
+                    const response = await fetch(urlWithCacheBuster);
+                    if (!response.ok) {
+                        throw new Error(`HTTP ${response.status}`);
                     }
                     
                     const icsText = await response.text();
