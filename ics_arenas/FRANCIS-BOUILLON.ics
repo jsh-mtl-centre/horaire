@@ -1410,15 +1410,6 @@ DESCRIPTION:Pratique
 STATUS:CONFIRMED
 END:VEVENT
 BEGIN:VEVENT
-UID:groupes-patin_libre_de_l_halloween-francis-bouillon-20261031T103000@calendar.local
-DTSTART;TZID=America/Montreal:20261031T103000
-DTEND;TZID=America/Montreal:20261031T120000
-SUMMARY:Patin libre de l’Halloween
-LOCATION:FRANCIS-BOUILLON\, 3175 Rue de Rouen\, Montréal\, QC H1W 1K8
-DESCRIPTION:Groupes : M5 JSH groupe 1\, M5 JSH groupe 2
-STATUS:CONFIRMED
-END:VEVENT
-BEGIN:VEVENT
 UID:m11-c-phenix-francis-bouillon-20261031T133000@calendar.local
 DTSTART;TZID=America/Montreal:20261031T133000
 DTEND;TZID=America/Montreal:20261031T143000
