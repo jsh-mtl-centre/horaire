@@ -380,6 +380,10 @@ def process_csv(csv_file: str, arenas_file: str, include_non_affecte: bool = Fal
         df = df.fillna('').astype(str)
         for col in df.columns:
             df[col] = df[col].str.strip()
+        reportes = df['Date'].str.endswith('-07-01')  # matchs reportés : au 1er juillet en attendant leur nouvelle date
+        if reportes.any():
+            print(f"📅 {int(reportes.sum())} match(s) reporté(s) au 1er juillet laissé(s) de côté")
+            df = df[~reportes]
         
         total_processed = len(df)
         tous_rows = []
