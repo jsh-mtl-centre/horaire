@@ -316,6 +316,7 @@
         let allEvents = [];
         let calendars = [];
         let currentMode = 'groupes'; // 'groupes' ou 'arenas'
+        let loadId = 0; // Numéro du dernier chargement lancé
 
         // Démarrer automatiquement au chargement de la page
         window.addEventListener('load', loadCalendars);
@@ -341,6 +342,11 @@
         }
 
         async function loadCalendars() {
+            // Changer de mode pendant un chargement en lance un nouveau : le précédent, devenu périmé,
+            // doit s'arrêter sans rien afficher, sinon ses calendriers se mêlent à ceux du nouveau mode
+            const thisLoadId = ++loadId;
+            const isStale = () => thisLoadId !== loadId;
+            
             try {
                 // Afficher le loading
                 document.getElementById('eventsContainer').innerHTML = '<div class="loading">Chargement des événements...</div>';
@@ -358,10 +364,11 @@
                 }
                 
                 const calendarsData = await response.json();
+                if (isStale()) return;
                 
-                // Traiter selon le mode sélectionné
-                allEvents = [];
-                calendars = [];
+                // Traiter selon le mode sélectionné, dans des listes propres à ce chargement
+                const loadedEvents = [];
+                const loadedCalendars = [];
                 
                 // Choisir la source et le répertoire selon le mode.
                 // Les groupes d'une section suivent les autres groupes, sous le titre de la section.
@@ -381,27 +388,31 @@
                         url: `${icsFolder}/${file.fileName}?${cacheBuster}`,
                         events: []
                     };
-                    calendars.push(calendar);
+                    loadedCalendars.push(calendar);
                     
                     try {
                         await loadCalendarEvents(calendar);
                         calendar.events.forEach(event => {
                             event.calendarName = calendar.name;
                         });
-                        allEvents.push(...calendar.events);
+                        loadedEvents.push(...calendar.events);
                     } catch (error) {
                         console.error(`Erreur pour ${calendar.name}:`, error);
                     }
+                    if (isStale()) return;
                 }
                 
                 // Trier tous les événements par date
-                allEvents.sort((a, b) => a.startDate - b.startDate);
+                loadedEvents.sort((a, b) => a.startDate - b.startDate);
+                allEvents = loadedEvents;
+                calendars = loadedCalendars;
                 
                 // Peupler le menu déroulant et afficher les événements
                 populateGroupSelect();
                 filterEvents();
                 
             } catch (error) {
+                if (isStale()) return;
                 console.error('Erreur:', error);
                 showError(`Erreur: ${error.message}`);
             }
