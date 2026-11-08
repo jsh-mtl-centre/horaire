@@ -151,6 +151,13 @@ def get_group_name(affectation: str) -> str:
         return "Non affecté"
     return affectation.strip()
 
+def match_tournoi_externe(row: Dict) -> bool:
+    """Match d'un tournoi organisé par JSH entre deux équipes de l'extérieur : sans Affectation, avec un numéro
+    de match et la case Tournoi cochée. Il va seulement dans le calendrier de son aréna, titré par son commentaire,
+    écrit comme ceux de nos équipes (« M11-BB ATTACK H.S.O. vs TEAL GRIZZLIES C.H.A. (TOURNOI …) »)."""
+    return (not row.get('Affectation', '').strip() and row.get('Tournoi', '').strip().upper() == 'TRUE'
+            and bool(row.get('No_match', '').strip()))
+
 def create_ics_event(row: Dict, arena_addresses: Dict[str, str], arena_mode: bool = False,
                      team_names: Dict[str, str] = None) -> str:
     """Crée un événement ICS à partir d'une ligne du CSV.
@@ -165,7 +172,9 @@ def create_ics_event(row: Dict, arena_addresses: Dict[str, str], arena_mode: boo
     description d'une joute donne « équipe vs adversaire · Match #… ».
 
     _groupes (calendrier d'aréna) : activité commune à plusieurs groupes, voir merge_shared_activities.
-    Le titre est le commentaire et la description la liste des groupes."""
+    Le titre est le commentaire et la description la liste des groupes.
+
+    Sans affectation (calendrier d'aréna, voir match_tournoi_externe) : le titre est le commentaire."""
 
     date_obj = parse_date_iso(row.get('Date', ''))
     if not date_obj:
@@ -198,7 +207,7 @@ def create_ics_event(row: Dict, arena_addresses: Dict[str, str], arena_mode: boo
     team_name = (team_names or {}).get(affectation, affectation)
 
     if not affectation:
-        title = "Non affecté"
+        title = clean_text_for_ics(commentaire) if arena_mode and commentaire else "Non affecté"
     elif arena_mode:
         title = clean_text_for_ics(team_name)
     else:
@@ -240,7 +249,7 @@ def create_ics_event(row: Dict, arena_addresses: Dict[str, str], arena_mode: boo
         except (ValueError, TypeError):
             desc_parts.append(f"Match #{no_match}")
 
-    if commentaire and not joute:
+    if commentaire and not joute and affectation:  # sans affectation, le commentaire est déjà le titre
         desc_parts.append("Pratique (demi-glace)" if commentaire.lower() == 'demi-glace' else commentaire)
     if joute and not arena_mode:
         desc_parts = [" · ".join([f"{team_name} {commentaire}"] + desc_parts)]
@@ -395,6 +404,8 @@ def process_csv(csv_file: str, arenas_file: str, include_non_affecte: bool = Fal
 
             if group == "Non affecté":
                 non_affecte_count += 1
+                if arena and match_tournoi_externe(clean_row):
+                    events_by_arena.setdefault(arena, []).append(clean_row)
                 if not include_non_affecte:
                     excluded_count += 1
                     continue
