@@ -314,17 +314,116 @@
             line-height: 1.1;
             overflow: hidden;
             cursor: pointer;
-            transition: all 0.2s ease;
             border-left: 2px solid rgba(255,255,255,0.3);
             box-shadow: 0 1px 3px rgba(0,0,0,0.2);
             z-index: 10;
             word-wrap: break-word;
         }
 
-        .event:hover {
-            transform: translateX(-1px) scale(1.02);
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-            z-index: 20;
+        .event.selected,
+        .event:focus-visible {
+            outline: 2px solid #1E3A8A;
+            outline-offset: 1px;
+            z-index: 25;
+        }
+
+        /* Copie agrandie de la période survolée à la souris (voir showEventPreview) */
+        .event.event-preview {
+            z-index: 26;
+            pointer-events: none;
+        }
+
+        /* La copie part de la case de la période et s'agrandit en douceur */
+        .event.event-preview.growing {
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+            transition: top 0.15s ease-out, left 0.15s ease-out, width 0.15s ease-out,
+                        height 0.15s ease-out, box-shadow 0.15s ease-out;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .event.event-preview.growing {
+                transition: none;
+            }
+        }
+
+        /* La période d'origine s'efface derrière sa copie. opacity plutôt que visibility :
+           elle doit continuer à capter la souris. */
+        .event.previewed {
+            opacity: 0;
+        }
+
+        /* Fiche de détail d'une période, ouverte par un clic ou un toucher */
+        .event-details {
+            position: fixed;
+            z-index: 1000;
+            width: 300px;
+            max-width: calc(100vw - 16px);
+            max-height: calc(100vh - 16px);
+            overflow-y: auto;
+            background: white;
+            border-top: 6px solid var(--calendar-color);
+            border-radius: 10px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.35);
+            padding: 12px 14px 14px;
+            font-size: 14px;
+            color: #333;
+        }
+
+        .event-details[hidden] {
+            display: none;
+        }
+
+        .event-details-close {
+            position: absolute;
+            top: 4px;
+            right: 6px;
+            border: none;
+            background: none;
+            color: #666;
+            font-size: 24px;
+            line-height: 1;
+            padding: 2px 6px;
+            cursor: pointer;
+        }
+
+        .event-details-title {
+            margin: 0 28px 4px 0;
+            font-size: 16px;
+            line-height: 1.3;
+            overflow-wrap: anywhere;
+        }
+
+        .event-details-description {
+            margin-bottom: 8px;
+            font-style: italic;
+            white-space: pre-line;
+            overflow-wrap: anywhere;
+        }
+
+        .event-details-row {
+            display: flex;
+            gap: 8px;
+            margin-top: 6px;
+            line-height: 1.4;
+            overflow-wrap: anywhere;
+        }
+
+        .event-details-icon {
+            flex-shrink: 0;
+            width: 20px;
+            text-align: center;
+        }
+
+        .event-details-row a {
+            color: #1E3A8A;
+        }
+
+        .event-details-dot {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--calendar-color);
         }
 
         .event-time {
@@ -450,6 +549,18 @@
             .calendar-container {
                 overflow-x: auto;
             }
+
+            /* Sur téléphone, la fiche de détail s'affiche au bas de l'écran (voir positionEventDetails) */
+            .event-details {
+                left: 0;
+                right: 0;
+                bottom: 0;
+                width: auto;
+                max-width: none;
+                max-height: 70vh;
+                border-radius: 14px 14px 0 0;
+                padding-bottom: calc(16px + env(safe-area-inset-bottom));
+            }
         }
     </style>
 </head>
@@ -481,7 +592,7 @@
                         <button class="btn" onclick="goToToday()">Cette semaine</button>
                     </div>
                     <div class="current-month" id="currentMonth"></div>
-                    <div class="week-info" id="weekInfo"></div>
+                    <div class="week-info" id="weekInfo">💡 Cliquez sur une période pour voir tous les détails</div>
                 </div>
             </div>
 
@@ -491,6 +602,11 @@
                 </div>
             </div>
         </div>
+    </div>
+
+    <div class="event-details" id="eventDetails" role="dialog" aria-labelledby="eventDetailsTitle" hidden>
+        <button class="event-details-close" type="button" aria-label="Fermer" onclick="window.calendar.closeEventDetails()">×</button>
+        <div id="eventDetailsContent"></div>
     </div>
 
    <script>
@@ -512,7 +628,15 @@
 
                 // Mode arenas
                 this.isArenaMode = false;
-                
+
+                // Période dont la fiche de détail est ouverte, et sa case dans la grille
+                this.selectedEvent = null;
+                this.selectedElement = null;
+
+                // Copie agrandie de la période survolée, et la période elle-même (voir showEventPreview)
+                this.eventPreview = null;
+                this.previewedElement = null;
+
                 // Palette de couleurs pour les calendriers (sans jaune clair : le texte blanc y est illisible)
                 this.colorPalette = [
                     '#667eea', '#e74c3c', '#2ecc71', '#f39c12',
@@ -536,6 +660,20 @@
                     cancelAnimationFrame(resizeFrame);
                     resizeFrame = requestAnimationFrame(() => this.renderWeekGrid());
                 });
+
+                // Fermer la fiche de détail avec Échap, un clic ailleurs ou, hors téléphone,
+                // un défilement (elle ne serait plus à côté de sa période)
+                document.addEventListener('keydown', e => {
+                    if (e.key === 'Escape') this.closeEventDetails();
+                });
+                document.addEventListener('click', e => {
+                    if (!e.target.closest('.event-details, .event')) this.closeEventDetails();
+                });
+                window.addEventListener('scroll', e => {
+                    if (!this.isDetailsSheet() && !document.getElementById('eventDetails').contains(e.target)) {
+                        this.closeEventDetails();
+                    }
+                }, true);
 
                 this.render();
                 this.renderIcsList();
@@ -740,15 +878,21 @@
 
             processProperty(event, key, value) {
                 if (key === 'SUMMARY') {
-                    event.summary = value.replace(/\\,/g, ',').replace(/\\;/g, ';').replace(/\\n/g, '\n');
+                    event.summary = this.unescapeICSText(value);
                 } else if (key.startsWith('DTSTART')) {
                     event.dtstart = this.parseICSDate(value);
                     event.allDay = !key.includes('TZID') && !value.includes('T');
                 } else if (key.startsWith('DTEND')) {
                     event.dtend = this.parseICSDate(value);
                 } else if (key === 'DESCRIPTION') {
-                    event.description = value.replace(/\\,/g, ',').replace(/\\;/g, ';').replace(/\\n/g, '\n');
+                    event.description = this.unescapeICSText(value);
+                } else if (key === 'LOCATION') {
+                    event.location = this.unescapeICSText(value);
                 }
+            }
+
+            unescapeICSText(value) {
+                return value.replace(/\\,/g, ',').replace(/\\;/g, ';').replace(/\\n/g, '\n');
             }
 
             parseICSDate(dateStr) {
@@ -953,7 +1097,6 @@
                 }
 
                 document.getElementById('currentMonth').textContent = weekText;
-                document.getElementById('weekInfo').textContent = '';
             }
 
             // Hauteur d'une heure pour que la semaine tienne dans la fenêtre sans défilement.
@@ -984,6 +1127,8 @@
                 const scrollTop = container.scrollTop;
                 this.hourHeight = this.computeHourHeight();
                 grid.innerHTML = '';
+                // createEventElement retrouve la case de la période sélectionnée, si elle est encore affichée
+                this.selectedElement = null;
 
                 // Modifier le grid pour avoir 8 colonnes : heures + 7 jours
                 grid.style.gridTemplateColumns = '80px repeat(7, 1fr)';
@@ -1112,6 +1257,15 @@
 
                 // Garder la position de défilement de la grille d'une semaine à l'autre
                 container.scrollTop = scrollTop;
+
+                // Garder la fiche de détail ouverte si sa période est encore affichée (ex. : redimensionnement)
+                if (this.selectedEvent) {
+                    if (this.selectedElement) {
+                        this.positionEventDetails();
+                    } else {
+                        this.closeEventDetails();
+                    }
+                }
             }
 
             createEventElement(event, position = { column: 0, columns: 1 }) {
@@ -1183,15 +1337,166 @@
                     ${descriptionHtml}
 `;
 
-                let tooltipText = `${event.summary}\nCalendrier: ${event.calendar}\nHeure: ${timeStr}${endTimeStr}\nDate: ${startTime.toLocaleDateString('fr-FR')}`;
+                // Clic, toucher ou Entrée : ouvrir la fiche de détail
+                eventElement.tabIndex = 0;
+                eventElement.setAttribute('role', 'button');
+                eventElement.addEventListener('click', () => this.showEventDetails(event, eventElement, `${timeStr}${endTimeStr}`));
+                eventElement.addEventListener('keydown', e => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        this.showEventDetails(event, eventElement, `${timeStr}${endTimeStr}`);
+                    }
+                });
 
-                if (event.description) {
-                    tooltipText += `\n\nDescription: ${event.description}`;
+                // Survol à la souris seulement : au toucher, la fiche de détail suffit
+                eventElement.addEventListener('pointerenter', e => {
+                    if (e.pointerType === 'mouse') this.showEventPreview(eventElement);
+                });
+                eventElement.addEventListener('pointerleave', () => this.hideEventPreview());
+
+                if (event === this.selectedEvent) {
+                    eventElement.classList.add('selected');
+                    this.selectedElement = eventElement;
                 }
 
-                eventElement.title = tooltipText;
-
                 return eventElement;
+            }
+
+            // Remplace la période survolée par une copie qui part de sa case et s'agrandit jusqu'à
+            // toute la largeur de la journée et la hauteur de tout son texte. La copie laisse passer
+            // la souris : en glissant vers une période voisine, c'est elle qui s'agrandit à son tour.
+            showEventPreview(element) {
+                this.hideEventPreview();
+
+                const timeGrid = element.parentElement;
+                const preview = element.cloneNode(true);
+                preview.classList.add('event-preview');
+                preview.removeAttribute('tabindex');
+                preview.removeAttribute('role');
+                preview.setAttribute('aria-hidden', 'true');
+
+                // Mesurer la taille finale : toute la largeur de la journée, assez haute pour tout le texte
+                const width = timeGrid.offsetWidth;
+                preview.style.left = '0px';
+                preview.style.right = 'auto';
+                preview.style.width = `${width}px`;
+                preview.style.height = 'auto';
+                preview.style.minHeight = `${element.offsetHeight}px`;
+                timeGrid.appendChild(preview);
+                const height = preview.offsetHeight;
+
+                // Départ : exactement la case de la période
+                preview.style.minHeight = '';
+                preview.style.left = `${element.offsetLeft}px`;
+                preview.style.width = `${element.offsetWidth}px`;
+                preview.style.height = `${element.offsetHeight}px`;
+                preview.getBoundingClientRect(); // appliquer le départ avant d'animer
+
+                preview.classList.add('growing');
+                preview.style.left = '0px';
+                preview.style.width = `${width}px`;
+                preview.style.height = `${height}px`;
+
+                // Remonter la copie si elle dépasse le bas de la journée
+                const overflow = element.offsetTop + height - timeGrid.offsetHeight;
+                if (overflow > 0) {
+                    preview.style.top = `${Math.max(0, element.offsetTop - overflow)}px`;
+                }
+
+                element.classList.add('previewed');
+                this.eventPreview = preview;
+                this.previewedElement = element;
+            }
+
+            hideEventPreview() {
+                if (this.eventPreview) {
+                    this.eventPreview.remove();
+                    this.previewedElement.classList.remove('previewed');
+                    this.eventPreview = null;
+                    this.previewedElement = null;
+                }
+            }
+
+            showEventDetails(event, element, timeRange) {
+                // Un deuxième clic sur la même période ferme la fiche
+                if (event === this.selectedEvent) {
+                    this.closeEventDetails();
+                    return;
+                }
+                this.closeEventDetails();
+                this.selectedEvent = event;
+                this.selectedElement = element;
+                element.classList.add('selected');
+
+                // Ex. : « Lundi 9 novembre 2026 »
+                const dateStr = new Date(event.dtstart)
+                    .toLocaleDateString('fr-CA', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })
+                    .replace(/^./, c => c.toUpperCase());
+
+                const row = (icon, html) =>
+                    `<div class="event-details-row"><span class="event-details-icon">${icon}</span><span>${html}</span></div>`;
+
+                const mapsUrl = event.location &&
+                    `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(event.location)}`;
+
+                document.getElementById('eventDetailsContent').innerHTML = `
+                    <h2 class="event-details-title" id="eventDetailsTitle">${this.escapeHtml(event.summary)}</h2>
+                    ${event.description ? `<div class="event-details-description">${this.escapeHtml(event.description)}</div>` : ''}
+                    ${row('📅', this.escapeHtml(dateStr))}
+                    ${row('🕒', this.escapeHtml(timeRange))}
+                    ${event.location ? row('📍', `<a href="${mapsUrl}" target="_blank" rel="noopener">${this.escapeHtml(event.location)}</a>`) : ''}
+                    ${row('<span class="event-details-dot"></span>', this.escapeHtml(event.calendar))}
+                `;
+
+                const popup = document.getElementById('eventDetails');
+                popup.style.setProperty('--calendar-color', event.color);
+                popup.hidden = false;
+                this.positionEventDetails();
+            }
+
+            closeEventDetails() {
+                document.getElementById('eventDetails').hidden = true;
+                if (this.selectedElement) {
+                    this.selectedElement.classList.remove('selected');
+                }
+                this.selectedEvent = null;
+                this.selectedElement = null;
+            }
+
+            // Sur téléphone, la fiche s'affiche au bas de l'écran plutôt qu'à côté de la période
+            isDetailsSheet() {
+                return window.matchMedia('(max-width: 768px)').matches;
+            }
+
+            // Place la fiche à droite de la journée, sinon à gauche, sans dépasser de la fenêtre.
+            // À côté de la journée plutôt que de la période : elle ne cache pas la copie agrandie
+            // ni les autres périodes de la journée.
+            positionEventDetails() {
+                const popup = document.getElementById('eventDetails');
+                if (this.isDetailsSheet()) {
+                    popup.style.left = '';
+                    popup.style.top = '';
+                    return;
+                }
+
+                const margin = 8;
+                const rect = this.selectedElement.getBoundingClientRect();
+                const dayRect = this.selectedElement.parentElement.getBoundingClientRect();
+                let left = dayRect.right + margin;
+                if (left + popup.offsetWidth > window.innerWidth - margin) {
+                    left = dayRect.left - popup.offsetWidth - margin;
+                }
+                left = Math.max(margin, Math.min(left, window.innerWidth - popup.offsetWidth - margin));
+                const top = Math.max(margin, Math.min(rect.top, window.innerHeight - popup.offsetHeight - margin));
+
+                popup.style.left = `${left}px`;
+                popup.style.top = `${top}px`;
+            }
+
+            escapeHtml(text) {
+                const div = document.createElement('div');
+                div.textContent = text;
+                return div.innerHTML;
             }
 
             getEventStartEnd(event) {
