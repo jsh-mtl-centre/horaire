@@ -389,9 +389,11 @@ def process_csv(csv_file: str, arenas_file: str, include_non_affecte: bool = Fal
         df = df.fillna('').astype(str)
         for col in df.columns:
             df[col] = df[col].str.strip()
-        reportes = df['Date'].str.endswith('-07-01')  # matchs reportés : au 1er juillet en attendant leur nouvelle date
+        # matchs reportés : au 1er avril à 0:00 en attendant leur nouvelle date (au 1er juillet, l'ancienne règle)
+        reportes = ((df['Date'].str.endswith('-04-01') & df['Heure_debut'].isin(['0:00', '00:00']))
+                    | df['Date'].str.endswith('-07-01'))
         if reportes.any():
-            print(f"📅 {int(reportes.sum())} match(s) reporté(s) au 1er juillet laissé(s) de côté")
+            print(f"📅 {int(reportes.sum())} match(s) reporté(s) au 1er avril à 0:00 laissé(s) de côté")
             df = df[~reportes]
         
         total_processed = len(df)
