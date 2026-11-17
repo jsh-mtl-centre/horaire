@@ -159,21 +159,43 @@ DESCRIPTION:Pratique
 STATUS:CONFIRMED
 END:VEVENT
 BEGIN:VEVENT
-UID:m9-gr3-francis-bouillon-20261121T073000@calendar.local
-DTSTART;TZID=America/Montreal:20261121T073000
-DTEND;TZID=America/Montreal:20261121T103000
-SUMMARY:M9-GR3 (FRANCIS-BOUILLON)
-LOCATION:FRANCIS-BOUILLON\, 3175 Rue de Rouen\, Montréal\, QC H1W 1K8
-DESCRIPTION:Pratique
+UID:avis-m9-gr3-20261121@calendar.local
+DTSTART;VALUE=DATE:20261121
+DTEND;VALUE=DATE:20261122
+SUMMARY:⚠️ Nouveau calendrier : abonnez-vous à celui de votre équipe M9
+DESCRIPTION:À partir du 21 novembre\, les groupes M9 (GR1\, GR2\, GR3) sont remplacés par des équipes. Ce calendrier ne recevra plus de pratiques ni de matchs. Abonnez-vous au calendrier de l'équipe de votre enfant (par exemple M9-B-VIKINGS) sur la page des calendriers :\nhttps://jsh-mtl-centre.github.io/horaire/abonnement.html
+URL:https://jsh-mtl-centre.github.io/horaire/abonnement.html
+TRANSP:TRANSPARENT
 STATUS:CONFIRMED
 END:VEVENT
 BEGIN:VEVENT
-UID:m9-gr3-mont-royal-20261122T074500@calendar.local
-DTSTART;TZID=America/Montreal:20261122T074500
-DTEND;TZID=America/Montreal:20261122T104500
-SUMMARY:M9-GR3 (MONT-ROYAL)
-LOCATION:MONT-ROYAL\, 4365 Rue Cartier\, Montréal\, QC H2H 1Z7
-DESCRIPTION:Pratique
+UID:avis-m9-gr3-20261122@calendar.local
+DTSTART;VALUE=DATE:20261122
+DTEND;VALUE=DATE:20261123
+SUMMARY:⚠️ Nouveau calendrier : abonnez-vous à celui de votre équipe M9
+DESCRIPTION:À partir du 21 novembre\, les groupes M9 (GR1\, GR2\, GR3) sont remplacés par des équipes. Ce calendrier ne recevra plus de pratiques ni de matchs. Abonnez-vous au calendrier de l'équipe de votre enfant (par exemple M9-B-VIKINGS) sur la page des calendriers :\nhttps://jsh-mtl-centre.github.io/horaire/abonnement.html
+URL:https://jsh-mtl-centre.github.io/horaire/abonnement.html
+TRANSP:TRANSPARENT
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:avis-m9-gr3-20261128@calendar.local
+DTSTART;VALUE=DATE:20261128
+DTEND;VALUE=DATE:20261129
+SUMMARY:⚠️ Nouveau calendrier : abonnez-vous à celui de votre équipe M9
+DESCRIPTION:À partir du 21 novembre\, les groupes M9 (GR1\, GR2\, GR3) sont remplacés par des équipes. Ce calendrier ne recevra plus de pratiques ni de matchs. Abonnez-vous au calendrier de l'équipe de votre enfant (par exemple M9-B-VIKINGS) sur la page des calendriers :\nhttps://jsh-mtl-centre.github.io/horaire/abonnement.html
+URL:https://jsh-mtl-centre.github.io/horaire/abonnement.html
+TRANSP:TRANSPARENT
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:avis-m9-gr3-20261129@calendar.local
+DTSTART;VALUE=DATE:20261129
+DTEND;VALUE=DATE:20261130
+SUMMARY:⚠️ Nouveau calendrier : abonnez-vous à celui de votre équipe M9
+DESCRIPTION:À partir du 21 novembre\, les groupes M9 (GR1\, GR2\, GR3) sont remplacés par des équipes. Ce calendrier ne recevra plus de pratiques ni de matchs. Abonnez-vous au calendrier de l'équipe de votre enfant (par exemple M9-B-VIKINGS) sur la page des calendriers :\nhttps://jsh-mtl-centre.github.io/horaire/abonnement.html
+URL:https://jsh-mtl-centre.github.io/horaire/abonnement.html
+TRANSP:TRANSPARENT
 STATUS:CONFIRMED
 END:VEVENT
 END:VCALENDAR

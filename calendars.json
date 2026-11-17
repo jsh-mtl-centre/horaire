@@ -7,9 +7,16 @@
   {"name": "M7-MAHG0", "fileName": "M7-MAHG0.ics"},
   {"name": "M7-MAHG1", "fileName": "M7-MAHG1.ics"},
   {"name": "M7-MAHG2", "fileName": "M7-MAHG2.ics"},
-  {"name": "M9-GR1", "fileName": "M9-GR1.ics"},
-  {"name": "M9-GR2", "fileName": "M9-GR2.ics"},
-  {"name": "M9-GR3", "fileName": "M9-GR3.ics"},
+  {"name": "M9-A-PHENIX", "fileName": "M9-A-PHENIX.ics"},
+  {"name": "M9-B-GAULOIS", "fileName": "M9-B-GAULOIS.ics"},
+  {"name": "M9-B-GLADIATEURS", "fileName": "M9-B-GLADIATEURS.ics"},
+  {"name": "M9-B-VIKINGS", "fileName": "M9-B-VIKINGS.ics"},
+  {"name": "M9-C-ECLAIRS", "fileName": "M9-C-ECLAIRS.ics"},
+  {"name": "M9-C-TEMPETE", "fileName": "M9-C-TEMPETE.ics"},
+  {"name": "M9-C-TONNERRE", "fileName": "M9-C-TONNERRE.ics"},
+  {"name": "M9-D-COYOTES", "fileName": "M9-D-COYOTES.ics"},
+  {"name": "M9-D-GRIZZLIES", "fileName": "M9-D-GRIZZLIES.ics"},
+  {"name": "M9-D-LOUPS", "fileName": "M9-D-LOUPS.ics"},
   {"name": "M11-AA", "fileName": "M11-AA.ics"},
   {"name": "M11-BB", "fileName": "M11-BB.ics"},
   {"name": "M11-A-PHENIX", "fileName": "M11-A-PHENIX.ics"},
@@ -37,6 +44,7 @@
   {"name": "M22-D", "fileName": "M22-D.ics"},
   {"name": "SENIOR", "fileName": "SENIOR.ics"},
   {"name": "M9F", "fileName": "M9F.ics"},
+  {"name": "M9F-C-FOUDRE", "fileName": "M9F-C-FOUDRE.ics"},
   {"name": "M12F-B-HARFANGS", "fileName": "M12F-B-HARFANGS.ics"},
   {"name": "M15F-B", "fileName": "M15F-B.ics"},
   {"name": "M18F-A", "fileName": "M18F-A.ics"},
@@ -65,6 +73,15 @@
         {"name": "POWERSKATING-M18F-A", "fileName": "POWERSKATING-M18F-A.ics"},
         {"name": "POWERSKATING-M18F-B", "fileName": "POWERSKATING-M18F-B.ics"}
       ]
+    }
+  ],
+  "avis": [
+    {
+      "groupes": ["M9-GR1", "M9-GR2", "M9-GR3"],
+      "dates": ["2026-11-21", "2026-11-22", "2026-11-28", "2026-11-29"],
+      "titre": "⚠️ Nouveau calendrier : abonnez-vous à celui de votre équipe M9",
+      "texte": "À partir du 21 novembre, les groupes M9 (GR1, GR2, GR3) sont remplacés par des équipes. Ce calendrier ne recevra plus de pratiques ni de matchs. Abonnez-vous au calendrier de l'équipe de votre enfant (par exemple M9-B-VIKINGS) sur la page des calendriers :",
+      "lien": "https://jsh-mtl-centre.github.io/horaire/abonnement.html"
     }
   ],
   "arenas": [
