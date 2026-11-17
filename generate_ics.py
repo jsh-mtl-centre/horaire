@@ -5,6 +5,7 @@ import pandas as pd
 from datetime import datetime, timedelta
 from typing import Dict, List
 import re
+import unicodedata
 
 def clean_text_for_ics(text: str) -> str:
     """Nettoie un champ TEXT pour l'inclure dans un ICS (RFC 5545 §3.3.11)"""
@@ -332,11 +333,43 @@ def strip_category(name: str, other: str) -> str:
     category = other.split(' ', 1)[0] + ' '
     return name[len(category):] if name.startswith(category) else name
 
+def normalize_name(text: str) -> str:
+    """Minuscules sans accents, pour comparer « Éclairs » à M9-C-ECLAIRS"""
+    return unicodedata.normalize('NFKD', text).encode('ascii', 'ignore').decode().lower().strip()
+
+def internal_game_pairs(indices: List[int], rows: List[Dict], team_names: Dict[str, str]) -> List[tuple]:
+    """Les joutes (receveuse, visiteuse) parmi les lignes « vs »/« @ » d'un même créneau.
+
+    Deux lignes : une seule joute. Plus de deux (plusieurs joutes M9 sur des demi-glaces à la même heure) :
+    « vs X » va avec la visiteuse dont le nom contient X et qui nomme la receveuse en retour ; une ligne
+    sans partenaire certain reste telle quelle."""
+    homes = [i for i in indices if rows[i]['Commentaire'].startswith('vs ')]
+    aways = [i for i in indices if rows[i]['Commentaire'].startswith('@ ')]
+    if len(indices) == 2:
+        return [(homes[0], aways[0])] if homes and aways else []
+
+    def names(i):
+        affectation = rows[i]['Affectation']
+        return normalize_name(f"{team_names.get(affectation, affectation)} {affectation}")
+
+    def opponent(i):
+        return normalize_name(rows[i]['Commentaire'].split(' ', 1)[1])
+
+    pairs = []
+    for home in homes:
+        matches = [away for away in aways if opponent(home) and opponent(away)
+                   and opponent(home) in names(away) and opponent(away) in names(home)]
+        if len(matches) == 1:
+            pairs.append((home, matches[0]))
+            aways.remove(matches[0])
+    return pairs
+
 def name_internal_opponents(rows: List[Dict], team_names: Dict[str, str]) -> List[Dict]:
     """Une joute JSH contre JSH occupe deux lignes à la même heure dans la même aréna, « vs … »
-    pour l'équipe receveuse et « @ … » pour la visiteuse. Chacune reçoit en commentaire le nom de
-    l'autre équipe, sans la catégorie commune (« vs Faucons JSH », « @ Phénix JSH »). La ligne de
-    la visiteuse est marquée _visiteur_interne : le calendrier de l'aréna n'affiche la joute qu'une fois."""
+    pour l'équipe receveuse et « @ … » pour la visiteuse (voir internal_game_pairs quand plusieurs
+    joutes partagent le créneau). Chacune reçoit en commentaire le nom de l'autre équipe, sans la
+    catégorie commune (« vs Faucons JSH », « @ Phénix JSH »). La ligne de la visiteuse est marquée
+    _visiteur_interne : le calendrier de l'aréna n'affiche la joute qu'une fois."""
     games = {}
     for i, row in enumerate(rows):
         if re.match(r'(vs|@) ', row.get('Commentaire', '')):
@@ -346,10 +379,7 @@ def name_internal_opponents(rows: List[Dict], team_names: Dict[str, str]) -> Lis
 
     rows = list(rows)
     for indices in games.values():
-        if len(indices) != 2:
-            continue
-        home, away = sorted(indices, key=lambda i: rows[i]['Commentaire'].startswith('@'))
-        if rows[home]['Commentaire'].startswith('vs') and rows[away]['Commentaire'].startswith('@'):
+        for home, away in internal_game_pairs(indices, rows, team_names):
             home_name = team_names.get(rows[home]['Affectation'], rows[home]['Affectation'])
             away_name = team_names.get(rows[away]['Affectation'], rows[away]['Affectation'])
             rows[home] = {**rows[home], 'Commentaire': f"vs {strip_category(away_name, home_name)}"}
