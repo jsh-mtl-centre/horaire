@@ -201,13 +201,20 @@ def match_tournoi_externe(row: Dict) -> bool:
     return (not row.get('Affectation', '').strip() and row.get('Tournoi', '').strip().upper() == 'TRUE'
             and bool(row.get('No_match', '').strip()))
 
+def is_half_ice(row: Dict) -> bool:
+    """Demi-glace : case cochée dans la colonne « demi-glace » de la feuille (Demi_glace… aussi), ou l'ancienne façon,
+    le commentaire « demi-glace »."""
+    column = any(re.sub(r'[\s_]+', '-', str(key).strip().lower()) == 'demi-glace'
+                 and str(value).strip().upper() == 'TRUE' for key, value in row.items())
+    return column or row.get('Commentaire', '').strip().lower() == 'demi-glace'
+
 def create_ics_event(row: Dict, arena_addresses: Dict[str, str], arena_mode: bool = False,
                      team_names: Dict[str, str] = None) -> str:
     """Crée un événement ICS à partir d'une ligne du CSV.
 
     Le titre d'une joute (Commentaire « vs … » ou « @ … ») commence par 🏒, celui d'un tournoi
     (colonne Tournoi cochée) par 🏆 et celui du power skating par ⛸️. Un événement sans description
-    est décrit « Pratique » (« Power skating » au besoin), et une demi-glace « Pratique (demi-glace) ».
+    est décrit « Pratique » (« Power skating » au besoin), et une demi-glace (is_half_ice) « Pratique (demi-glace) ».
 
     arena_mode : calendrier d'une aréna. Le titre donne le nom de l'équipe (team_names, sinon le code
     d'affectation), sans l'aréna, et pour une joute l'adversaire, qui n'est alors plus dans la
@@ -292,12 +299,14 @@ def create_ics_event(row: Dict, arena_addresses: Dict[str, str], arena_mode: boo
         except (ValueError, TypeError):
             desc_parts.append(f"Match #{no_match}")
 
-    if commentaire and not joute and affectation:  # sans affectation, le commentaire est déjà le titre
-        desc_parts.append("Pratique (demi-glace)" if commentaire.lower() == 'demi-glace' else commentaire)
+    if commentaire and not joute and affectation and commentaire.lower() != 'demi-glace':  # sans affectation, le commentaire est déjà le titre
+        desc_parts.append(commentaire)
     if joute and not arena_mode:
         desc_parts = [" · ".join([f"{team_name} {commentaire}"] + desc_parts)]
     if not desc_parts and affectation and not joute:
         desc_parts.append("Power skating" if power_skating else "Pratique")
+    if desc_parts and affectation and not joute and is_half_ice(row):
+        desc_parts[-1] += " (demi-glace)"
     if groupes:
         names = sorted(((team_names or {}).get(g, g) for g in groupes), key=category_sort_key)
         desc_parts = ["Groupes : " + ", ".join(names)]
