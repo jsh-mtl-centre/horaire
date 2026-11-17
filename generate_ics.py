@@ -95,6 +95,48 @@ def load_published_arenas(filename: str):
         print(f"❌ Erreur lecture {filename}, tous les calendriers d'arénas seront créés: {e}")
         return None
 
+def create_notice_event(group: str, date_str: str, title: str, text: str = "", link: str = "") -> str:
+    """Avis d'une journée entière, sans heure ni aréna pour qu'il ne passe pas pour une pratique"""
+    day = parse_date_iso(date_str)
+    if not day:
+        return ""
+    start, end = day.strftime('%Y%m%d'), (day + timedelta(days=1)).strftime('%Y%m%d')
+    safe_group = re.sub(r'[^\w-]', '_', group.lower())
+    lines = ["BEGIN:VEVENT",
+             f"UID:avis-{safe_group}-{start}@calendar.local",
+             f"DTSTART;VALUE=DATE:{start}",
+             f"DTEND;VALUE=DATE:{end}",
+             f"SUMMARY:{clean_text_for_ics(title)}",
+             f"DESCRIPTION:{clean_text_for_ics(chr(10).join(p for p in (text, link) if p))}"]
+    if link:
+        lines.append(f"URL:{link}")
+    lines += ["TRANSP:TRANSPARENT", "STATUS:CONFIRMED", "END:VEVENT"]
+    return "\n".join(lines)
+
+def load_notices(filename: str) -> Dict[str, List[str]]:
+    """Avis de la liste « avis » de calendars.json, par groupe : un événement à chaque date de l'avis.
+
+    Quand un groupe est remplacé (M9-GR1 par les équipes M9), les familles abonnées à son ancien calendrier ne
+    reviennent pas sur la page des calendriers : l'avis, dans ce calendrier, leur dit de s'abonner au nouveau.
+    Le calendrier d'un groupe qui n'a plus aucune ligne dans la feuille est quand même écrit, avec ses avis."""
+    try:
+        with open(filename, encoding='utf-8') as f:
+            notices = json.load(f).get('avis', [])
+        events = {}
+        for notice in notices:
+            for group in notice['groupes']:
+                for date_str in notice['dates']:
+                    event = create_notice_event(group, date_str, notice['titre'], notice.get('texte', ''),
+                                                notice.get('lien', ''))
+                    if event:
+                        events.setdefault(group, []).append(event)
+    except Exception as e:
+        print(f"❌ Erreur lecture des avis de {filename}, aucun avis ajouté: {e}")
+        return {}
+    if events:
+        print(f"📣 Avis ajoutés: {', '.join(f'{g} ({len(e)})' for g, e in sorted(events.items()))}")
+    return events
+
 def parse_date_iso(date_str):
     """Parse une date au format ISO YYYY-MM-DD ou DD/MM/YYYY"""
     try:
@@ -140,7 +182,7 @@ def sort_events_by_datetime(events: List[str]) -> List[str]:
         for line in event.split('\n'):
             if line.startswith('DTSTART'):
                 dt_str = line.split(':', 1)[1].strip()
-                return datetime.strptime(dt_str, '%Y%m%dT%H%M%S')
+                return datetime.strptime(dt_str, '%Y%m%d' if len(dt_str) == 8 else '%Y%m%dT%H%M%S')  # avis : une date seule
         return datetime.min
     
     return sorted(events, key=get_start_datetime)    
@@ -363,12 +405,14 @@ def process_csv(csv_file: str, arenas_file: str, include_non_affecte: bool = Fal
                 calendars_file: str = None):
     """Traite le fichier principal et génère les calendriers.
 
-    calendars_file : calendars.json. Seules les arénas de sa liste « arenas » ont un calendrier."""
+    calendars_file : calendars.json. Seules les arénas de sa liste « arenas » ont un calendrier, et les avis de sa
+    liste « avis » s'ajoutent aux calendriers de leurs groupes (voir load_notices)."""
 
     print("🏒 Chargement des adresses des arenas...")
     arena_addresses = load_arena_addresses(arenas_file)
     team_names = load_team_names(teams_file) if teams_file else {}
     published_arenas = load_published_arenas(calendars_file) if calendars_file else None
+    notices = load_notices(calendars_file) if calendars_file else {}
 
     print(f"\n📖 Lecture de {csv_file}...")
     print(f"📋 Créneaux non affectés: {'✅ Inclus' if include_non_affecte else '❌ Exclus'}")
@@ -457,7 +501,10 @@ def process_csv(csv_file: str, arenas_file: str, include_non_affecte: bool = Fal
             print(f"🚫 {excluded_count} créneaux non affectés exclus")
     print(f"👥 Groupes: {list(events_by_group.keys())}")
     print(f"🏟️  Arenas: {list(events_by_arena.keys())}")
-    
+
+    for group, notice_events in notices.items():
+        events_by_group.setdefault(group, []).extend(notice_events)
+
     output_dir = "ics_groupes"
     os.makedirs(output_dir, exist_ok=True)
     
