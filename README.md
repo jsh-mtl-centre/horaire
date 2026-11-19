@@ -7,7 +7,7 @@ Versionnage et affichage des calendriers ICS pour Jeunes Sportifs Hochelaga.
 ```
 ics_groupes/     # ICS des groupes
 ics_arenas/      # ICS des arénas
-calendars.json   # Calendriers affichés sur le site, et « avis » ajoutés aux calendriers d'un groupe remplacé (maintenu à la main)
+calendars.json   # Calendriers affichés sur le site avec leur couleur (« color »), et « avis » ajoutés aux calendriers d'un groupe remplacé (maintenu à la main)
 ```
 
 ## Usage

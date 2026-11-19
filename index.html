@@ -649,7 +649,8 @@
                 this.eventPreview = null;
                 this.previewedElement = null;
 
-                // Palette de couleurs pour les calendriers (sans jaune clair : le texte blanc y est illisible)
+                // Palette de couleurs pour les calendriers sans « color » dans calendars.json (voir calendarColor).
+                // Sans jaune clair : le texte blanc y est illisible.
                 this.colorPalette = [
                     '#667eea', '#e74c3c', '#2ecc71', '#f39c12',
                     '#9b59b6', '#1abc9c', '#e67e22', '#34495e',
@@ -742,7 +743,7 @@
                     }
                     
                     // Créer la liste des calendriers avec leurs préférences sauvegardées
-                    this.icsCalendars = files.map((file, index) => {
+                    this.icsCalendars = files.map(file => {
                         const calendarName = file.name; // Le nom est déjà formaté dans le JSON
                         const savedState = this.loadCalendarPreferences();
                         // Sans préférence enregistrée, un calendrier est coché, sauf si sa section a « checkedByDefault »: false
@@ -755,7 +756,7 @@
                             section: file.section,
                             activeByDefault,
                             active: savedState[calendarName] !== undefined ? savedState[calendarName] : activeByDefault,
-                            color: this.colorPalette[index % this.colorPalette.length],
+                            color: this.calendarColor(file),
                             events: [],
                             status: 'loading'
                         };
@@ -770,6 +771,20 @@
                 this.renderIcsList();
                 this.updateToggleAllButton();
                 modeBtn.disabled = false;
+            }
+
+            // Couleur d'un calendrier : son « color » dans calendars.json, sinon une couleur de la palette
+            // tirée de son nom. Elle ne dépend jamais de la position dans la liste : insérer ou déplacer
+            // un calendrier ne change la couleur d'aucun autre.
+            calendarColor(file) {
+                if (/^#[0-9a-f]{6}$/i.test(file.color)) {
+                    return file.color;
+                }
+                let hash = 0;
+                for (const char of file.name) {
+                    hash = (hash * 31 + char.codePointAt(0)) >>> 0;
+                }
+                return this.colorPalette[hash % this.colorPalette.length];
             }
 
             formatCalendarName(fileName) {
