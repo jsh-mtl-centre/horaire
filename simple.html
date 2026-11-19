@@ -298,7 +298,7 @@
             <button id="arenasBtn" onclick="switchMode('arenas')">Arénas</button>
         </div>
         
-        <select id="groupSelect" onchange="filterEvents()">
+        <select id="groupSelect" onchange="onGroupChange()">
             <option value="all">Tous les groupes</option>
         </select>
         
@@ -316,14 +316,38 @@
         let allEvents = [];
         let calendars = [];
         let currentMode = 'groupes'; // 'groupes' ou 'arenas'
+        let loadedMode = null; // Mode des calendriers affichés dans le menu déroulant
         let loadId = 0; // Numéro du dernier chargement lancé
 
-        // Démarrer automatiquement au chargement de la page
-        window.addEventListener('load', loadCalendars);
+        // Le dernier mode choisi, et le dernier groupe ou aréna choisi dans chaque mode,
+        // sont repris à la visite suivante : { mode, groupes, arenas }
+        const PREFERENCES_KEY = 'simplePreferences';
+
+        function loadPreferences() {
+            try {
+                return JSON.parse(localStorage.getItem(PREFERENCES_KEY)) || {};
+            } catch (error) {
+                return {};
+            }
+        }
+
+        function savePreferences(changes) {
+            try {
+                localStorage.setItem(PREFERENCES_KEY, JSON.stringify({ ...loadPreferences(), ...changes }));
+            } catch (error) {
+                console.warn('Erreur lors de la sauvegarde des préférences:', error);
+            }
+        }
+
+        // Démarrer automatiquement au chargement de la page, dans le dernier mode choisi
+        window.addEventListener('load', () => {
+            switchMode(loadPreferences().mode === 'arenas' ? 'arenas' : 'groupes');
+        });
 
         function switchMode(mode) {
             currentMode = mode;
-            
+            savePreferences({ mode });
+
             // Mettre à jour les boutons
             document.getElementById('groupesBtn').classList.toggle('active', mode === 'groupes');
             document.getElementById('arenasBtn').classList.toggle('active', mode === 'arenas');
@@ -406,7 +430,8 @@
                 loadedEvents.sort((a, b) => a.startDate - b.startDate);
                 allEvents = loadedEvents;
                 calendars = loadedCalendars;
-                
+                loadedMode = currentMode;
+
                 // Peupler le menu déroulant et afficher les événements
                 populateGroupSelect();
                 filterEvents();
@@ -521,6 +546,19 @@
                     select.appendChild(option);
                 }
             });
+
+            // Reprendre le dernier choix fait dans ce mode, s'il existe encore
+            const saved = loadPreferences()[loadedMode];
+            select.value = calendars.some(calendar => calendar.name === saved) ? saved : 'all';
+        }
+
+        function onGroupChange() {
+            // loadedMode et non currentMode : pendant un changement de mode, le menu montre encore
+            // les calendriers de l'ancien mode
+            if (loadedMode) {
+                savePreferences({ [loadedMode]: document.getElementById('groupSelect').value });
+            }
+            filterEvents();
         }
 
         function filterEvents() {

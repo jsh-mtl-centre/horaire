@@ -638,8 +638,8 @@
                 this.maxHourHeight = 60;
                 this.dayHeaderHeight = 32;
 
-                // Mode arenas
-                this.isArenaMode = false;
+                // Mode arenas : le dernier mode choisi est repris à la visite suivante
+                this.isArenaMode = this.loadArenaMode();
 
                 // Période dont la fiche de détail est ouverte, et sa case dans la grille
                 this.selectedEvent = null;
@@ -696,6 +696,7 @@
 
             async toggleMode() {
                 this.isArenaMode = !this.isArenaMode;
+                this.saveArenaMode();
                 this.updateModeButton();
                 // Redécouvrir les fichiers et recharger complètement
                 await this.discoverIcsFiles();
@@ -986,12 +987,35 @@
             }
 
             saveCalendarPreferences() {
-                const preferences = {};
+                // On part des préférences déjà enregistrées : seuls les calendriers du mode affiché
+                // sont chargés, et ceux de l'autre mode (groupes ou arenas) doivent garder les leurs
+                const preferences = this.loadCalendarPreferences();
                 this.icsCalendars.forEach(calendar => {
                     preferences[calendar.name] = calendar.active;
                 });
-                localStorage.setItem('calendarPreferences', JSON.stringify(preferences));
-                console.log('Préférences sauvegardées:', preferences);
+                // Sans stockage (navigation privée, stockage bloqué), les cases doivent quand même répondre
+                try {
+                    localStorage.setItem('calendarPreferences', JSON.stringify(preferences));
+                    console.log('Préférences sauvegardées:', preferences);
+                } catch (error) {
+                    console.warn('Erreur lors de la sauvegarde des préférences:', error);
+                }
+            }
+
+            saveArenaMode() {
+                try {
+                    localStorage.setItem('calendarMode', this.isArenaMode ? 'arenas' : 'groupes');
+                } catch (error) {
+                    console.warn('Erreur lors de la sauvegarde du mode:', error);
+                }
+            }
+
+            loadArenaMode() {
+                try {
+                    return localStorage.getItem('calendarMode') === 'arenas';
+                } catch (error) {
+                    return false;
+                }
             }
 
             loadCalendarPreferences() {
