@@ -210,6 +210,17 @@
             line-height: 1.3;
         }
 
+        /* Lien vers la page d'abonnement, au bas du panneau : reste visible quand la liste défile */
+        .subscribe-link {
+            display: block;
+            flex-shrink: 0;
+            margin-top: 8px;
+            padding: 6px 10px;
+            font-size: 12px;
+            text-align: center;
+            text-decoration: none;
+        }
+
         .calendar {
             background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(10px);
@@ -580,6 +591,7 @@
                     </div>
                 </h3>
                 <div class="ics-list" id="icsList"></div>
+                <a class="btn subscribe-link" href="abonnement.html">📲 S'abonner à un calendrier</a>
             </div>
         </div>
 
@@ -1439,6 +1451,9 @@
                 const mapsUrl = event.location &&
                     `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(event.location)}`;
 
+                // La page d'abonnement s'ouvre sur le calendrier nommé après le « # »
+                const subscribeUrl = `abonnement.html#${encodeURIComponent(event.calendar)}`;
+
                 document.getElementById('eventDetailsContent').innerHTML = `
                     <h2 class="event-details-title" id="eventDetailsTitle">${this.escapeHtml(event.summary)}</h2>
                     ${event.description ? `<div class="event-details-description">${this.escapeHtml(event.description)}</div>` : ''}
@@ -1446,6 +1461,7 @@
                     ${row('🕒', this.escapeHtml(timeRange))}
                     ${event.location ? row('📍', `<a href="${mapsUrl}" target="_blank" rel="noopener">${this.escapeHtml(event.location)}</a>`) : ''}
                     ${row('<span class="event-details-dot"></span>', this.escapeHtml(event.calendar))}
+                    ${row('📲', `<a href="${subscribeUrl}">S'abonner à ce calendrier</a>`)}
                 `;
 
                 const popup = document.getElementById('eventDetails');

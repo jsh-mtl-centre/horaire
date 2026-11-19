@@ -75,6 +75,13 @@
             transform: translateY(-2px);
         }
         
+        /* Calendrier demandé par le lien d'arrivée (voir showRequestedCalendar) */
+        .ics-card.requested {
+            border-color: #1E3A8A;
+            background: #e7f0ff;
+            box-shadow: 0 0 0 3px rgba(30, 58, 138, 0.35);
+        }
+
         .ics-name {
             font-weight: 600;
             font-size: 16px;
@@ -304,7 +311,9 @@
                     extraSections.appendChild(sectionElement);
                     renderIcsFiles(section.groupes.map(toGroupCalendar), sectionElement.querySelector('.section-content'));
                 });
-                
+
+                showRequestedCalendar();
+
             } catch (error) {
                 console.error('Erreur:', error);
                 showError(document.getElementById('groupsSection'), `Erreur: ${error.message}`);
@@ -324,6 +333,7 @@
             files.forEach(file => {
                 const card = document.createElement('div');
                 card.className = 'ics-card';
+                card.dataset.calendar = file.name;
 
                 card.innerHTML = `
                     <div class="ics-name">${escapeHtml(file.name)}</div>
@@ -336,6 +346,24 @@
 
             sectionElement.innerHTML = '';
             sectionElement.appendChild(grid);
+        }
+
+        // L'horaire interactif renvoie ici avec le nom d'un calendrier après le « # »
+        // (abonnement.html#M9-B-VIKINGS) : on amène ce calendrier à l'écran, mis en évidence.
+        function showRequestedCalendar() {
+            let name;
+            try {
+                name = decodeURIComponent(location.hash.slice(1));
+            } catch (error) {
+                return;
+            }
+
+            const card = name && [...document.querySelectorAll('.ics-card')]
+                .find(candidate => candidate.dataset.calendar === name);
+            if (card) {
+                card.classList.add('requested');
+                card.scrollIntoView({ block: 'center' });
+            }
         }
 
         async function copyToClipboard(url, button) {
