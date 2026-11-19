@@ -649,18 +649,13 @@
                 this.eventPreview = null;
                 this.previewedElement = null;
 
-                // Palette de couleurs pour les calendriers sans « color » dans calendars.json (voir calendarColor).
-                // Sans jaune clair : le texte blanc y est illisible.
+                // Couleurs de réserve pour les calendriers sans « color » dans calendars.json (voir calendarColor) :
+                // une par famille de teintes, du rose au magenta, différentes de celles des calendriers de groupe
+                // et lisibles avec du texte blanc. À recalculer si les couleurs de calendars.json changent.
                 this.colorPalette = [
-                    '#667eea', '#e74c3c', '#2ecc71', '#f39c12',
-                    '#9b59b6', '#1abc9c', '#e67e22', '#34495e',
-                    '#e91e63', '#00bcd4', '#ff5722',
-                    '#795548', '#607d8b', '#8bc34a',
-                    // Nouvelles couleurs ajoutées
-                    '#3f51b5', '#ff9800', '#4caf50',
-                    '#9c27b0', '#00acc1', '#ff7043', '#546e7a',
-                    '#ec407a', '#26c6da', '#ff6f00',
-                    '#8d6e63', '#78909c', '#689f38'
+                    '#ba4278', '#c02a0c', '#de6c00', '#909000',
+                    '#4e6c00', '#3ca854', '#369678', '#489cc6',
+                    '#728acc', '#966cf6', '#7e48ae', '#d26cc6'
                 ];
                 
                 this.init();
