@@ -1883,7 +1883,7 @@ DTSTART;TZID=America/Montreal:20261129T130000
 DTEND;TZID=America/Montreal:20261129T140000
 SUMMARY:⛸️ Power Skating (facultatif)
 LOCATION:ST-LOUIS\, 5633 Rue Saint-Dominique\, Montréal\, QC H2T 1V7
-DESCRIPTION:Groupes : M11-B Faucons JSH\, M12F-A Power skating JSH\, M12F-B Power skating JSH\, M13-C Condors JSH
+DESCRIPTION:Groupes : M11-B Faucons JSH\, M12F-A Power skating JSH\, M12F-B Power skating JSH\, M13-C Faucons JSH\, M13-C Condors JSH
 STATUS:CONFIRMED
 END:VEVENT
 BEGIN:VEVENT
