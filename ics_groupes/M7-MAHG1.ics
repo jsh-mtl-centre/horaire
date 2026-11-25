@@ -204,12 +204,32 @@ DESCRIPTION:Pratique (demi-glace)
 STATUS:CONFIRMED
 END:VEVENT
 BEGIN:VEVENT
+UID:avis-m7-mahg1-20261128@calendar.local
+DTSTART;VALUE=DATE:20261128
+DTEND;VALUE=DATE:20261129
+SUMMARY:⚠️ Nouveau calendrier : abonnez-vous à celui de votre équipe M7 Lynx
+DESCRIPTION:Les groupes M7-MAHG0 et M7-MAHG1 deviennent les équipes Lynx (M7-LYNX-1\, M7-LYNX-2 et M7-LYNX-3). Après le 29 novembre\, ce calendrier ne recevra plus de pratiques. Abonnez-vous au calendrier de l'équipe Lynx de votre enfant sur la page des calendriers :\nhttps://jsh-mtl-centre.github.io/horaire/abonnement.html
+URL:https://jsh-mtl-centre.github.io/horaire/abonnement.html
+TRANSP:TRANSPARENT
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
 UID:m7-mahg1-st-louis-20261128T143000@calendar.local
 DTSTART;TZID=America/Montreal:20261128T143000
 DTEND;TZID=America/Montreal:20261128T153000
 SUMMARY:M7-MAHG1 (ST-LOUIS)
 LOCATION:ST-LOUIS\, 5633 Rue Saint-Dominique\, Montréal\, QC H2T 1V7
 DESCRIPTION:Pratique (demi-glace)
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
+UID:avis-m7-mahg1-20261129@calendar.local
+DTSTART;VALUE=DATE:20261129
+DTEND;VALUE=DATE:20261130
+SUMMARY:⚠️ Nouveau calendrier : abonnez-vous à celui de votre équipe M7 Lynx
+DESCRIPTION:Les groupes M7-MAHG0 et M7-MAHG1 deviennent les équipes Lynx (M7-LYNX-1\, M7-LYNX-2 et M7-LYNX-3). Après le 29 novembre\, ce calendrier ne recevra plus de pratiques. Abonnez-vous au calendrier de l'équipe Lynx de votre enfant sur la page des calendriers :\nhttps://jsh-mtl-centre.github.io/horaire/abonnement.html
+URL:https://jsh-mtl-centre.github.io/horaire/abonnement.html
+TRANSP:TRANSPARENT
 STATUS:CONFIRMED
 END:VEVENT
 BEGIN:VEVENT
@@ -222,21 +242,23 @@ DESCRIPTION:Pratique (demi-glace)
 STATUS:CONFIRMED
 END:VEVENT
 BEGIN:VEVENT
-UID:m7-mahg1-francis-bouillon-20261205T143000@calendar.local
-DTSTART;TZID=America/Montreal:20261205T143000
-DTEND;TZID=America/Montreal:20261205T153000
-SUMMARY:M7-MAHG1 (FRANCIS-BOUILLON)
-LOCATION:FRANCIS-BOUILLON\, 3175 Rue de Rouen\, Montréal\, QC H1W 1K8
-DESCRIPTION:Pratique (demi-glace)
+UID:avis-m7-mahg1-20261205@calendar.local
+DTSTART;VALUE=DATE:20261205
+DTEND;VALUE=DATE:20261206
+SUMMARY:⚠️ Nouveau calendrier : abonnez-vous à celui de votre équipe M7 Lynx
+DESCRIPTION:Les groupes M7-MAHG0 et M7-MAHG1 deviennent les équipes Lynx (M7-LYNX-1\, M7-LYNX-2 et M7-LYNX-3). Après le 29 novembre\, ce calendrier ne recevra plus de pratiques. Abonnez-vous au calendrier de l'équipe Lynx de votre enfant sur la page des calendriers :\nhttps://jsh-mtl-centre.github.io/horaire/abonnement.html
+URL:https://jsh-mtl-centre.github.io/horaire/abonnement.html
+TRANSP:TRANSPARENT
 STATUS:CONFIRMED
 END:VEVENT
 BEGIN:VEVENT
-UID:m7-mahg1-st-louis-20261206T120000@calendar.local
-DTSTART;TZID=America/Montreal:20261206T120000
-DTEND;TZID=America/Montreal:20261206T130000
-SUMMARY:M7-MAHG1 (ST-LOUIS)
-LOCATION:ST-LOUIS\, 5633 Rue Saint-Dominique\, Montréal\, QC H2T 1V7
-DESCRIPTION:Pratique (demi-glace)
+UID:avis-m7-mahg1-20261206@calendar.local
+DTSTART;VALUE=DATE:20261206
+DTEND;VALUE=DATE:20261207
+SUMMARY:⚠️ Nouveau calendrier : abonnez-vous à celui de votre équipe M7 Lynx
+DESCRIPTION:Les groupes M7-MAHG0 et M7-MAHG1 deviennent les équipes Lynx (M7-LYNX-1\, M7-LYNX-2 et M7-LYNX-3). Après le 29 novembre\, ce calendrier ne recevra plus de pratiques. Abonnez-vous au calendrier de l'équipe Lynx de votre enfant sur la page des calendriers :\nhttps://jsh-mtl-centre.github.io/horaire/abonnement.html
+URL:https://jsh-mtl-centre.github.io/horaire/abonnement.html
+TRANSP:TRANSPARENT
 STATUS:CONFIRMED
 END:VEVENT
 END:VCALENDAR

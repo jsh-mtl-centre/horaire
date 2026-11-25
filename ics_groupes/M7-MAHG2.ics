@@ -204,6 +204,16 @@ DESCRIPTION:Pratique
 STATUS:CONFIRMED
 END:VEVENT
 BEGIN:VEVENT
+UID:avis-m7-mahg2-20261128@calendar.local
+DTSTART;VALUE=DATE:20261128
+DTEND;VALUE=DATE:20261129
+SUMMARY:⚠️ Nouveau calendrier : abonnez-vous à celui de votre équipe M7 Tigres
+DESCRIPTION:Le groupe M7-MAHG2 devient les équipes Tigres (M7-TIGRES-1\, M7-TIGRES-2 et M7-TIGRES-3). Après le 29 novembre\, ce calendrier ne recevra plus de pratiques. Abonnez-vous au calendrier de l'équipe Tigres de votre enfant sur la page des calendriers :\nhttps://jsh-mtl-centre.github.io/horaire/abonnement.html
+URL:https://jsh-mtl-centre.github.io/horaire/abonnement.html
+TRANSP:TRANSPARENT
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
 UID:m7-mahg2-st-louis-20261128T153000@calendar.local
 DTSTART;TZID=America/Montreal:20261128T153000
 DTEND;TZID=America/Montreal:20261128T163000
@@ -213,30 +223,42 @@ DESCRIPTION:Pratique
 STATUS:CONFIRMED
 END:VEVENT
 BEGIN:VEVENT
+UID:avis-m7-mahg2-20261129@calendar.local
+DTSTART;VALUE=DATE:20261129
+DTEND;VALUE=DATE:20261130
+SUMMARY:⚠️ Nouveau calendrier : abonnez-vous à celui de votre équipe M7 Tigres
+DESCRIPTION:Le groupe M7-MAHG2 devient les équipes Tigres (M7-TIGRES-1\, M7-TIGRES-2 et M7-TIGRES-3). Après le 29 novembre\, ce calendrier ne recevra plus de pratiques. Abonnez-vous au calendrier de l'équipe Tigres de votre enfant sur la page des calendriers :\nhttps://jsh-mtl-centre.github.io/horaire/abonnement.html
+URL:https://jsh-mtl-centre.github.io/horaire/abonnement.html
+TRANSP:TRANSPARENT
+STATUS:CONFIRMED
+END:VEVENT
+BEGIN:VEVENT
 UID:m7-mahg2-camillien-houde-20261129T080000@calendar.local
 DTSTART;TZID=America/Montreal:20261129T080000
 DTEND;TZID=America/Montreal:20261129T090000
 SUMMARY:M7-MAHG2 (CAMILLIEN-HOUDE)
 LOCATION:CAMILLIEN-HOUDE\, 1696 Rue Montcalm\, Montréal\, QC H2L 3H4
-DESCRIPTION:Pratique
+DESCRIPTION:Pratique (demi-glace)
 STATUS:CONFIRMED
 END:VEVENT
 BEGIN:VEVENT
-UID:m7-mahg2-francis-bouillon-20261205T133000@calendar.local
-DTSTART;TZID=America/Montreal:20261205T133000
-DTEND;TZID=America/Montreal:20261205T143000
-SUMMARY:M7-MAHG2 (FRANCIS-BOUILLON)
-LOCATION:FRANCIS-BOUILLON\, 3175 Rue de Rouen\, Montréal\, QC H1W 1K8
-DESCRIPTION:Pratique
+UID:avis-m7-mahg2-20261205@calendar.local
+DTSTART;VALUE=DATE:20261205
+DTEND;VALUE=DATE:20261206
+SUMMARY:⚠️ Nouveau calendrier : abonnez-vous à celui de votre équipe M7 Tigres
+DESCRIPTION:Le groupe M7-MAHG2 devient les équipes Tigres (M7-TIGRES-1\, M7-TIGRES-2 et M7-TIGRES-3). Après le 29 novembre\, ce calendrier ne recevra plus de pratiques. Abonnez-vous au calendrier de l'équipe Tigres de votre enfant sur la page des calendriers :\nhttps://jsh-mtl-centre.github.io/horaire/abonnement.html
+URL:https://jsh-mtl-centre.github.io/horaire/abonnement.html
+TRANSP:TRANSPARENT
 STATUS:CONFIRMED
 END:VEVENT
 BEGIN:VEVENT
-UID:m7-mahg2-st-louis-20261206T130000@calendar.local
-DTSTART;TZID=America/Montreal:20261206T130000
-DTEND;TZID=America/Montreal:20261206T140000
-SUMMARY:M7-MAHG2 (ST-LOUIS)
-LOCATION:ST-LOUIS\, 5633 Rue Saint-Dominique\, Montréal\, QC H2T 1V7
-DESCRIPTION:Pratique
+UID:avis-m7-mahg2-20261206@calendar.local
+DTSTART;VALUE=DATE:20261206
+DTEND;VALUE=DATE:20261207
+SUMMARY:⚠️ Nouveau calendrier : abonnez-vous à celui de votre équipe M7 Tigres
+DESCRIPTION:Le groupe M7-MAHG2 devient les équipes Tigres (M7-TIGRES-1\, M7-TIGRES-2 et M7-TIGRES-3). Après le 29 novembre\, ce calendrier ne recevra plus de pratiques. Abonnez-vous au calendrier de l'équipe Tigres de votre enfant sur la page des calendriers :\nhttps://jsh-mtl-centre.github.io/horaire/abonnement.html
+URL:https://jsh-mtl-centre.github.io/horaire/abonnement.html
+TRANSP:TRANSPARENT
 STATUS:CONFIRMED
 END:VEVENT
 END:VCALENDAR

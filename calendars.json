@@ -4,9 +4,12 @@
   {"name": "GARDIENS-PERF", "fileName": "GARDIENS-PERF.ics", "color": "#c07290"},
   {"name": "M5-GR1", "fileName": "M5-GR1.ics", "color": "#78a206"},
   {"name": "M5-GR2", "fileName": "M5-GR2.ics", "color": "#8a1e54"},
-  {"name": "M7-MAHG0", "fileName": "M7-MAHG0.ics", "color": "#4260ba"},
-  {"name": "M7-MAHG1", "fileName": "M7-MAHG1.ics", "color": "#b45430"},
-  {"name": "M7-MAHG2", "fileName": "M7-MAHG2.ics", "color": "#d20078"},
+  {"name": "M7-LYNX-1", "fileName": "M7-LYNX-1.ics", "color": "#3a6fd8"},
+  {"name": "M7-LYNX-2", "fileName": "M7-LYNX-2.ics", "color": "#2a8fb4"},
+  {"name": "M7-LYNX-3", "fileName": "M7-LYNX-3.ics", "color": "#5a48c0"},
+  {"name": "M7-TIGRES-1", "fileName": "M7-TIGRES-1.ics", "color": "#e0761a"},
+  {"name": "M7-TIGRES-2", "fileName": "M7-TIGRES-2.ics", "color": "#c4501e"},
+  {"name": "M7-TIGRES-3", "fileName": "M7-TIGRES-3.ics", "color": "#d89a00"},
   {"name": "M9-A-PHENIX", "fileName": "M9-A-PHENIX.ics", "color": "#a29642"},
   {"name": "M9-B-GAULOIS", "fileName": "M9-B-GAULOIS.ics", "color": "#069ce4"},
   {"name": "M9-B-GLADIATEURS", "fileName": "M9-B-GLADIATEURS.ics", "color": "#6c2ad8"},
@@ -81,6 +84,20 @@
       "dates": ["2026-11-21", "2026-11-22", "2026-11-28", "2026-11-29"],
       "titre": "⚠️ Nouveau calendrier : abonnez-vous à celui de votre équipe M9",
       "texte": "À partir du 21 novembre, les groupes M9 (GR1, GR2, GR3) sont remplacés par des équipes. Ce calendrier ne recevra plus de pratiques ni de matchs. Abonnez-vous au calendrier de l'équipe de votre enfant (par exemple M9-B-VIKINGS) sur la page des calendriers :",
+      "lien": "https://jsh-mtl-centre.github.io/horaire/abonnement.html"
+    },
+    {
+      "groupes": ["M7-MAHG0", "M7-MAHG1"],
+      "dates": ["2026-11-28", "2026-11-29", "2026-12-05", "2026-12-06"],
+      "titre": "⚠️ Nouveau calendrier : abonnez-vous à celui de votre équipe M7 Lynx",
+      "texte": "Les groupes M7-MAHG0 et M7-MAHG1 deviennent les équipes Lynx (M7-LYNX-1, M7-LYNX-2 et M7-LYNX-3). Après le 29 novembre, ce calendrier ne recevra plus de pratiques. Abonnez-vous au calendrier de l'équipe Lynx de votre enfant sur la page des calendriers :",
+      "lien": "https://jsh-mtl-centre.github.io/horaire/abonnement.html"
+    },
+    {
+      "groupes": ["M7-MAHG2"],
+      "dates": ["2026-11-28", "2026-11-29", "2026-12-05", "2026-12-06"],
+      "titre": "⚠️ Nouveau calendrier : abonnez-vous à celui de votre équipe M7 Tigres",
+      "texte": "Le groupe M7-MAHG2 devient les équipes Tigres (M7-TIGRES-1, M7-TIGRES-2 et M7-TIGRES-3). Après le 29 novembre, ce calendrier ne recevra plus de pratiques. Abonnez-vous au calendrier de l'équipe Tigres de votre enfant sur la page des calendriers :",
       "lien": "https://jsh-mtl-centre.github.io/horaire/abonnement.html"
     }
   ],
