@@ -3,7 +3,7 @@ import json
 import os
 import pandas as pd
 from datetime import datetime, timedelta
-from typing import Dict, List
+from typing import Dict, List, Optional
 import re
 import unicodedata
 
@@ -208,13 +208,45 @@ def is_half_ice(row: Dict) -> bool:
                  and str(value).strip().upper() == 'TRUE' for key, value in row.items())
     return column or row.get('Commentaire', '').strip().lower() == 'demi-glace'
 
+def share_label(n: int) -> str:
+    """Ce qu'on écrit d'une activité en demi-glace quand n activités occupent la glace en même temps (count_ice_shares) :
+    « demi-glace » jusqu'à deux (une case cochée seule aussi), « glace partagée » au-delà (M7 et M9)."""
+    return 'demi-glace' if n <= 2 else 'glace partagée'
+
+def row_minutes(row: Dict) -> Optional[tuple]:
+    """(début, fin) en minutes depuis minuit, une fin après minuit comptée le lendemain ; None sans heures."""
+    if not (row.get('Heure_debut', '').strip() and row.get('Heure_fin', '').strip()):
+        return None
+    (sh, sm), (eh, em) = parse_time(row['Heure_debut']), parse_time(row['Heure_fin'])
+    start, end = sh * 60 + sm, eh * 60 + em
+    return start, end if end > start else end + 24 * 60
+
+def count_ice_shares(rows: List[Dict]) -> List[Dict]:
+    """Chaque ligne demi-glace (is_half_ice) reçoit _partage : le nombre d'activités en demi-glace sur la même glace en
+    même temps qu'elle, la sienne comprise, au plus fort de ses heures. 2 : demi-glace ; en M7 et M9, jusqu'à 4 (glace
+    partagée). Un match JSH contre JSH compte une fois : name_internal_opponents, appelée avant, marque sa ligne
+    visiteuse _visiteur_interne."""
+    places = {}
+    for i, row in enumerate(rows):
+        span = row_minutes(row)
+        if span and row.get('Affectation', '').strip() and is_half_ice(row):
+            places.setdefault((row.get('Date'), row.get('Arena')), []).append((i, span))
+    rows = list(rows)
+    for members in places.values():
+        activities = [span for i, span in members if not rows[i].get('_visiteur_interne')]
+        for i, (start, end) in members:
+            moments = {start} | {s for s, _ in activities if start < s < end}
+            rows[i] = {**rows[i], '_partage': max(sum(1 for s, e in activities if s <= t < e) for t in moments)}
+    return rows
+
 def create_ics_event(row: Dict, arena_addresses: Dict[str, str], arena_mode: bool = False,
                      team_names: Dict[str, str] = None) -> str:
     """Crée un événement ICS à partir d'une ligne du CSV.
 
     Le titre d'une joute (Commentaire « vs … » ou « @ … ») commence par 🏒, celui d'un tournoi
     (colonne Tournoi cochée) par 🏆 et celui du power skating par ⛸️. Un événement sans description
-    est décrit « Pratique » (« Power skating » au besoin), et une demi-glace (is_half_ice) « Pratique (demi-glace) ».
+    est décrit « Pratique » (« Power skating » au besoin), et une demi-glace (is_half_ice) « Pratique (demi-glace) »,
+    ou « (glace partagée) » au-delà de deux activités sur la glace (_partage, count_ice_shares).
 
     arena_mode : calendrier d'une aréna. Le titre donne le nom de l'équipe (team_names, sinon le code
     d'affectation), sans l'aréna, et pour une joute l'adversaire, qui n'est alors plus dans la
@@ -306,7 +338,7 @@ def create_ics_event(row: Dict, arena_addresses: Dict[str, str], arena_mode: boo
     if not desc_parts and affectation and not joute:
         desc_parts.append("Power skating" if power_skating else "Pratique")
     if desc_parts and affectation and not joute and is_half_ice(row):
-        desc_parts[-1] += " (demi-glace)"
+        desc_parts[-1] += f" ({share_label(row.get('_partage', 2))})"
     if groupes:
         names = sorted(((team_names or {}).get(g, g) for g in groupes), key=category_sort_key)
         desc_parts = ["Groupes : " + ", ".join(names)]
@@ -482,7 +514,7 @@ def process_csv(csv_file: str, arenas_file: str, include_non_affecte: bool = Fal
         total_processed = len(df)
         tous_rows = []
 
-        for clean_row in name_internal_opponents([row.to_dict() for _, row in df.iterrows()], team_names):
+        for clean_row in count_ice_shares(name_internal_opponents([row.to_dict() for _, row in df.iterrows()], team_names)):
             affectation = clean_row.get('Affectation', '').strip()
             arena = clean_row.get('Arena', '').strip()
             group = get_group_name(affectation)
